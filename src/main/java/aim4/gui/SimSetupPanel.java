@@ -42,6 +42,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import aim4.gui.parampanel.AutoDriverOnlyParamPanel;
+import aim4.gui.parampanel.ShoutAheadParamPanel;
 import aim4.gui.parampanel.TrafficSignalParamPanel;
 import aim4.sim.setup.ApproxStopSignSimSetup;
 import aim4.sim.setup.ApproxNPhasesTrafficSignalSimSetup;
@@ -59,6 +60,7 @@ public class SimSetupPanel extends JPanel implements ItemListener {
   final static String AUTO_DRIVER_ONLY_SETUP_PANEL = "AIM Protocol";
   final static String TRAFFIC_SIGNAL_SETUP_PANEL = "Traffic Signals";
   final static String STOP_SIGN_SETUP_PANEL = "Stop Signs";
+  final static String SHOUT_AHEAD_SETUP_PANEL = "Shout Ahead";
 
   /** The combox box */
   private JComboBox comboBox;
@@ -70,6 +72,10 @@ public class SimSetupPanel extends JPanel implements ItemListener {
   private AutoDriverOnlyParamPanel autoDriverOnlySetupPanel;
   /** The traffic signal setup panel */
   private TrafficSignalParamPanel trafficSignalSetupPanel;
+  
+  /** The Shout Ahead setup panel */
+  private ShoutAheadParamPanel shoutAheadSetupPanel;
+  
   /** The simulation setup panel */
   private BasicSimSetup simSetup;
 
@@ -88,7 +94,8 @@ public class SimSetupPanel extends JPanel implements ItemListener {
     String comboBoxItems[] =
       { AUTO_DRIVER_ONLY_SETUP_PANEL,
         TRAFFIC_SIGNAL_SETUP_PANEL,
-        STOP_SIGN_SETUP_PANEL };
+        STOP_SIGN_SETUP_PANEL,
+        SHOUT_AHEAD_SETUP_PANEL};
     comboBox = new JComboBox(comboBoxItems);
     comboBox.setEditable(false);
     comboBox.addItemListener(this);
@@ -99,12 +106,16 @@ public class SimSetupPanel extends JPanel implements ItemListener {
     cards = new JPanel(cardLayout);
 
     // add the parameter panels
-    autoDriverOnlySetupPanel =
-      new AutoDriverOnlyParamPanel(simSetup);
+    autoDriverOnlySetupPanel = new AutoDriverOnlyParamPanel(simSetup);
     addParamPanel(autoDriverOnlySetupPanel, AUTO_DRIVER_ONLY_SETUP_PANEL);
+    
     trafficSignalSetupPanel = new TrafficSignalParamPanel();
     cards.add(trafficSignalSetupPanel, TRAFFIC_SIGNAL_SETUP_PANEL);
-    cards.add(new JPanel(), STOP_SIGN_SETUP_PANEL);
+    
+    cards.add(new JPanel(), STOP_SIGN_SETUP_PANEL);//undefined
+    
+    shoutAheadSetupPanel = new ShoutAheadParamPanel(simSetup);
+    addParamPanel(shoutAheadSetupPanel, SHOUT_AHEAD_SETUP_PANEL);
 
     // add the combo box pane and cards pane
     setLayout(new BorderLayout());
