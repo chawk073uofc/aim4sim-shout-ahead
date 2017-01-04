@@ -1,6 +1,6 @@
 read proposal 
 
-print debug info
+look at BFW code
 
 have SA - Learn and SA - Evaluate Param panels
 
@@ -15,3 +15,5 @@ make ShoutAheadSimulator implements Simulator? extends AutoDriverOnlySim?
 		when spawning, create SADriver objects to associate with each car
 		
 		Goal: make an AIM sim that spawns once and exits when all cars have reached their dest's
+		
+must save agents and their rule sets somehow
