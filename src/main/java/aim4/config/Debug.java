@@ -235,7 +235,7 @@ public class Debug {
    * Whether or not the simulator prints out the stage of the simulation in
    * the simulation's main loop.
    */
-  public static final boolean PRINT_SIMULATOR_STAGE = false;
+  public static final boolean PRINT_SIMULATOR_STAGE = true; //changed
 
   /**
    * Whether or not the proxy vehicle shows the debug message.

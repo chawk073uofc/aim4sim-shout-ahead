@@ -69,7 +69,7 @@ public interface Simulator {
   double getSimulationTime();
 
   /**
-   * Get the number of vehicles that has reached their destinations.
+   * Get the number of vehicles that have reached their destinations.
    *
    * @return the number of vehicles that has reached their destinations
    */
