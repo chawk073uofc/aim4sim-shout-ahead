@@ -111,17 +111,17 @@ public class AutoDriverOnlySimulator implements Simulator {
   /////////////////////////////////
 
   /** The map */
-  private BasicMap basicMap;
+  protected BasicMap basicMap;
   /** All active vehicles, in form of a map from VINs to vehicle objects. */
-  private Map<Integer,VehicleSimView> vinToVehicles;
+  protected Map<Integer,VehicleSimView> vinToVehicles;
   /** The current time */
-  private double currentTime;
+  protected double currentTime;
   /** The number of completed vehicles */
-  private int numOfCompletedVehicles;
+  protected int numOfCompletedVehicles;
   /** The total number of bits transmitted by the completed vehicles */
-  private int totalBitsTransmittedByCompletedVehicles;
+  protected int totalBitsTransmittedByCompletedVehicles;
   /** The total number of bits received by the completed vehicles */
-  private int totalBitsReceivedByCompletedVehicles;
+  protected int totalBitsReceivedByCompletedVehicles;
 
 
   /////////////////////////////////
