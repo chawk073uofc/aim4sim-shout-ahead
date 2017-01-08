@@ -2,6 +2,9 @@
 package aim4.sim;
 
 import aim4.map.BasicMap;
+import aim4.map.SpawnPoint;
+import aim4.vehicle.VehicleSimView;
+import aim4.vehicle.VinRegistry;
 
 /**
  * This class represents a driving simulation where every car is autonomous and operating according to the
@@ -20,6 +23,11 @@ public class ShoutAheadSimulator extends AutoDriverOnlySimulator implements Simu
 		//not equal to it's origin. 
 			
 			//Spawn North car
+		   SpawnPoint spawnPoint = basicMap.;
+		   SpawnSpec spawnSpec = spawnPoint.get
+		   VehicleSimView vehicle = makeVehicle(spawnPoint, spawnSpec);
+           VinRegistry.registerVehicle(vehicle); // Get vehicle a VIN number
+           vinToVehicles.put(vehicle.getVIN(), vehicle);
 				//set dest !=North
 				//set rules
 			//Spawn East car

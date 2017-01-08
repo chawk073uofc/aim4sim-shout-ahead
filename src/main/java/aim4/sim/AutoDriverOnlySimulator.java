@@ -353,7 +353,7 @@ public class AutoDriverOnlySimulator implements Simulator {
    * @param spawnSpec   the spawn specification
    * @return the vehicle
    */
-  private VehicleSimView makeVehicle(SpawnPoint spawnPoint,
+  protected VehicleSimView makeVehicle(SpawnPoint spawnPoint,
                                      SpawnSpec spawnSpec) {
     VehicleSpec spec = spawnSpec.getVehicleSpec();
     Lane lane = spawnPoint.getLane();

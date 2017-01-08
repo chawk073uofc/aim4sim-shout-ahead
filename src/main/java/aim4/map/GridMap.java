@@ -368,7 +368,7 @@ public class GridMap implements BasicMap {
    * @param lane      the lane
    * @return the spawn point
    */
-  private SpawnPoint makeSpawnPoint(double initTime, Lane lane) {
+  public SpawnPoint makeSpawnPoint(double initTime, Lane lane) {
     double startDistance = 0.0;
     double normalizedStartDistance = lane.normalizedDistance(startDistance);
     Point2D pos = lane.getPointAtNormalizedDistance(normalizedStartDistance);

@@ -17,3 +17,6 @@ make ShoutAheadSimulator implements Simulator? extends AutoDriverOnlySim?
 		Goal: make an AIM sim that spawns once and exits when all cars have reached their dest's
 		
 must save agents and their rule sets somehow
+
+
+**spawn spec in spawn point has destination field
