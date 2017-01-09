@@ -20,3 +20,4 @@ must save agents and their rule sets somehow
 
 
 **spawn spec in spawn point has destination field
+**spawn spec gen has destination selector field

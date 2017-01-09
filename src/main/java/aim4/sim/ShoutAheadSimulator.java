@@ -2,8 +2,14 @@
 package aim4.sim;
 
 import aim4.map.BasicMap;
+import aim4.map.GridMap;
+import aim4.map.Road;
 import aim4.map.SpawnPoint;
+import aim4.map.SpawnPoint.SpawnSpec;
+import aim4.map.lane.Lane;
 import aim4.vehicle.VehicleSimView;
+import aim4.vehicle.VehicleSpec;
+import aim4.vehicle.VehicleSpecDatabase;
 import aim4.vehicle.VinRegistry;
 
 /**
@@ -22,22 +28,27 @@ public class ShoutAheadSimulator extends AutoDriverOnlySimulator implements Simu
 		//Spawn 4 vehicles at the end of each road. Each should be randomly assigned a destination (North, South, East, West)
 		//not equal to it's origin. 
 			
-			//Spawn North car
-		   SpawnPoint spawnPoint = basicMap.;
-		   SpawnSpec spawnSpec = spawnPoint.get
+			//Spawn Northbound car
+		   GridMap map = (GridMap) basicMap;
+		   Road verticalRoad = map.getVerticalRoads().get(0);
+		   Lane northBoundLane = verticalRoad.getLanes().get(0);//hopefully a northbound lane
+
+		   SpawnPoint spawnPoint = map.makeSpawnPoint(currentTime, northBoundLane);
+		   VehicleSpec vehicleSpec = VehicleSpecDatabase.getVehicleSpecByName("COUPE");
+		   SpawnSpec spawnSpec = new SpawnSpec(currentTime, vehicleSpec, verticalRoad);//hopefully destination is North
 		   VehicleSimView vehicle = makeVehicle(spawnPoint, spawnSpec);
            VinRegistry.registerVehicle(vehicle); // Get vehicle a VIN number
            vinToVehicles.put(vehicle.getVIN(), vehicle);
-				//set dest !=North
+				//set dest 
 				//set rules
-			//Spawn East car
-				//set dest !=East
+			//Spawn East bound car
+				//set dest
 				//set rules
-			//Spawn South car
+			//Spawn South bound car
 				//set dest !=South
 				//set rules
-			//Spawn West car
-				//set dest !=West
+			//Spawn West bound car
+				//set dest 
 				//set rules
 		}
 
