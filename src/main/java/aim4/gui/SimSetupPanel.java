@@ -48,6 +48,7 @@ import aim4.sim.setup.ApproxStopSignSimSetup;
 import aim4.sim.setup.ApproxNPhasesTrafficSignalSimSetup;
 import aim4.sim.setup.AutoDriverOnlySimSetup;
 import aim4.sim.setup.BasicSimSetup;
+import aim4.sim.setup.ShoutAheadSimSetup;
 import aim4.sim.setup.SimSetup;
 
 /**
@@ -171,7 +172,17 @@ public class SimSetupPanel extends JPanel implements ItemListener {
       simSetup2.setStopDistBeforeIntersection(
         autoDriverOnlySetupPanel.getStopDistToIntersection());
       return simSetup2;
-    } else {
+    } else if (comboBox.getSelectedIndex() == 3) {
+    	ShoutAheadSimSetup simSetup3 = new ShoutAheadSimSetup(simSetup);
+        simSetup3.setTrafficLevel(shoutAheadSetupPanel.getTrafficRate());
+        simSetup3.setSpeedLimit(shoutAheadSetupPanel.getSpeedLimit());
+        simSetup3.setStopDistBeforeIntersection(
+        		shoutAheadSetupPanel.getStopDistToIntersection());
+        simSetup3.setNumOfColumns(shoutAheadSetupPanel.getNumOfColumns());
+        simSetup3.setNumOfRows(shoutAheadSetupPanel.getNumOfRows());
+        simSetup3.setLanesPerRoad(shoutAheadSetupPanel.getLanesPerRoad());
+        return simSetup3;
+  	}else {
       throw new RuntimeException(
           "SimSetupPane::getSimSetup(): not implemented yet");
     }

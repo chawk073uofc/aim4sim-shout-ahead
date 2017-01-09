@@ -39,6 +39,7 @@ public class ShoutAheadSimulator extends AutoDriverOnlySimulator implements Simu
 		   VehicleSimView vehicle = makeVehicle(spawnPoint, spawnSpec);
            VinRegistry.registerVehicle(vehicle); // Get vehicle a VIN number
            vinToVehicles.put(vehicle.getVIN(), vehicle);
+           
 				//set dest 
 				//set rules
 			//Spawn East bound car

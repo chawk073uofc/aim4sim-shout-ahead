@@ -353,8 +353,7 @@ public class AutoDriverOnlySimulator implements Simulator {
    * @param spawnSpec   the spawn specification
    * @return the vehicle
    */
-  protected VehicleSimView makeVehicle(SpawnPoint spawnPoint,
-                                     SpawnSpec spawnSpec) {
+  protected VehicleSimView makeVehicle(SpawnPoint spawnPoint, SpawnSpec spawnSpec) {
     VehicleSpec spec = spawnSpec.getVehicleSpec();
     Lane lane = spawnPoint.getLane();
     // Now just take the minimum of the max velocity of the vehicle, and
