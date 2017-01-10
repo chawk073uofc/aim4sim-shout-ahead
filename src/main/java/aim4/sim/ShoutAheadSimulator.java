@@ -1,12 +1,16 @@
 
 package aim4.sim;
 
+import java.util.List;
+
+import aim4.config.Debug;
 import aim4.map.BasicMap;
 import aim4.map.GridMap;
 import aim4.map.Road;
 import aim4.map.SpawnPoint;
 import aim4.map.SpawnPoint.SpawnSpec;
 import aim4.map.lane.Lane;
+import aim4.sim.AutoDriverOnlySimulator.AutoDriverOnlySimStepResult;
 import aim4.vehicle.VehicleSimView;
 import aim4.vehicle.VehicleSpec;
 import aim4.vehicle.VehicleSpecDatabase;
@@ -53,7 +57,48 @@ public class ShoutAheadSimulator extends AutoDriverOnlySimulator implements Simu
 				//set rules
 		}
 
-	
+	  // the main loop
+
+	  /**
+	   * {@inheritDoc}
+	   */
+	  @Override
+	  public synchronized AutoDriverOnlySimStepResult step(double timeStep) {
+//	    if (Debug.PRINT_SIMULATOR_STAGE) {
+//	      System.err.printf("--------------------------------------\n");
+//	      System.err.printf("------SIM:spawnVehicles---------------\n");
+//	    }
+//	    spawnVehicles(timeStep);
+	    if (Debug.PRINT_SIMULATOR_STAGE) {
+	      System.err.printf("------SIM:provideSensorInput---------------\n");
+	    }
+	    provideSensorInput();
+	    if (Debug.PRINT_SIMULATOR_STAGE) {
+	      System.err.printf("------SIM:letDriversAct---------------\n");
+	    }
+	    letDriversAct();
+	    if (Debug.PRINT_SIMULATOR_STAGE) {
+	      System.err.printf("------SIM:letIntersectionManagersAct--------------\n");
+	    }
+	    letIntersectionManagersAct(timeStep);
+	    if (Debug.PRINT_SIMULATOR_STAGE) {
+	      System.err.printf("------SIM:communication---------------\n");
+	    }
+	    communication();
+	    if (Debug.PRINT_SIMULATOR_STAGE) {
+	      System.err.printf("------SIM:moveVehicles---------------\n");
+	    }
+	    moveVehicles(timeStep);
+	    if (Debug.PRINT_SIMULATOR_STAGE) {
+	      System.err.printf("------SIM:cleanUpCompletedVehicles---------------\n");
+	    }
+	    List<Integer> completedVINs = cleanUpCompletedVehicles();
+	    currentTime += timeStep;
+	    // debug
+	    checkClocks();
+
+	    return new AutoDriverOnlySimStepResult(completedVINs);
+	  }
 	
 	//WHILE there is at least one car that has not reached its destination 
 	
