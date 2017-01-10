@@ -69,18 +69,18 @@ public class ShoutAheadSimulator extends AutoDriverOnlySimulator implements Simu
 //	      System.err.printf("------SIM:spawnVehicles---------------\n");
 //	    }
 //	    spawnVehicles(timeStep);
-	    if (Debug.PRINT_SIMULATOR_STAGE) {
-	      System.err.printf("------SIM:provideSensorInput---------------\n");
-	    }
-	    provideSensorInput();
+//	    if (Debug.PRINT_SIMULATOR_STAGE) {
+//	      System.err.printf("------SIM:provideSensorInput---------------\n");
+//	    }
+//	    provideSensorInput();
 	    if (Debug.PRINT_SIMULATOR_STAGE) {
 	      System.err.printf("------SIM:letDriversAct---------------\n");
 	    }
-	    letDriversAct();
-	    if (Debug.PRINT_SIMULATOR_STAGE) {
-	      System.err.printf("------SIM:letIntersectionManagersAct--------------\n");
-	    }
-	    letIntersectionManagersAct(timeStep);
+	    letDriversAct();//write SAVehicalSimView.act
+//	    if (Debug.PRINT_SIMULATOR_STAGE) {
+//	      System.err.printf("------SIM:letIntersectionManagersAct--------------\n");
+//	    }
+//	    letIntersectionManagersAct(timeStep);
 	    if (Debug.PRINT_SIMULATOR_STAGE) {
 	      System.err.printf("------SIM:communication---------------\n");
 	    }
@@ -88,7 +88,7 @@ public class ShoutAheadSimulator extends AutoDriverOnlySimulator implements Simu
 	    if (Debug.PRINT_SIMULATOR_STAGE) {
 	      System.err.printf("------SIM:moveVehicles---------------\n");
 	    }
-	    moveVehicles(timeStep);
+	    moveVehicles(timeStep);//write SAVehicalSimView.move()
 	    if (Debug.PRINT_SIMULATOR_STAGE) {
 	      System.err.printf("------SIM:cleanUpCompletedVehicles---------------\n");
 	    }
@@ -100,6 +100,14 @@ public class ShoutAheadSimulator extends AutoDriverOnlySimulator implements Simu
 	    return new AutoDriverOnlySimStepResult(completedVINs);
 	  }
 	
+	  /**
+	   * If this simulation includes communication among agents, allow agents to broadcast their intended actions to others. 
+	   */
+	  @Override
+	  protected void communication() {
+	 
+	  }
+	  
 	//WHILE there is at least one car that has not reached its destination 
 	
 		//For each car

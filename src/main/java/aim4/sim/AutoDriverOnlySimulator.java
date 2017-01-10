@@ -708,7 +708,7 @@ public class AutoDriverOnlySimulator implements Simulator {
   /**
    * Allow each driver to act.
    */
-  private void letDriversAct() {
+  protected void letDriversAct() {
     for(VehicleSimView vehicle : vinToVehicles.values()) {
       vehicle.getDriver().act();
     }
@@ -736,7 +736,7 @@ public class AutoDriverOnlySimulator implements Simulator {
   /**
    * Deliver the V2I and I2V messages.
    */
-  private void communication() {
+  protected void communication() {
     deliverV2IMessages();
     deliverI2VMessages();
 //    deliverV2VMessages();
@@ -897,7 +897,7 @@ public class AutoDriverOnlySimulator implements Simulator {
    *
    * @param timeStep  the time step
    */
-  private void moveVehicles(double timeStep) {
+  protected void moveVehicles(double timeStep) {
     for(VehicleSimView vehicle : vinToVehicles.values()) {
       Point2D p1 = vehicle.getPosition();
       vehicle.move(timeStep);
@@ -921,7 +921,7 @@ public class AutoDriverOnlySimulator implements Simulator {
    *
    * @return the VINs of the completed vehicles
    */
-  private List<Integer> cleanUpCompletedVehicles() {
+  protected List<Integer> cleanUpCompletedVehicles() {
     List<Integer> completedVINs = new LinkedList<Integer>();
 
     Rectangle2D mapBoundary = basicMap.getDimensions();
@@ -958,7 +958,7 @@ public class AutoDriverOnlySimulator implements Simulator {
   /**
    * Check whether the clocks are in sync.
    */
-  private void checkClocks() {
+  protected void checkClocks() {
     // Check the clocks for all autonomous vehicles.
     for(VehicleSimView vehicle: vinToVehicles.values()) {
       vehicle.checkCurrentTime(currentTime);
