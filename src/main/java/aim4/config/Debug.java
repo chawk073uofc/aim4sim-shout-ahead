@@ -212,7 +212,7 @@ public class Debug {
    * the target vehicle.
    */
   public static boolean isPrintVehicleHighLevelControlOfVIN(int vin) {
-    return false;
+    return true;
   }
 
   /////////////////////////////////
