@@ -43,7 +43,7 @@ public class ShoutAheadSimulator extends AutoDriverOnlySimulator implements Simu
 		   VehicleSimView vehicle = makeVehicle(spawnPoint, spawnSpec);
            VinRegistry.registerVehicle(vehicle); // Get vehicle a VIN number
            vinToVehicles.put(vehicle.getVIN(), vehicle);
-           
+        
 				//set dest 
 				//set rules
 			//Spawn East bound car
@@ -76,7 +76,7 @@ public class ShoutAheadSimulator extends AutoDriverOnlySimulator implements Simu
 	    if (Debug.PRINT_SIMULATOR_STAGE) {
 	      System.err.printf("------SIM:letDriversAct---------------\n");
 	    }
-	    letDriversAct();//write SAVehicalSimView.act
+	    letDriversAct();//TODO: write SAVehicalSimView.act or SADriver.act???
 //	    if (Debug.PRINT_SIMULATOR_STAGE) {
 //	      System.err.printf("------SIM:letIntersectionManagersAct--------------\n");
 //	    }
@@ -84,11 +84,11 @@ public class ShoutAheadSimulator extends AutoDriverOnlySimulator implements Simu
 	    if (Debug.PRINT_SIMULATOR_STAGE) {
 	      System.err.printf("------SIM:communication---------------\n");
 	    }
-	    communication();
+	    communication();//TODO: remove?
 	    if (Debug.PRINT_SIMULATOR_STAGE) {
 	      System.err.printf("------SIM:moveVehicles---------------\n");
 	    }
-	    moveVehicles(timeStep);//write SAVehicalSimView.move()
+	    moveVehicles(timeStep);//TODO:write SAVehicalSimView.move()
 	    if (Debug.PRINT_SIMULATOR_STAGE) {
 	      System.err.printf("------SIM:cleanUpCompletedVehicles---------------\n");
 	    }
@@ -105,7 +105,7 @@ public class ShoutAheadSimulator extends AutoDriverOnlySimulator implements Simu
 	   */
 	  @Override
 	  protected void communication() {
-	 
+		 
 	  }
 	  
 	//WHILE there is at least one car that has not reached its destination 
