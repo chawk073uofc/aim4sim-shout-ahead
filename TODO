@@ -20,10 +20,22 @@ must save agents and their rule sets somehow
 
 
 **spawn spec in spawn point has destination field
-**spawn spec gen has destination selector field
+**spawn spec gen has destination selector field i.e there is a dest sel class
 
 vehicalDriver view is the vehicals interface to the driver 
 driver actions
 	aim4.vehicle.VehicleDriverView.setTargetVelocityWithMaxAccel(double)
 	aim4.vehicle.VehicleDriverView.coast()
 	aim4.vehicle.VehicleDriverView.slowToStop() break??
+	
+	Steering, acceleration, and breaking:
+	
+	aim4.vehicle.BasicVehicle.SteeringMovement.setSteeringAngleWithBound(double)
+	aim4.vehicle.BasicVehicle.PhysicalMovement.setAccelerationWithBound(double)
+	aim4.vehicle.BasicVehicle.PhysicalMovement.coast()
+	
+	Movement: 
+	
+	aim4.vehicle.BasicVehicle.SteeringMovement.move(double, double)
+	aim4.vehicle.BasicVehicle.PhysicalMovement.move(double, double)
+	aim4.vehicle.BasicVehicle.PhysicalMovement.moveWithoutAcceleration(double, double) //?

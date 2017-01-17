@@ -44,7 +44,7 @@ public class ShoutAheadSimulator extends AutoDriverOnlySimulator implements Simu
            VinRegistry.registerVehicle(vehicle); // Get vehicle a VIN number
            vinToVehicles.put(vehicle.getVIN(), vehicle);
         
-           //vehicle.setTargetVelocityWithMaxAccel(3.0);;
+           //vehicle.setTargetVelocityWithMaxAccel(.5);
 				//set dest 
 				//set rules
 			//Spawn East bound car
@@ -77,7 +77,7 @@ public class ShoutAheadSimulator extends AutoDriverOnlySimulator implements Simu
 	    if (Debug.PRINT_SIMULATOR_STAGE) {
 	      System.err.printf("------SIM:letDriversAct---------------\n");
 	    }
-	    letDriversAct();//TODO: write SAVehicalSimView.act or SADriver.act???
+	   letDriversAct();//TODO: write SAVehicalSimView.act or SADriver.act???
 //	    if (Debug.PRINT_SIMULATOR_STAGE) {
 //	      System.err.printf("------SIM:letIntersectionManagersAct--------------\n");
 //	    }
