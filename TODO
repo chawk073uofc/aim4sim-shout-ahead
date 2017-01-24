@@ -39,3 +39,7 @@ driver actions
 	aim4.vehicle.BasicVehicle.SteeringMovement.move(double, double)
 	aim4.vehicle.BasicVehicle.PhysicalMovement.move(double, double)
 	aim4.vehicle.BasicVehicle.PhysicalMovement.moveWithoutAcceleration(double, double) //?
+	
+for sensing
+
+	aim4.vehicle.BasicAutoVehicle.getLRFDistance()
