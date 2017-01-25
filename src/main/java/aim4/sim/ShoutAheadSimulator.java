@@ -4,6 +4,7 @@ package aim4.sim;
 import java.util.List;
 
 import aim4.config.Debug;
+import aim4.driver.ShoutAheadDriverAgent;
 import aim4.map.BasicMap;
 import aim4.map.GridMap;
 import aim4.map.Road;
@@ -11,6 +12,7 @@ import aim4.map.SpawnPoint;
 import aim4.map.SpawnPoint.SpawnSpec;
 import aim4.map.lane.Lane;
 import aim4.sim.AutoDriverOnlySimulator.AutoDriverOnlySimStepResult;
+import aim4.vehicle.AutoVehicleSimView;
 import aim4.vehicle.VehicleSimView;
 import aim4.vehicle.VehicleSpec;
 import aim4.vehicle.VehicleSpecDatabase;
@@ -35,16 +37,18 @@ public class ShoutAheadSimulator extends AutoDriverOnlySimulator implements Simu
 			//Spawn Northbound car
 		   GridMap map = (GridMap) basicMap;
 		   Road verticalRoad = map.getVerticalRoads().get(0);
-		   Lane northBoundLane = verticalRoad.getLanes().get(0);//hopefully a northbound lane
+		   Lane northBoundLane = verticalRoad.getLanes().get(0);
 
 		   SpawnPoint spawnPoint = map.makeSpawnPoint(currentTime, northBoundLane);
 		   VehicleSpec vehicleSpec = VehicleSpecDatabase.getVehicleSpecByName("COUPE");
 		   SpawnSpec spawnSpec = new SpawnSpec(currentTime, vehicleSpec, verticalRoad);//hopefully destination is North
-		   VehicleSimView vehicle = makeVehicle(spawnPoint, spawnSpec);
+		   AutoVehicleSimView vehicle = (AutoVehicleSimView) makeVehicle(spawnPoint, spawnSpec);
+		   ShoutAheadDriverAgent driverAgent = new ShoutAheadDriverAgent(vehicle, basicMap);
+		   vehicle.setDriver(driverAgent);
            VinRegistry.registerVehicle(vehicle); // Get vehicle a VIN number
            vinToVehicles.put(vehicle.getVIN(), vehicle);
         
-           //vehicle.setTargetVelocityWithMaxAccel(.5);
+           vehicle.setTargetVelocityWithMaxAccel(.5);
 				//set dest 
 				//set rules
 			//Spawn East bound car
@@ -77,7 +81,7 @@ public class ShoutAheadSimulator extends AutoDriverOnlySimulator implements Simu
 	    if (Debug.PRINT_SIMULATOR_STAGE) {
 	      System.err.printf("------SIM:letDriversAct---------------\n");
 	    }
-	   letDriversAct();//TODO: write SAVehicalSimView.act or SADriver.act???
+	   //letDriversAct();//TODO: write SAVehicalSimView.act or SADriver.act???
 //	    if (Debug.PRINT_SIMULATOR_STAGE) {
 //	      System.err.printf("------SIM:letIntersectionManagersAct--------------\n");
 //	    }

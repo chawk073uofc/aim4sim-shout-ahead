@@ -37,6 +37,8 @@ import java.util.List;
 import java.util.Queue;
 
 import aim4.driver.AutoDriver;
+import aim4.driver.Driver;
+import aim4.driver.ShoutAheadDriverAgent;
 import aim4.msg.v2i.V2IMessage;
 
 /**
@@ -58,6 +60,13 @@ public interface VehicleSimView extends VehicleDriverView {
    */
   void setDriver(AutoDriver driver);
 
+//  /**
+//   * Set this Vehicle's Driver to a ShoutAheadDriverAgent.
+//   *
+//   * @param driver  the new driver to control this Vehicle
+//   */
+//  void setDriver(ShoutAheadDriverAgent driverAgent);
+ 
   /**
    * Check whether this vehicle's time is current.
    *
