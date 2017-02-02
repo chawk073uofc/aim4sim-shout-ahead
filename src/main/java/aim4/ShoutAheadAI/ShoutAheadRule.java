@@ -9,11 +9,16 @@ import aim4.ShoutAheadAI.predicates.Predicate;
  *
  */
 public class ShoutAheadRule {
-	private int maxLength; //The max number of predicates making up a condition.
+	private int numPredicates; //The max number of predicates making up a condition.
 	private int weight;
-	private ArrayList<Predicate> condition;
+	private ArrayList<Predicate> condition = new ArrayList<Predicate>();
 	
-	
+	ShoutAheadRule(int numPredicates){
+		this.numPredicates = numPredicates;
+		for(int i = 0; i < numPredicates; i++){
+			condition.add(chooseRandPredicate());
+		}
+	}
 	
 	/**
 	 * Returns true if all the predicates that make up this condition are true.
@@ -25,6 +30,22 @@ public class ShoutAheadRule {
 			if (!p.isTrue()) return false;
 		}
 		return true;
+	}
+
+
+
+	public int getWeight() {
+		return weight;
+	}
+
+	/**
+	 * TODO:
+	 *       make predicate an enum?
+	 * @return
+	 */
+	private Predicate chooseRandPredicate() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
 

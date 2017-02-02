@@ -45,5 +45,6 @@ for sensing
 	aim4.vehicle.BasicAutoVehicle.getLRFDistance()
 	
 -------------------------
-	
+
+make predicate an enum	
 	

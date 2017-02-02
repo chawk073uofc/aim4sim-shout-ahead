@@ -44,7 +44,10 @@ public class ShoutAheadSimulator extends AutoDriverOnlySimulator implements Simu
 		   SpawnSpec spawnSpec = new SpawnSpec(currentTime, vehicleSpec, verticalRoad);//hopefully destination is North
 		   AutoVehicleSimView vehicle = (AutoVehicleSimView) makeVehicle(spawnPoint, spawnSpec);
 		   ShoutAheadDriverAgent driverAgent = new ShoutAheadDriverAgent(vehicle, basicMap);
+		   driverAgent.setSpawnPoint(spawnPoint);
+		   driverAgent.setDestination(verticalRoad);
 		   vehicle.setDriver(driverAgent);
+		  
            VinRegistry.registerVehicle(vehicle); // Get vehicle a VIN number
            vinToVehicles.put(vehicle.getVIN(), vehicle);
         
