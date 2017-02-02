@@ -1,23 +1,8 @@
-read proposal 
 
 look at BFW code
 
 have SA - Learn and SA - Evaluate Param panels
-
-Make ShoutAheadDriver extends Driver??? extends AutoDriver?
-	each driver has rule sets
-	in SADriver.act() implement the logic of choosing the applicable rule with highest weight
-	**remember there are communicating and non-communicating drivers (agents)
-
-make ShoutAheadSimulator implements Simulator? extends AutoDriverOnlySim?
-	differences between AutoDriverOnlySim and SA sim:
-		don't spawn new cars on each time step - only spawn once
-		when spawning, create SADriver objects to associate with each car
 		
-		Goal: make an AIM sim that spawns once and exits when all cars have reached their dest's
-		
-must save agents and their rule sets somehow
-
 
 **spawn spec in spawn point has destination field
 **spawn spec gen has destination selector field i.e there is a dest sel class
@@ -50,3 +35,4 @@ make predicate an enum?
 
 add AI debug flags
 	
+original AIM paper has increase speed 3 m/s and decrease 15 m/s (?)
