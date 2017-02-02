@@ -5,7 +5,8 @@ import java.util.ArrayList;
 import aim4.ShoutAheadAI.predicates.Predicate;
 
 /**
- * @author chrishawk_MacBookAir  
+ * A rule that does not include predicates about the intended actions of other agents.
+ * @author christopher.hawk
  *
  */
 public class ShoutAheadRule {
@@ -13,8 +14,13 @@ public class ShoutAheadRule {
 	private int weight;
 	private ArrayList<Predicate> condition = new ArrayList<Predicate>();
 	
-	ShoutAheadRule(int numPredicates){
-		this.numPredicates = numPredicates;
+	/**
+	 * Create a new rule by randomly choosing non-communicating predicates the form the condition 
+	 * and randomly choosing an action to be taken when all of these predicates are true in the current situation. 
+	 */
+	ShoutAheadRule(){
+		//TODO: get numPred's from config file set in param panel
+		
 		for(int i = 0; i < numPredicates; i++){
 			condition.add(chooseRandPredicate());
 		}
