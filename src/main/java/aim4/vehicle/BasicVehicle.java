@@ -1576,6 +1576,40 @@ public abstract class BasicVehicle implements VehicleSimView {
    * {@inheritDoc}
    */
   @Override
+  public void turnLeft(double angleDelta) {
+    if (Debug.isPrintVehicleHighLevelControlOfVIN(vin)) {
+      System.err.printf("vin %d turning wheel %f radians left", vin, angleDelta);
+    }
+    //subtract the angle delta from the current steering angle
+    double angle = getSteeringAngle() - angleDelta;
+    // Need to recenter this value to [-pi, pi]
+    double newSteeringAngle =
+        Util.recenter(angle - movement.getHeading(), -1.0 * Math.PI, Math.PI);
+
+
+    Movement m2 = movement;
+    if (m2 instanceof AccelScheduleMovement) {
+      m2 = ((AccelScheduleMovement) movement).getBaseMovement();
+    }
+
+    if (m2 instanceof PhysicalMovement) {
+      PhysicalMovement m3 = (PhysicalMovement) m2;
+      NonAccelMovement m4 = m3.getNonAccelMovement();
+      if (m4 instanceof SteeringMovement) {
+        SteeringMovement m5 = (SteeringMovement)m4;
+        m5.setSteeringAngleWithBound(newSteeringAngle);
+      } else {
+        throw new UnsupportedOperationException();
+      }
+    } else {
+      throw new UnsupportedOperationException();
+    }
+  }
+
+/**
+   * {@inheritDoc}
+   */
+  @Override
   public void coast() {
     if (Debug.isPrintVehicleHighLevelControlOfVIN(vin)) {
       System.err.printf("vin %d coast()\n", vin);
@@ -1616,7 +1650,6 @@ public abstract class BasicVehicle implements VehicleSimView {
     switchToMoveToTargetVelocityMovement().setTargetVelocityWithMaxAccel(
         targetVelocity);
   }
-
   /**
    * {@inheritDoc}
    */
@@ -1677,7 +1710,7 @@ public abstract class BasicVehicle implements VehicleSimView {
   }
 
   /**
-   * Swith to move-to-target-velocity movement.
+   * Switch to move-to-target-velocity movement.
    *
    * @return move-to-target-velocity movement
    */

@@ -203,7 +203,9 @@ public interface VehicleDriverView {
    */
   void turnTowardPoint(Point2D p);
 
-  /**
+  void turnLeft(double angleDelta);
+
+/**
    * Set the acceleration to the specified value, using maximum and minimum
    * velocities as targets, automatically. Obeys limits on acceleration and
    * velocity as well as any disabilities.

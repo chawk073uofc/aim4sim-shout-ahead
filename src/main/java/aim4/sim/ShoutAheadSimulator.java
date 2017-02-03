@@ -17,7 +17,7 @@ import aim4.vehicle.VehicleSimView;
 import aim4.vehicle.VehicleSpec;
 import aim4.vehicle.VehicleSpecDatabase;
 import aim4.vehicle.VinRegistry;
-
+import aim4.vehicle.BasicVehicle;
 /**
  * This class represents a driving simulation where every car is autonomous and operating according to the
  * rule-based system outlined by the Shout-Ahead architecture. Reinforcement learning takes place during a 
@@ -50,8 +50,12 @@ public class ShoutAheadSimulator extends AutoDriverOnlySimulator implements Simu
 		  
            VinRegistry.registerVehicle(vehicle); // Get vehicle a VIN number
            vinToVehicles.put(vehicle.getVIN(), vehicle);
-        
+        //should be using driver view?
            vehicle.setTargetVelocityWithMaxAccel(.5);
+           vehicle.turnLeft(0.175);
+         //  BasicVehicle downcast = (BasicVehicle)vehicle;
+          
+           
 				//set dest 
 				//set rules
 			//Spawn East bound car
