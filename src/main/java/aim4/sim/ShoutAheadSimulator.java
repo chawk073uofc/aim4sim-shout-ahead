@@ -1,6 +1,7 @@
 
 package aim4.sim;
 
+import java.awt.geom.Point2D;
 import java.util.List;
 
 import aim4.config.Debug;
@@ -52,9 +53,12 @@ public class ShoutAheadSimulator extends AutoDriverOnlySimulator implements Simu
            vinToVehicles.put(vehicle.getVIN(), vehicle);
         //should be using driver view?
            vehicle.setTargetVelocityWithMaxAccel(.5);
-           vehicle.turnLeft(0.175);
+           vehicle.printState();
+           vehicle.turnTowardPoint(new Point2D.Double(160.0, 0.0));
+         //  vehicle.turnLeft(0.175);
+           vehicle.printState();
          //  BasicVehicle downcast = (BasicVehicle)vehicle;
-          
+           
            
 				//set dest 
 				//set rules
