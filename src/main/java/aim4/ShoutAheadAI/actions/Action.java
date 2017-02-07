@@ -1,5 +1,17 @@
 package aim4.ShoutAheadAI.actions;
 
-public interface Action {
+import aim4.vehicle.AutoVehicleDriverView;
 
+public interface Action {
+	/**
+	 * Take this action.
+	 */
+	void execute(AutoVehicleDriverView vehicle);
+
+//	@Override
+//	/**
+//	 * {@inheritDoc}
+//	 */
+//	public String toString();
+		
 }

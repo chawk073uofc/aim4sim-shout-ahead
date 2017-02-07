@@ -1,9 +1,17 @@
 package aim4.ShoutAheadAI;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import aim4.ShoutAheadAI.actions.Action;
+import aim4.ShoutAheadAI.actions.Cruise;
+import aim4.ShoutAheadAI.actions.SlowDown;
+import aim4.ShoutAheadAI.actions.SpeedUp;
+import aim4.ShoutAheadAI.actions.TurnLeft;
+import aim4.ShoutAheadAI.actions.TurnRight;
+import aim4.ShoutAheadAI.predicates.ObstacleLT10MetersNorth;
 import aim4.ShoutAheadAI.predicates.Predicate;
+import aim4.vehicle.AutoVehicleDriverView;
 
 /**
  * A rule that does not include predicates about the intended actions of other agents.
@@ -11,7 +19,14 @@ import aim4.ShoutAheadAI.predicates.Predicate;
  *
  */
 public class ShoutAheadRule {
-	private int numPredicates; //The max number of predicates making up a condition.
+	/**The number of distinct actions a driver agent can take*/
+	private final int NUM_ACTIONS = 5;
+	/**he total number of distinct predicates*/
+	private final int NUM_PREDICATES = 10; 
+	private Random rand = new Random();
+	
+	/**The number of predicates making up a condition*/
+	private int predicatsPerCond; 
 	private int weight;
 	private ArrayList<Predicate> condition = new ArrayList<Predicate>();
 	private Action action;
@@ -23,9 +38,10 @@ public class ShoutAheadRule {
 	ShoutAheadRule(){
 		//TODO: get numPred's from config file set in param panel
 		
-		for(int i = 0; i < numPredicates; i++){
+		for(int i = 0; i < predicatsPerCond; i++){
 			condition.add(chooseRandPredicate());
 		}
+		action = chooseRandAction();
 	}
 	
 	/**
@@ -41,19 +57,70 @@ public class ShoutAheadRule {
 	}
 
 
-
+	
 	public int getWeight() {
 		return weight;
 	}
-
 	/**
-	 * TODO:
-	 *       make predicate an enum?
-	 * @return
+	 * Follow the rule i.e. take the action. 
+	 */
+	public void execute(AutoVehicleDriverView vehicle){
+		action.execute(vehicle);
+	}
+	/**Choose a random predicate. 
+	 * 
+	 * @return a random action 
 	 */
 	private Predicate chooseRandPredicate() {
-		// TODO Auto-generated method stub
+		int i = rand.nextInt(NUM_PREDICATES);
+		switch(i){
+		case 0:
+			return new ObstacleLT10MetersNorth();
+		// ........
+		
+		}
 		return null;
+	}
+	
+	/**
+	 * Choose a random action.
+	 * 
+	 * @return a random action 
+	 */
+	private Action chooseRandAction() {
+		int i = rand.nextInt(NUM_ACTIONS);
+		switch(i){
+		case 0:
+			return new Cruise();
+		case 1:
+			return new SlowDown();
+		case 2:
+			return new SpeedUp();
+		case 3:
+			return new TurnLeft();
+		case 4:
+			return new TurnRight();		
+		}
+		
+		return null;
+	}
+	
+	@Override
+	/**
+	 * {@inheritDoc}
+	 */
+	public String toString(){
+		String str = "";
+		str += "RULE:\n";
+		str += "\tCondition = {";
+		for(Predicate pred: condition){
+			str += pred.getClass().getName();
+			str += ", ";
+		}
+		str += "}\n";
+		str += "\tAction = " + action.getClass().getName();
+		str += "\n\tWeight = " + weight + "\n";
+		return str;
 	}
 }
 

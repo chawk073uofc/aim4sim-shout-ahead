@@ -13,4 +13,10 @@ public interface Predicate {
 	 * @return	true if the predicate is true at a particular point in the simulation.
 	 */
 	public boolean isTrue();
+	
+//	@Override
+//	/**
+//	 * {@inheritDoc}
+//	 */
+//	public String toString();
 }
