@@ -20,7 +20,7 @@ import aim4.vehicle.AutoVehicleDriverView;
  */
 public class ShoutAheadRule {
 	/**The number of distinct actions a driver agent can take*/
-	private final int NUM_ACTIONS = 5;
+	private final int NUM_ACTIONS = 6;
 	/**he total number of distinct predicates*/
 	private final int NUM_PREDICATES = 10; 
 	private Random rand = new Random();
