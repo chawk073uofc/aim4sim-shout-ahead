@@ -2,6 +2,7 @@ package aim4.ShoutAheadAI;
 
 import java.util.ArrayList;
 
+import aim4.ShoutAheadAI.actions.Action;
 import aim4.ShoutAheadAI.predicates.Predicate;
 
 /**
@@ -13,6 +14,7 @@ public class ShoutAheadRule {
 	private int numPredicates; //The max number of predicates making up a condition.
 	private int weight;
 	private ArrayList<Predicate> condition = new ArrayList<Predicate>();
+	private Action action;
 	
 	/**
 	 * Create a new rule by randomly choosing non-communicating predicates the form the condition 

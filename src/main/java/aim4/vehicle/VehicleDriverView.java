@@ -203,7 +203,19 @@ public interface VehicleDriverView {
    */
   void turnTowardPoint(Point2D p);
 
+  /**
+   * Turn the vehicle to the left.
+   * 
+   * @param angleDelta
+   */
   void turnLeft(double angleDelta);
+  
+  void turnRight(double angleDelta);
+
+/**
+   * Set the steering angle to 0 (straight ahead).
+   */
+  void goStraight();
 
 /**
    * Set the acceleration to the specified value, using maximum and minimum

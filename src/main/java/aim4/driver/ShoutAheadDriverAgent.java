@@ -15,10 +15,12 @@ import aim4.vehicle.VehicleDriverView;
  *
  */
 public class ShoutAheadDriverAgent extends AutoDriver implements DriverSimView {
+	private AutoVehicleDriverView vehicle;
 	private ShoutAheadRuleSet nonCommRuleSet;//does not include predicates about other agents' intended actions
 
 	 public ShoutAheadDriverAgent(AutoVehicleDriverView vehicle, BasicMap basicMap) {
 		super(vehicle, basicMap);
+		this.vehicle = vehicle;
 		nonCommRuleSet = new ShoutAheadRuleSet();
 	}
 	 
@@ -27,10 +29,13 @@ public class ShoutAheadDriverAgent extends AutoDriver implements DriverSimView {
 	   */
 	  @Override
 	  public void act() {
-		  super.act();//debugging stuff 
+		  //super.act();//debugging stuff 
 		  ShoutAheadRule ruleToFollow = nonCommRuleSet.getRuleToFollow();
-		  //take the appropriate driving action
-		 
+		  
+		  //debug
+		  vehicle.setTargetVelocityWithMaxAccel(.5);
+	      vehicle.goStraight();
+
 		  
 		  }
 		  

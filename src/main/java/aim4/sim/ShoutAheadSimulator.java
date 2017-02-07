@@ -2,6 +2,7 @@
 package aim4.sim;
 
 import java.awt.geom.Point2D;
+import java.util.ArrayList;
 import java.util.List;
 
 import aim4.config.Debug;
@@ -51,26 +52,56 @@ public class ShoutAheadSimulator extends AutoDriverOnlySimulator implements Simu
 		  
            VinRegistry.registerVehicle(vehicle); // Get vehicle a VIN number
            vinToVehicles.put(vehicle.getVIN(), vehicle);
-        //should be using driver view?
-           vehicle.setTargetVelocityWithMaxAccel(.5);
-           vehicle.printState();
-           vehicle.turnTowardPoint(new Point2D.Double(160.0, 0.0));
-         //  vehicle.turnLeft(0.175);
-           vehicle.printState();
-         //  BasicVehicle downcast = (BasicVehicle)vehicle;
            
-           
-				//set dest 
-				//set rules
+      
 			//Spawn East bound car
-				//set dest
-				//set rules
+           Road horizontalRoad = map.getHorizontalRoads().get(0);
+		   Lane eastBoundLane = horizontalRoad.getLanes().get(0);
+		   
+		   SpawnPoint spawnPointE = map.makeSpawnPoint(currentTime, eastBoundLane);
+		   SpawnSpec spawnSpecE = new SpawnSpec(currentTime, vehicleSpec, horizontalRoad);//hopefully destination is North
+		   AutoVehicleSimView vehicleE = (AutoVehicleSimView) makeVehicle(spawnPointE, spawnSpecE);
+		   ShoutAheadDriverAgent driverAgentE = new ShoutAheadDriverAgent(vehicleE, basicMap);
+		   driverAgentE.setSpawnPoint(spawnPointE);
+		   driverAgentE.setDestination(horizontalRoad);
+		   vehicleE.setDriver(driverAgentE);
+		  
+           VinRegistry.registerVehicle(vehicleE); // Get vehicle a VIN number
+           vinToVehicles.put(vehicleE.getVIN(), vehicleE);
+
+
+		   
 			//Spawn South bound car
-				//set dest !=South
-				//set rules
+       //   List<Lane> lanes = verticalRoad.getLanes();
+		   Road southBoundRoad = map.getVerticalRoads().get(1);
+
+		   Lane southBoundLane = southBoundRoad.getLanes().get(0);
+		   
+		   SpawnPoint spawnPointS = map.makeSpawnPoint(currentTime, southBoundLane);
+		   SpawnSpec spawnSpecS = new SpawnSpec(currentTime, vehicleSpec, southBoundRoad);
+		   AutoVehicleSimView vehicleS = (AutoVehicleSimView) makeVehicle(spawnPointS, spawnSpecS);
+		   ShoutAheadDriverAgent driverAgentS = new ShoutAheadDriverAgent(vehicleS, basicMap);
+		   driverAgentS.setSpawnPoint(spawnPointS);
+		   driverAgentS.setDestination(verticalRoad);
+		   vehicleS.setDriver(driverAgentS);
+		  
+           VinRegistry.registerVehicle(vehicleS); // Get vehicle a VIN number
+           vinToVehicles.put(vehicleS.getVIN(), vehicleS);
+           
 			//Spawn West bound car
-				//set dest 
-				//set rules
+			Road westBoundRoad = map.getHorizontalRoads().get(1);
+			Lane westBoundLane = westBoundRoad.getLanes().get(0);
+		   
+		   SpawnPoint spawnPointW = map.makeSpawnPoint(currentTime, westBoundLane);
+		   SpawnSpec spawnSpecW = new SpawnSpec(currentTime, vehicleSpec, westBoundRoad);//dest not right
+		   AutoVehicleSimView vehicleW = (AutoVehicleSimView) makeVehicle(spawnPointW, spawnSpecW);
+		   ShoutAheadDriverAgent driverAgentW = new ShoutAheadDriverAgent(vehicleW, basicMap);
+		   driverAgentW.setSpawnPoint(spawnPointW);
+		   driverAgentW.setDestination(westBoundRoad);//dest not right
+		   vehicleW.setDriver(driverAgentW);
+		  
+           VinRegistry.registerVehicle(vehicleW); // Get vehicle a VIN number
+           vinToVehicles.put(vehicleW.getVIN(), vehicleW);
 		}
 
 	  // the main loop
@@ -92,7 +123,7 @@ public class ShoutAheadSimulator extends AutoDriverOnlySimulator implements Simu
 	    if (Debug.PRINT_SIMULATOR_STAGE) {
 	      System.err.printf("------SIM:letDriversAct---------------\n");
 	    }
-	   //letDriversAct();//TODO: write SAVehicalSimView.act or SADriver.act???
+	   letDriversAct();
 //	    if (Debug.PRINT_SIMULATOR_STAGE) {
 //	      System.err.printf("------SIM:letIntersectionManagersAct--------------\n");
 //	    }
@@ -124,13 +155,6 @@ public class ShoutAheadSimulator extends AutoDriverOnlySimulator implements Simu
 		 
 	  }
 	  
-	//WHILE there is at least one car that has not reached its destination 
-	
-		//For each car
-			
-			//Get the set of rules that are for which the condition is true
-			//Get the set of applicable rules that has the maximum weight
-			//Randomly choose from among these rules
-			//Perform the corresponding action (breaking and steering actions)
+
 	
 }

@@ -1,4 +1,4 @@
-package aim4.ShoutAheadAI;
+package aim4.ShoutAheadAI.actions;
 
 public class SlowDown extends ShoutAheadAction {
 

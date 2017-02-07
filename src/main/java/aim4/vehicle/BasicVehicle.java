@@ -1578,14 +1578,38 @@ public abstract class BasicVehicle implements VehicleSimView {
   @Override
   public void turnLeft(double angleDelta) {
     if (Debug.isPrintVehicleHighLevelControlOfVIN(vin)) {
-      System.err.printf("vin %d turning wheel %f radians left", vin, angleDelta);
+      System.err.printf("vin %d turning left. Setting stering angle to - %f radians.\n", vin, angleDelta);
     }
-    //subtract the angle delta from the current steering angle
-    double angle = getSteeringAngle() - angleDelta;
-    // Need to recenter this value to [-pi, pi]
-    double newSteeringAngle =
-        Util.recenter(angle - movement.getHeading(), -1.0 * Math.PI, Math.PI);
+    double newSteeringAngle = - angleDelta;
 
+    Movement m2 = movement;
+    if (m2 instanceof AccelScheduleMovement) {
+      m2 = ((AccelScheduleMovement) movement).getBaseMovement();
+    }
+
+    if (m2 instanceof PhysicalMovement) {
+      PhysicalMovement m3 = (PhysicalMovement) m2;
+      NonAccelMovement m4 = m3.getNonAccelMovement();
+      if (m4 instanceof SteeringMovement) {
+        SteeringMovement m5 = (SteeringMovement)m4;
+        m5.setSteeringAngleWithBound(newSteeringAngle);
+      } else {
+        throw new UnsupportedOperationException();
+      }
+    } else {
+      throw new UnsupportedOperationException();
+    }
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void turnRight(double angleDelta) {
+    if (Debug.isPrintVehicleHighLevelControlOfVIN(vin)) {
+      System.err.printf("vin %d turning right. Setting steering angle to %f radians\n", vin, angleDelta);
+    }
+    double newSteeringAngle = angleDelta;
 
     Movement m2 = movement;
     if (m2 instanceof AccelScheduleMovement) {
@@ -1606,6 +1630,35 @@ public abstract class BasicVehicle implements VehicleSimView {
     }
   }
 
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void goStraight() {
+	  if (Debug.isPrintVehicleHighLevelControlOfVIN(vin)) {
+	      System.err.printf("vin %d going straight. Setting steering angle to 0.0\n", vin);
+	    }
+	    double newSteeringAngle = 0.0;
+
+	    Movement m2 = movement;
+	    if (m2 instanceof AccelScheduleMovement) {
+	      m2 = ((AccelScheduleMovement) movement).getBaseMovement();
+	    }
+
+	    if (m2 instanceof PhysicalMovement) {
+	      PhysicalMovement m3 = (PhysicalMovement) m2;
+	      NonAccelMovement m4 = m3.getNonAccelMovement();
+	      if (m4 instanceof SteeringMovement) {
+	        SteeringMovement m5 = (SteeringMovement)m4;
+	        m5.setSteeringAngleWithBound(newSteeringAngle);
+	      } else {
+	        throw new UnsupportedOperationException();
+	      }
+	    } else {
+	      throw new UnsupportedOperationException();
+	    }
+  }
+  
 /**
    * {@inheritDoc}
    */
