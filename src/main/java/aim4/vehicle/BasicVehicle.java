@@ -1659,6 +1659,24 @@ public abstract class BasicVehicle implements VehicleSimView {
 	    }
   }
   
+  @Override
+  /**
+   * {@inheritDoc}
+   */
+  public void slowDown(double speedDelta){
+	  double targetVelocity = getVelocity() - speedDelta;
+	  setTargetVelocityWithMaxAccel(targetVelocity);
+  }
+  
+  @Override
+  /**
+   * {@inheritDoc}
+   */
+  public void speedUp(double speedDelta){
+	  double targetVelocity = getVelocity() + speedDelta;
+	  setTargetVelocityWithMaxAccel(targetVelocity);
+  }
+  
 /**
    * {@inheritDoc}
    */

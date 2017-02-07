@@ -210,12 +210,33 @@ public interface VehicleDriverView {
    */
   void turnLeft(double angleDelta);
   
+  /**
+   * Turn the vehicle to the right.
+   * 
+   * @param angleDelta
+   */
   void turnRight(double angleDelta);
 
 /**
    * Set the steering angle to 0 (straight ahead).
    */
   void goStraight();
+
+  /**
+   * Subtract <code> speedDelta <\code> from the vehicle's target velocity. Obeys limits on acceleration and
+   * minimum velocity. 
+   * 
+   * @param speedDelta the amount (in m/s) to add to the vehicle's target velocity.
+   */
+  void slowDown(double speedDelta);
+
+/**
+ * Add <code> speedDelta <\code> to the vehicle's target velocity. Obeys limits on acceleration and
+ * maximum velocity. 
+ * 
+ * @param speedDelta the amount (in m/s) to add to the vehicle's target velocity.
+ */
+void speedUp(double speedDelta);
 
 /**
    * Set the acceleration to the specified value, using maximum and minimum

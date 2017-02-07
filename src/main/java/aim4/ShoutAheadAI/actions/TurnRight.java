@@ -5,17 +5,22 @@ package aim4.ShoutAheadAI.actions;
 
 import java.awt.geom.Point2D;
 
+import aim4.vehicle.AutoVehicleDriverView;
 import aim4.vehicle.VehicleSpec;
 
 /**
  * @author chrishawk_MacBookAir
  *
  */
-public class TurnRight extends ShoutAheadAction{
+public class TurnRight implements Action{
 
-	public TurnRight(VehicleSpec spec, Point2D position, double heading, double velocity, double steeringAngle) {
-		super(spec, position, heading, velocity, steeringAngle);
-		// TODO Auto-generated constructor stub
+	@Override
+	/**
+	 * {@inheritDoc}
+	 */
+	public void execute(AutoVehicleDriverView vehicle) {
+		vehicle.turnRight(0.175);
 	}
+	
 
 }
