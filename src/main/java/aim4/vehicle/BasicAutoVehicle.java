@@ -329,6 +329,7 @@ public class BasicAutoVehicle extends BasicVehicle
    * @param mode the new laser range finder mode
    * @see        LRFMode
    */
+  @Override
   public void setLRFMode(LRFMode mode) {
     this.lrfMode = mode;
   }
@@ -373,7 +374,7 @@ public class BasicAutoVehicle extends BasicVehicle
    * {@inheritDoc}
    */
   @Override
-  public DoubleGauge getLRFDistance() {
+  public DoubleGauge getlrfdistance() {
     return lrfDistance;
   }
 

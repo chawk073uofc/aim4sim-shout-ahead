@@ -251,6 +251,11 @@ public class Debug {
    * Whether or not to print the random seed.
    */
   public static final boolean IS_PRINT_RANDOM_SEED = true;
+  
+  /**
+   * Show what the LRF is sensing. 
+   */
+  public static final boolean SHOW_PERCEPTIONS = true;
 
   // TODO: remove the following later.
   /**

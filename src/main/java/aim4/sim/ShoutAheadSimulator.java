@@ -33,8 +33,7 @@ public class ShoutAheadSimulator extends AutoDriverOnlySimulator implements Simu
 
 	public ShoutAheadSimulator(BasicMap basicMap) {
 		super(basicMap);
-		//Spawn 4 vehicles at the end of each road. Each should be randomly assigned a destination (North, South, East, West)
-		//not equal to it's origin. 
+
 			
 			//Spawn Northbound car
 		   GridMap map = (GridMap) basicMap;

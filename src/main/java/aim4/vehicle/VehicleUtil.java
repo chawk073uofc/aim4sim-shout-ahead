@@ -596,7 +596,7 @@ public class VehicleUtil {
     case ENABLED:
       // Check to see if the LRF is sensing anything
       if(vehicle.isLRFSensing()) {
-        return vehicle.getLRFDistance().read();
+        return vehicle.getlrfdistance().read();
       } else {
         return Double.MAX_VALUE;
       }

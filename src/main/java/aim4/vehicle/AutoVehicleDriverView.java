@@ -37,6 +37,7 @@ import aim4.map.lane.Lane;
 import aim4.msg.i2v.I2VMessage;
 import aim4.msg.v2i.V2IMessage;
 import aim4.noise.DoubleGauge;
+import aim4.vehicle.AutoVehicleDriverView.LRFMode;
 
 /**
  * The interface of an autonomous vehicle from the viewpoint of a driver.
@@ -108,6 +109,11 @@ public interface AutoVehicleDriverView extends VehicleDriverView {
   LRFMode getLRFMode();
 
   /**
+   * Enable the laser range finder.
+   */
+   public void setLRFMode(LRFMode mode);
+  
+  /**
    * Get whether or not the laser range finder is sensing anything.
    *
    * @return whether or not the laser range finder is sensing anything
@@ -122,7 +128,7 @@ public interface AutoVehicleDriverView extends VehicleDriverView {
    *
    * @return the Vehicle's laser range finder angle gauge
    */
-  DoubleGauge getLRFDistance();
+  DoubleGauge getlrfdistance();
 
 
 
