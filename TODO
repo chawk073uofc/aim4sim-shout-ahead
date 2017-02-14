@@ -29,6 +29,9 @@ for sensing
 
 	aim4.vehicle.BasicAutoVehicle.getLRFDistance()
 	
+	aim4.driver.AutoDriver.intersects(AutoVehicleDriverView, Area)
+	aim4.vehicle.VehicleDriverView.gaugeShape()
+	
 -------------------------
 
 
