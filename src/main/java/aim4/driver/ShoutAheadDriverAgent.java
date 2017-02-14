@@ -35,11 +35,9 @@ public class ShoutAheadDriverAgent extends AutoDriver implements DriverSimView {
 		  ShoutAheadRule ruleToFollow = nonCommRuleSet.getRuleToFollow();
 		  if(Debug.SHOW_PERCEPTIONS){
 			  vehicle.setLRFMode(LRFMode.ENABLED);
-			 //System.out.printf("LRF Mode = %s\n", vehicle.getLRFMode());
-			  //System.out.println("LRF distance = " + vehicle.getlrfdistance().read() + "\n");
-			  if(vehicle.getlrfdistance().read() != 0) 
-				  System.out.println("nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn");
-			  System.out.println("lrf angle = " + ((BasicAutoVehicle)vehicle).getLRFAngle().read());
+			  System.out.printf("LRF Mode = %s\n", vehicle.getLRFMode());
+			  System.out.println("LRF distance = " + vehicle.getlrfdistance().read() + "\n");
+			
 		  }
 		  
 		  //debug

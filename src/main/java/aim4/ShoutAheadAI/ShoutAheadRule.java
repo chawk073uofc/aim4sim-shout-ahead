@@ -22,11 +22,11 @@ public class ShoutAheadRule {
 	/**The number of distinct actions a driver agent can take*/
 	private final int NUM_ACTIONS = 6;
 	/**he total number of distinct predicates*/
-	private final int NUM_PREDICATES = 10; 
+	private final int NUM_PREDICATES = 16; 
 	private Random rand = new Random();
 	
 	/**The number of predicates making up a condition*/
-	private int predicatsPerCond; 
+	private int predicatsPerCond; //TODO: get form param panel
 	private int weight;
 	private ArrayList<Predicate> condition = new ArrayList<Predicate>();
 	private Action action;
@@ -36,7 +36,6 @@ public class ShoutAheadRule {
 	 * and randomly choosing an action to be taken when all of these predicates are true in the current situation. 
 	 */
 	ShoutAheadRule(){
-		//TODO: get numPred's from config file set in param panel
 		
 		for(int i = 0; i < predicatsPerCond; i++){
 			condition.add(chooseRandPredicate());

@@ -9,17 +9,16 @@ import java.util.Random;
  *
  */
 public class ShoutAheadRuleSet {
-	private int numRules; 
+	private int numRules; 	//TODO: get numRules from config file set in param panel
 	private ArrayList<ShoutAheadRule> rules = new ArrayList<ShoutAheadRule>();
 	private Random rand = new Random();//for probabilistic selection of rules
-	private double explorationFactor = 0.2;
+	private double explorationFactor = 0.2;		// TODO get expFac from config file set by param panel
+
 
 	/**
 	 * Create a new random set of rules. 
 	 */
 	public ShoutAheadRuleSet(){
-		//TODO: get numRules from config file set in param panel
-		// TODO get expFac from config file set by param panel
 
 		for(int i = 0; i < numRules; i++){
 			rules.add(new ShoutAheadRule());
@@ -35,7 +34,7 @@ public class ShoutAheadRuleSet {
 
 		 ArrayList<ShoutAheadRule> applicableRules = getApplicableRules(); //get set of rules having true conditions in this situation
 		  if(applicableRules.isEmpty()){
-			  	int dummy = 0;//TODO: do nothing. no app rules exception 
+			  //TODO: do nothing. no app rules exception 
 		  }
 		  else {
 			  ArrayList<ShoutAheadRule> appRulesWithMaxWeight = getAppRulesWithMaxWeight(applicableRules);
