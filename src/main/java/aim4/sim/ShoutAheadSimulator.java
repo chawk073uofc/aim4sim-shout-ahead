@@ -5,6 +5,7 @@ import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
 
+import aim4.ShoutAheadAI.predicates.Predicates;
 import aim4.config.Debug;
 import aim4.driver.ShoutAheadDriverAgent;
 import aim4.map.BasicMap;
@@ -30,11 +31,14 @@ import aim4.vehicle.BasicVehicle;
  * @author christopher.hawk
  */
 public class ShoutAheadSimulator extends AutoDriverOnlySimulator implements Simulator {
-
+	//private Predicates predicates;
+	
 	public ShoutAheadSimulator(BasicMap basicMap) {
 		super(basicMap);
-
-			
+		//predicates = new Predicates(this);
+		//Predicates.HEADING_EAST.registerSim(this);//TODO: ugly
+		Predicates.sim = this;//correct?
+		
 			//Spawn Northbound car
 		   GridMap map = (GridMap) basicMap;
 		   Road verticalRoad = map.getVerticalRoads().get(0);
@@ -44,14 +48,13 @@ public class ShoutAheadSimulator extends AutoDriverOnlySimulator implements Simu
 		   VehicleSpec vehicleSpec = VehicleSpecDatabase.getVehicleSpecByName("COUPE");
 		   SpawnSpec spawnSpec = new SpawnSpec(currentTime, vehicleSpec, verticalRoad);//hopefully destination is North
 		   AutoVehicleSimView vehicle = (AutoVehicleSimView) makeVehicle(spawnPoint, spawnSpec);
-		   ShoutAheadDriverAgent driverAgent = new ShoutAheadDriverAgent(vehicle, basicMap);
+		   ShoutAheadDriverAgent driverAgent = new ShoutAheadDriverAgent(vehicle, basicMap, this);
 		   driverAgent.setSpawnPoint(spawnPoint);
 		   driverAgent.setDestination(verticalRoad);
 		   vehicle.setDriver(driverAgent);
 		  
            VinRegistry.registerVehicle(vehicle); // Get vehicle a VIN number
            vinToVehicles.put(vehicle.getVIN(), vehicle);
-           
       
 			//Spawn East bound car
            Road horizontalRoad = map.getHorizontalRoads().get(0);
@@ -60,7 +63,7 @@ public class ShoutAheadSimulator extends AutoDriverOnlySimulator implements Simu
 		   SpawnPoint spawnPointE = map.makeSpawnPoint(currentTime, eastBoundLane);
 		   SpawnSpec spawnSpecE = new SpawnSpec(currentTime, vehicleSpec, horizontalRoad);//hopefully destination is North
 		   AutoVehicleSimView vehicleE = (AutoVehicleSimView) makeVehicle(spawnPointE, spawnSpecE);
-		   ShoutAheadDriverAgent driverAgentE = new ShoutAheadDriverAgent(vehicleE, basicMap);
+		   ShoutAheadDriverAgent driverAgentE = new ShoutAheadDriverAgent(vehicleE, basicMap, this);
 		   driverAgentE.setSpawnPoint(spawnPointE);
 		   driverAgentE.setDestination(horizontalRoad);
 		   vehicleE.setDriver(driverAgentE);
@@ -79,7 +82,7 @@ public class ShoutAheadSimulator extends AutoDriverOnlySimulator implements Simu
 		   SpawnPoint spawnPointS = map.makeSpawnPoint(currentTime, southBoundLane);
 		   SpawnSpec spawnSpecS = new SpawnSpec(currentTime, vehicleSpec, southBoundRoad);
 		   AutoVehicleSimView vehicleS = (AutoVehicleSimView) makeVehicle(spawnPointS, spawnSpecS);
-		   ShoutAheadDriverAgent driverAgentS = new ShoutAheadDriverAgent(vehicleS, basicMap);
+		   ShoutAheadDriverAgent driverAgentS = new ShoutAheadDriverAgent(vehicleS, basicMap, this);
 		   driverAgentS.setSpawnPoint(spawnPointS);
 		   driverAgentS.setDestination(verticalRoad);
 		   vehicleS.setDriver(driverAgentS);
@@ -94,7 +97,7 @@ public class ShoutAheadSimulator extends AutoDriverOnlySimulator implements Simu
 		   SpawnPoint spawnPointW = map.makeSpawnPoint(currentTime, westBoundLane);
 		   SpawnSpec spawnSpecW = new SpawnSpec(currentTime, vehicleSpec, westBoundRoad);//dest not right
 		   AutoVehicleSimView vehicleW = (AutoVehicleSimView) makeVehicle(spawnPointW, spawnSpecW);
-		   ShoutAheadDriverAgent driverAgentW = new ShoutAheadDriverAgent(vehicleW, basicMap);
+		   ShoutAheadDriverAgent driverAgentW = new ShoutAheadDriverAgent(vehicleW, basicMap, this);
 		   driverAgentW.setSpawnPoint(spawnPointW);
 		   driverAgentW.setDestination(westBoundRoad);//dest not right
 		   vehicleW.setDriver(driverAgentW);
@@ -146,14 +149,13 @@ public class ShoutAheadSimulator extends AutoDriverOnlySimulator implements Simu
 	    return new AutoDriverOnlySimStepResult(completedVINs);
 	  }
 	
-	  /**
-	   * If this simulation includes communication among agents, allow agents to broadcast their intended actions to others. 
-	   */
-	  @Override
-	  protected void communication() {
-		 
+	  public enum myEnum{
+		  ONE,
+		  TWO;
+		  public void someMethod(){
+			  
+		  }
 	  }
-	  
 
 	
 }

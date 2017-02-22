@@ -503,9 +503,11 @@ public class BasicAutoVehicle extends BasicVehicle
     if (Debug.isPrintVehicleOutboxMessageOfVIN(msg.getVin())) {
       System.err.printf("vin %d sends message: %s\n", vin, msg);
     }
+    
     v2iOutbox.add(msg);
     bitsTransmitted += msg.getSize();
     lastV2IMessage = msg;
+
   }
 
   /**

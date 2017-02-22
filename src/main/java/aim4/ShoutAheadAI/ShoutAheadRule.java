@@ -32,7 +32,7 @@ public class ShoutAheadRule {
 	private Action action;
 	
 	/**
-	 * Create a new rule by randomly choosing non-communicating predicates the form the condition 
+	 * Create a new rule by randomly choosing predicates to form the condition 
 	 * and randomly choosing an action to be taken when all of these predicates are true in the current situation. 
 	 */
 	ShoutAheadRule(){

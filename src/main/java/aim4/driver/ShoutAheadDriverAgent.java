@@ -6,11 +6,14 @@ import java.util.Random;
 
 import aim4.ShoutAheadAI.ShoutAheadRule;
 import aim4.ShoutAheadAI.ShoutAheadRuleSet;
+import aim4.ShoutAheadAI.predicates.Predicates;
 import aim4.config.Debug;
 import aim4.map.BasicMap;
+import aim4.sim.ShoutAheadSimulator;
 import aim4.vehicle.AutoVehicleDriverView;
 import aim4.vehicle.BasicAutoVehicle;
 import aim4.vehicle.AutoVehicleDriverView.LRFMode;
+import aim4.vehicle.AutoVehicleSimView;
 import aim4.vehicle.VehicleDriverView;
 
 /**
@@ -19,12 +22,16 @@ import aim4.vehicle.VehicleDriverView;
  */
 public class ShoutAheadDriverAgent extends AutoDriver implements DriverSimView {
 	private AutoVehicleDriverView vehicle;
-	private ShoutAheadRuleSet nonCommRuleSet;//does not include predicates about other agents' intended actions
-
-	 public ShoutAheadDriverAgent(AutoVehicleDriverView vehicle, BasicMap basicMap) {
+	private ShoutAheadRuleSet ruleSet;//includes predicates about other agents' intended actions
+	private ShoutAheadSimulator sim;
+	
+	 public ShoutAheadDriverAgent(AutoVehicleDriverView vehicle, BasicMap basicMap, ShoutAheadSimulator sim) {
 		super(vehicle, basicMap);
 		this.vehicle = vehicle;
-		nonCommRuleSet = new ShoutAheadRuleSet();
+		this.sim = sim;
+		ruleSet = new ShoutAheadRuleSet();
+		
+		
 	}
 	 
 	/**
@@ -32,12 +39,13 @@ public class ShoutAheadDriverAgent extends AutoDriver implements DriverSimView {
 	   */
 	  @Override
 	  public void act() {
-		  ShoutAheadRule ruleToFollow = nonCommRuleSet.getRuleToFollow();
+		  ShoutAheadRule ruleToFollow = ruleSet.getRuleToFollow();
 		  if(Debug.SHOW_PERCEPTIONS){
-			  vehicle.setLRFMode(LRFMode.ENABLED);
-			  System.out.printf("LRF Mode = %s\n", vehicle.getLRFMode());
-			  System.out.println("LRF distance = " + vehicle.getlrfdistance().read() + "\n");
-			
+//			 System.out.println("vin " + vehicle.getVIN() + ": headingNorth = " + Predicates.headingNorth((AutoVehicleSimView) vehicle));
+//			 System.out.println("vin " + vehicle.getVIN() + ": headingEast = " + Predicates.headingEast((AutoVehicleSimView) vehicle));
+//			 System.out.println("vin " + vehicle.getVIN() + ": headingSouth = " + Predicates.headingSouth((AutoVehicleSimView) vehicle));
+//			 System.out.println("vin " + vehicle.getVIN() + ": headingWest = " + Predicates.headingWest((AutoVehicleSimView) vehicle));
+			 System.out.println("vin " + vehicle.getVIN() + ": headingNorth = " + Predicates.HEADING_NORTH.isTrue((AutoVehicleSimView) vehicle));
 		  }
 		  
 		  //debug
