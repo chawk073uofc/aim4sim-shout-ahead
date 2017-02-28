@@ -139,4 +139,13 @@ public interface BasicMap {
    * @param outFileName  the name of the file to which the data are outputted.
    */
   void printDataCollectionLinesData(String outFileName);
+  
+  /**
+   * Get the list of green fields at the corners of the screen represented as rectangles.
+   * Vehicles should not enter a field. 
+   * 
+   * @return the list of lines representing the boundaries between roads and grass.
+   */
+  List<Rectangle2D> getFields();
+  
 }

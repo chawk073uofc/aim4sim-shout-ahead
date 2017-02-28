@@ -158,7 +158,34 @@ public interface VehicleSimView extends VehicleDriverView {
    * @return the projected point
    */
   Point2D getPointAtMiddleFront(double delta);
-
+  
+  /**
+   * Get the point East of the middle point of the vehicle that is
+   * at the distance of delta away from the vehicle.
+   *
+   * @param delta   the distance of the vehicle and the point
+   *
+   * @return the projected point
+   */
+  Point2D getPointAtEastOfVehicle(double delta);
+  /**
+   * Get the point South of the middle point of the vehicle that is
+   * at the distance of delta away from the vehicle.
+   *
+   * @param delta   the distance of the vehicle and the point
+   *
+   * @return the projected point
+   */
+  Point2D getPointAtSouthOfVehicle(double delta);
+  /**
+   * Get the point West of the middle point of the vehicle that is
+   * at the distance of delta away from the vehicle.
+   *
+   * @param delta   the distance of the vehicle and the point
+   *
+   * @return the projected point
+   */
+  Point2D getPointAtWestOfVehicle(double delta);
   /**
    * Get the location of the center of the Vehicle at this point in time.
    *

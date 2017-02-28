@@ -31,7 +31,6 @@ import aim4.vehicle.BasicVehicle;
  * @author christopher.hawk
  */
 public class ShoutAheadSimulator extends AutoDriverOnlySimulator implements Simulator {
-	//private Predicates predicates;
 	
 	public ShoutAheadSimulator(BasicMap basicMap) {
 		super(basicMap);

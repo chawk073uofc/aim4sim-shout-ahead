@@ -634,6 +634,15 @@ public class GridMap implements BasicMap {
 
     outfile.close();
   }
+  	/**
+  	 * {@inheritDoc}
+  	 */
+	@Override
+	public List<Rectangle2D> getFields() {
+		List<Rectangle2D> fields = new ArrayList<Rectangle2D>();
+		fields.add(new Rectangle2D())
+		return null;
+	}
 
   
 }

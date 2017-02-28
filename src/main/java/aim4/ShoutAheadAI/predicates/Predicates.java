@@ -3,30 +3,29 @@
  */
 package aim4.ShoutAheadAI.predicates;
 
+import java.awt.geom.Line2D;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Random;
+import java.util.Set;
 
+import aim4.ShoutAheadAI.predicates.PredUtils.Direction;
 import aim4.sim.ShoutAheadSimulator;
 import aim4.util.GeomMath;
 import aim4.util.GeomUtil;
 import aim4.vehicle.AutoVehicleSimView;
+import aim4.vehicle.VehicleSimView;
 
 /**
+ * Defines predicates which form the conditions for ShoutAheadRules.
+ * 
  * @author chrishawk_MacBookAir
  *
  */
 public enum Predicates {
-	/**The number of predicates defined in this class.*/
-//	private int numPredicates;
-//	private Method[] predicates;
-	
-//	public Predicates(ShoutAheadSimulator sim){
-//		this.sim = sim;
-//		predicates = Predicates.class.getDeclaredMethods();
-//		numPredicates = predicates.length;
-//		
-//	}
 	//HEADING PREDICATES
 		HEADING_NORTH{
 			@Override
@@ -61,7 +60,6 @@ public enum Predicates {
 			}
 		},
 		OBSTACLE_LT_10_METERS_EAST{	
-			
 			@Override
 			public boolean isTrue(AutoVehicleSimView vehicle){
 				return true;
@@ -74,7 +72,6 @@ public enum Predicates {
 			}
 		},
 		OBSTACLE_LT_10_METERS_WEST{	
-			
 			@Override
 			public boolean isTrue(AutoVehicleSimView vehicle){
 				return true;
@@ -102,6 +99,7 @@ public enum Predicates {
 		OBSTACLE_LT_20_METERS_WEST{	
 			@Override
 			public boolean isTrue(AutoVehicleSimView vehicle){
+				
 				return true;
 			}
 		},
@@ -158,5 +156,49 @@ public enum Predicates {
 			int randPredIndex = rand.nextInt(numPredicates);
 			return values()[randPredIndex];
 		}
-
+		private boolean obstacleIsNearby(Direction direction, int distance, AutoVehicleSimView vehicle){
+			//draw line, see if it intersects with a car or road boundary
+			Point2D centerPoint = vehicle.getCenterPoint();
+			//Draw line projected from the center of the vehicle to a point distance meters in from of the vehicle
+			Line2D.Double oldLine = new Line2D.Double(centerPoint, vehicle.getPointAtMiddleFront((double) distance));
+			Point2D projectedPoint = null;
+			switch(direction){
+			case NORTH:
+				projectedPoint = vehicle.getPointAtMiddleFront((double) distance);
+				break;
+			case EAST:
+				//rotate 90 degres
+				projectedPoint = vehicle.getPointAtEastOfVehicle((double) distance);
+				break;
+			case SOUTH:
+				projectedPoint = vehicle.getPointAtSouthOfVehicle((double) distance);
+				break;
+			case WEST:
+				projectedPoint = vehicle.getPointAtWestOfVehicle((double) distance);
+				break;
+			}
+			
+			Line2D.Double line = new Line2D.Double(centerPoint, projectedPoint);
+			Set<VehicleSimView> otherVehicles = sim.getActiveVehicles();
+			otherVehicles.remove(vehicle);
+			for(VehicleSimView v : otherVehicles){
+				if(line.intersects((Rectangle2D) v.gaugeShape()))
+					return true;
+			}
+			for(Line2D.Double boundary : sim.getMap().getFields()){
+				
+			}
+			return false;
+		}
+		/**
+		 * The cardinal directions. 
+		 * 
+		 * @author christopher.hawk
+		 */
+		public enum Direction{
+			NORTH,
+			SOUTH,
+			EAST,
+			WEST
+		}
 }

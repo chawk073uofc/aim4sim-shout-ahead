@@ -27,14 +27,11 @@ driver actions
 	
 for sensing
 
-	aim4.vehicle.BasicAutoVehicle.getLRFDistance()
 	
 	aim4.driver.AutoDriver.intersects(AutoVehicleDriverView, Area)
 	aim4.vehicle.VehicleDriverView.gaugeShape()
 	
 -------------------------
+aim4.util.GeomMath.findLineLineIntersection(Line2D, Line2D)
 
-
-add AI debug flags
 	
-original AIM paper has increase speed 3 m/s and decrease 15 m/s (?)

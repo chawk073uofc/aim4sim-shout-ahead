@@ -31,7 +31,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package aim4.vehicle;
 
 import java.awt.Shape;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Line2D;
+import java.awt.geom.Line2D.Double;
 import java.awt.geom.Point2D;
 import java.util.Iterator;
 import java.util.List;
@@ -1419,6 +1421,18 @@ public abstract class BasicVehicle implements VehicleSimView {
                            movement.getPosition().getY()
                                + delta * Math.sin(movement.getHeading()));
     return p;
+  }
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Point2D getPointAtEastOfVehicle(double delta) {
+	  Line2D.Double oldLine = new Line2D.Double(getCenterPoint(), getPointAtMiddleFront(delta));
+	  AffineTransform at = 
+		        AffineTransform.getRotateInstance(
+		            Math.toRadians(90), oldLine.getX1(), oldLine.getY1());
+	  Line2D.Double newLine = (Line2D.Double) at.createTransformedShape(oldLine);
+	  return newLine.getP2();
   }
 
   /**
