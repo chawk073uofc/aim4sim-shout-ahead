@@ -6,7 +6,7 @@ import java.util.Random;
 
 import aim4.ShoutAheadAI.ShoutAheadRule;
 import aim4.ShoutAheadAI.ShoutAheadRuleSet;
-import aim4.ShoutAheadAI.predicates.Predicates;
+import aim4.ShoutAheadAI.predicates.Predicate;
 import aim4.config.Debug;
 import aim4.map.BasicMap;
 import aim4.sim.ShoutAheadSimulator;
@@ -41,11 +41,7 @@ public class ShoutAheadDriverAgent extends AutoDriver implements DriverSimView {
 	  public void act() {
 		  ShoutAheadRule ruleToFollow = ruleSet.getRuleToFollow();
 		  if(Debug.SHOW_PERCEPTIONS){
-//			 System.out.println("vin " + vehicle.getVIN() + ": headingNorth = " + Predicates.headingNorth((AutoVehicleSimView) vehicle));
-//			 System.out.println("vin " + vehicle.getVIN() + ": headingEast = " + Predicates.headingEast((AutoVehicleSimView) vehicle));
-//			 System.out.println("vin " + vehicle.getVIN() + ": headingSouth = " + Predicates.headingSouth((AutoVehicleSimView) vehicle));
-//			 System.out.println("vin " + vehicle.getVIN() + ": headingWest = " + Predicates.headingWest((AutoVehicleSimView) vehicle));
-			 System.out.println("vin " + vehicle.getVIN() + ": headingNorth = " + Predicates.HEADING_NORTH.isTrue((AutoVehicleSimView) vehicle));
+			  System.out.println(Predicate.showAllPredicates((AutoVehicleSimView) vehicle));
 		  }
 		  
 		  //debug

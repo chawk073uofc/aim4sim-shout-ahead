@@ -34,4 +34,5 @@ for sensing
 -------------------------
 aim4.util.GeomMath.findLineLineIntersection(Line2D, Line2D)
 
+change fields to buildings in SAsim
 	

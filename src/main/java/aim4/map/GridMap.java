@@ -30,6 +30,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package aim4.map;
 
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.io.FileNotFoundException;
@@ -42,6 +43,7 @@ import java.util.Map;
 
 import aim4.config.Debug;
 import aim4.im.IntersectionManager;
+import aim4.map.lane.AbstractLane;
 import aim4.map.lane.Lane;
 import aim4.map.lane.LineSegmentLane;
 import aim4.util.ArrayListRegistry;
@@ -638,10 +640,26 @@ public class GridMap implements BasicMap {
   	 * {@inheritDoc}
   	 */
 	@Override
-	public List<Rectangle2D> getFields() {
-		List<Rectangle2D> fields = new ArrayList<Rectangle2D>();
-		fields.add(new Rectangle2D())
-		return null;
+	public List<Rectangle2D.Double> getFields() {
+		List<Rectangle2D.Double> fields = new ArrayList<Rectangle2D.Double>();
+		//get field width
+		Double laneWidth = getRoads().get(0).getLanes().get(0).getWidth();
+		Double fieldWidth = (getDimensions().getWidth() / 2) - (laneWidth * 3);
+		//get field height
+		Double fieldHeight = (getDimensions().getHeight() / 2) - (laneWidth * 3);
+		//upper right field
+		Rectangle2D.Double northWestField = new Rectangle2D.Double(0, 0, fieldWidth, fieldHeight);
+		fields.add(northWestField);
+		//upper left field
+		Rectangle2D.Double northEastField = new Rectangle2D.Double(fieldWidth + laneWidth*6, 0, fieldWidth, fieldHeight);
+		fields.add(northEastField);
+		//lower left field
+		Rectangle2D.Double southWestField = new Rectangle2D.Double(0, fieldHeight+laneWidth*6, fieldWidth, fieldHeight);
+		fields.add(southWestField);
+		//lower right field
+		Rectangle2D.Double southEastField = new Rectangle2D.Double(fieldWidth + laneWidth*6, fieldHeight+laneWidth*6, fieldWidth, fieldHeight);
+		fields.add(southEastField);
+		return fields;
 	}
 
   

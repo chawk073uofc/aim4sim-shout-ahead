@@ -256,6 +256,10 @@ public class Debug {
    * Show what the LRF is sensing. 
    */
   public static final boolean SHOW_PERCEPTIONS = true;
+  /**
+   * Show rectangles for debugging. 
+   */
+  public static final boolean DRAW_DEBUG_RECTANGLES = true;
 
   // TODO: remove the following later.
   /**

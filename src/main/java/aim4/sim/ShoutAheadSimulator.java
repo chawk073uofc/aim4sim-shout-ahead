@@ -5,7 +5,7 @@ import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
 
-import aim4.ShoutAheadAI.predicates.Predicates;
+import aim4.ShoutAheadAI.predicates.Predicate;
 import aim4.config.Debug;
 import aim4.driver.ShoutAheadDriverAgent;
 import aim4.map.BasicMap;
@@ -36,7 +36,7 @@ public class ShoutAheadSimulator extends AutoDriverOnlySimulator implements Simu
 		super(basicMap);
 		//predicates = new Predicates(this);
 		//Predicates.HEADING_EAST.registerSim(this);//TODO: ugly
-		Predicates.sim = this;//correct?
+		Predicate.sim = this;//correct?
 		
 			//Spawn Northbound car
 		   GridMap map = (GridMap) basicMap;

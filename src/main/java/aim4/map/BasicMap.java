@@ -31,6 +31,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package aim4.map;
 
 import java.awt.geom.Rectangle2D;
+import java.awt.geom.Rectangle2D.Double;
 import java.util.List;
 
 import aim4.im.IntersectionManager;
@@ -142,10 +143,11 @@ public interface BasicMap {
   
   /**
    * Get the list of green fields at the corners of the screen represented as rectangles.
-   * Vehicles should not enter a field. 
+   * Vehicles should not enter a field. This method is specific to the default map that has one intersection and
+   * three lanes per road. 
    * 
    * @return the list of lines representing the boundaries between roads and grass.
    */
-  List<Rectangle2D> getFields();
+  List<Rectangle2D.Double> getFields();
   
 }

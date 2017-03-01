@@ -544,11 +544,22 @@ public class Canvas extends JPanel implements ComponentListener,
     }
     // Then draw the data collection lines
     drawDataCollectionLines(bgBuffer, map.getDataCollectionLines());
+    
+    if(Debug.DRAW_DEBUG_RECTANGLES){
+    	for(Rectangle2D rec: map.getFields())
+    		drawRectangle(bgBuffer, rec);
+    }
+    	
 
     return bgImage;
   }
 
-  /**
+  private void drawRectangle(Graphics2D buffer, Rectangle2D rec) {
+	buffer.setPaint(Color.PINK); // no need to set the stroke
+	buffer.fill(rec);
+  }
+
+/**
    * Create a scaled image.
    *
    * @param image  the image object
