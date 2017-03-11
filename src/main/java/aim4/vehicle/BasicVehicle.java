@@ -1426,37 +1426,37 @@ public abstract class BasicVehicle implements VehicleSimView {
    * {@inheritDoc}
    */
   @Override
-  public Point2D getPointAtEastOfVehicle(double delta) {
-	  Line2D.Double oldLine = new Line2D.Double(getCenterPoint(), getPointAtMiddleFront(delta));
-	  AffineTransform at = 
-		        AffineTransform.getRotateInstance(
-		            Math.toRadians(90), oldLine.getX1(), oldLine.getY1());
-	  Line2D.Double newLine = (Line2D.Double) at.createTransformedShape(oldLine);
-	  return newLine.getP2();
+  public Point2D getPointAtMiddleRight(double delta) {
+	  Point2D p =
+        new Point2D.Double(movement.getPosition().getX()
+                               + delta * Math.cos(movement.getHeading() + Math.toRadians(90)),
+                           movement.getPosition().getY()
+                               + delta * Math.sin(movement.getHeading() + Math.toRadians(90)));
+    return p;
   }
   /**
    * {@inheritDoc}
    */
   @Override
-  public Point2D getPointAtSouthOfVehicle(double delta) {
-	  Line2D.Double oldLine = new Line2D.Double(getCenterPoint(), getPointAtMiddleFront(delta));
-	  AffineTransform at = 
-		        AffineTransform.getRotateInstance(
-		            Math.toRadians(180), oldLine.getX1(), oldLine.getY1());
-	  Line2D.Double newLine = (Line2D.Double) at.createTransformedShape(oldLine);
-	  return newLine.getP2();
+  public Point2D getPointAtMiddleRear(double delta) {
+	  Point2D p =
+        new Point2D.Double(movement.getPosition().getX()
+                               + delta * Math.cos(movement.getHeading() + Math.toRadians(180)),
+                           movement.getPosition().getY()
+                               + delta * Math.sin(movement.getHeading() + Math.toRadians(180)));
+    return p;
   }
   /**
    * {@inheritDoc}
    */
   @Override
-  public Point2D getPointAtWestOfVehicle(double delta) {
-	  Line2D.Double oldLine = new Line2D.Double(getCenterPoint(), getPointAtMiddleFront(delta));
-	  AffineTransform at = 
-		        AffineTransform.getRotateInstance(
-		            Math.toRadians(270), oldLine.getX1(), oldLine.getY1());
-	  Line2D.Double newLine = (Line2D.Double) at.createTransformedShape(oldLine);
-	  return newLine.getP2();
+  public Point2D getPointAtMiddleLeft(double delta) {
+	  Point2D p =
+        new Point2D.Double(movement.getPosition().getX()
+                               + delta * Math.cos(movement.getHeading() + Math.toRadians(270)),
+                           movement.getPosition().getY()
+                               + delta * Math.sin(movement.getHeading() + Math.toRadians(270)));
+    return p;
   }
   /**
    * {@inheritDoc}

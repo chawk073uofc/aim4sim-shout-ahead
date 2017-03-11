@@ -9,12 +9,11 @@ import aim4.ShoutAheadAI.actions.SlowDown;
 import aim4.ShoutAheadAI.actions.SpeedUp;
 import aim4.ShoutAheadAI.actions.TurnLeft;
 import aim4.ShoutAheadAI.actions.TurnRight;
-import aim4.ShoutAheadAI.predicates.ObstacleLT10MetersNorth;
 import aim4.ShoutAheadAI.predicates.Predicate;
 import aim4.vehicle.AutoVehicleDriverView;
 
 /**
- * A rule that does not include predicates about the intended actions of other agents.
+ * A Shout Ahead Rule.
  * @author christopher.hawk
  *
  */
@@ -22,7 +21,7 @@ public class ShoutAheadRule {
 	/**The number of distinct actions a driver agent can take*/
 	private final int NUM_ACTIONS = 6;
 	/**he total number of distinct predicates*/
-	private final int NUM_PREDICATES = 16; 
+	private final int NUM_PREDICATES = Predicate.; 
 	private Random rand = new Random();
 	
 	/**The number of predicates making up a condition*/

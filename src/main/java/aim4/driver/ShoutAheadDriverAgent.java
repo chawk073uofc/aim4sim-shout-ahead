@@ -12,6 +12,7 @@ import aim4.map.BasicMap;
 import aim4.sim.ShoutAheadSimulator;
 import aim4.vehicle.AutoVehicleDriverView;
 import aim4.vehicle.BasicAutoVehicle;
+import aim4.vehicle.BasicVehicle.Movement;
 import aim4.vehicle.AutoVehicleDriverView.LRFMode;
 import aim4.vehicle.AutoVehicleSimView;
 import aim4.vehicle.VehicleDriverView;
@@ -43,7 +44,7 @@ public class ShoutAheadDriverAgent extends AutoDriver implements DriverSimView {
 		  if(Debug.SHOW_PERCEPTIONS){
 			  System.out.println(Predicate.showAllPredicates((AutoVehicleSimView) vehicle));
 		  }
-		  
+		
 		  //debug
 		  vehicle.setTargetVelocityWithMaxAccel(.5);
 	      vehicle.goStraight();

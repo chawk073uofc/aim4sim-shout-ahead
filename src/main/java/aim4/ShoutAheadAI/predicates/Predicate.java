@@ -105,53 +105,53 @@ public enum Predicate {
 		},
 				
 	//OBSTACLE PROXIMITY PREDICATES
-		OBSTACLE_LT_10_METERS_NORTH{
+		OBSTACLE_LT_10_METERS_IN_FRONT{
 			@Override
 			public boolean isTrue(AutoVehicleSimView vehicle){
-				return obstacleIsNearby(Direction.NORTH, 10, vehicle);
+				return obstacleIsNearby(Direction.IN_FRONT, 10, vehicle);
 			}
 		},
-		OBSTACLE_LT_10_METERS_EAST{	
+		OBSTACLE_LT_10_METERS_RIGHT{	
 			@Override
 			public boolean isTrue(AutoVehicleSimView vehicle){
-				return obstacleIsNearby(Direction.EAST, 10, vehicle);
+				return obstacleIsNearby(Direction.RIGHT, 10, vehicle);
 			}
 		},
-		OBSTACLE_LT_10_METERS_SOUTH{
+		OBSTACLE_LT_10_METERS_BEHIND{
 			@Override
 			public boolean isTrue(AutoVehicleSimView vehicle){
-				return obstacleIsNearby(Direction.SOUTH, 10, vehicle);
+				return obstacleIsNearby(Direction.BEHIND, 10, vehicle);
 			}
 		},
-		OBSTACLE_LT_10_METERS_WEST{	
+		OBSTACLE_LT_10_METERS_LEFT{	
 			@Override
 			public boolean isTrue(AutoVehicleSimView vehicle){
-				return obstacleIsNearby(Direction.WEST, 10, vehicle);
+				return obstacleIsNearby(Direction.LEFT, 10, vehicle);
 			}
 		},
 		
-		OBSTACLE_LT_20_METERS_NORTH{
+		OBSTACLE_LT_20_METERS_IN_FRONT{
 			@Override
 			public boolean isTrue(AutoVehicleSimView vehicle){
-				return obstacleIsNearby(Direction.NORTH, 20, vehicle);
+				return obstacleIsNearby(Direction.IN_FRONT, 20, vehicle);
 			}
 		},
-		OBSTACLE_LT_20_METERS_EAST{	
+		OBSTACLE_LT_20_METERS_RIGHT{	
 			@Override
 			public boolean isTrue(AutoVehicleSimView vehicle){
-				return obstacleIsNearby(Direction.EAST, 20, vehicle);
+				return obstacleIsNearby(Direction.RIGHT, 20, vehicle);
 			}
 		},
-		OBSTACLE_LT_20_METERS_SOUTH{
+		OBSTACLE_LT_20_METERS_BEHIND{
 			@Override
 			public boolean isTrue(AutoVehicleSimView vehicle){
-				return obstacleIsNearby(Direction.SOUTH, 20, vehicle);
+				return obstacleIsNearby(Direction.BEHIND, 20, vehicle);
 			}
 		},
-		OBSTACLE_LT_20_METERS_WEST{	
+		OBSTACLE_LT_20_METERS_LEFT{	
 			@Override
 			public boolean isTrue(AutoVehicleSimView vehicle){
-				return obstacleIsNearby(Direction.WEST, 20, vehicle);
+				return obstacleIsNearby(Direction.LEFT, 20, vehicle);
 			}
 		};
 		
@@ -183,10 +183,17 @@ public enum Predicate {
 		 */
 		public static String showAllPredicates(AutoVehicleSimView vehicle){
 			String str = "";
-			str += "PREDICATES AND TRUTH VALUES FOR VEHICLE" + vehicle.getVIN() + ":\n\n";
-			for(Predicate pred: Predicate.values())
+			str += "PREDICATES AND TRUTH VALUES FOR VEHICLE " + vehicle.getVIN() + ":\n\n";
+			
+			int i = 1;
+			for(Predicate pred: Predicate.values()) {
 				str += pred.name() + "\t\t" + pred.isTrue(vehicle) + "\n";
+			if((i % 4) == 0)
+				str += "\n";
+			i++;
+			}
 			str += "\n";
+
 			return str;
 		}
 		
@@ -197,7 +204,7 @@ public enum Predicate {
 		 */
 		public static String showTruePredicates(AutoVehicleSimView vehicle){
 			String str = "";
-			str += "TRUE PREDICATES FOR VEHICLE" + vehicle.getVIN() + ":\n\n";
+			str += "TRUE PREDICATES FOR VEHICLE " + vehicle.getVIN() + ":\n\n";
 			for(Predicate pred: Predicate.values()){
 				if(pred.isTrue(vehicle))
 					str += pred.name() + "\n";
@@ -218,17 +225,17 @@ public enum Predicate {
 			//Draw line projected from the center of the vehicle to a point distance meters in from of the vehicle
 			Point2D projectedPoint = null;
 			switch(direction){
-			case NORTH:
+			case IN_FRONT:
 				projectedPoint = vehicle.getPointAtMiddleFront((double) distance);
 				break;
-			case EAST:
-				projectedPoint = vehicle.getPointAtEastOfVehicle((double) distance);
+			case RIGHT:
+				projectedPoint = vehicle.getPointAtMiddleRight((double) distance);
 				break;
-			case SOUTH:
-				projectedPoint = vehicle.getPointAtSouthOfVehicle((double) distance);
+			case BEHIND:
+				projectedPoint = vehicle.getPointAtMiddleRear((double) distance);
 				break;
-			case WEST:
-				projectedPoint = vehicle.getPointAtWestOfVehicle((double) distance);
+			case LEFT:
+				projectedPoint = vehicle.getPointAtMiddleLeft((double) distance);
 				break;
 			}
 			//detect nearby cars
@@ -254,9 +261,9 @@ public enum Predicate {
 		 * @author christopher.hawk
 		 */
 		public enum Direction{
-			NORTH,
-			SOUTH,
-			EAST,
-			WEST
+			IN_FRONT,
+			BEHIND,
+			RIGHT,
+			LEFT
 		}
 }
