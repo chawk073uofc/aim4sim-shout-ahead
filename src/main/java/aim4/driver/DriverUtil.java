@@ -82,7 +82,7 @@ public class DriverUtil {
    *         given the Lane in which it is
    */
   public static double calculateMaxFeasibleVelocity(VehicleDriverView vehicle) {
-    // TODO: should remove this function
+    // TODO_OG: should remove this function
     // Whichever's smaller - speed limit or max velocity of the vehicle
     return Math.min(vehicle.getSpec().getMaxVelocity(),
                     vehicle.getDriver().getCurrentLane().getSpeedLimit());

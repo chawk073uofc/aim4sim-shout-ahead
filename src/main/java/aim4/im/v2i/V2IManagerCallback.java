@@ -73,7 +73,7 @@ public interface V2IManagerCallback {
   Intersection getIntersection();
 
 
-  // TODO: remove this function
+  // TODO_OG: remove this function
   TrackModel getTrackModel();
 
   /**

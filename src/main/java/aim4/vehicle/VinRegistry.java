@@ -63,7 +63,7 @@ public class VinRegistry {
   private static Map<Integer,VehicleSpec> vinToVehicleSpec =
     new HashMap<Integer,VehicleSpec>();
 
-  // TODO: remove the following in the future
+  // TODO_OG: remove the following in the future
 
   /**
    * A map from VINs to spawn points.
@@ -131,7 +131,7 @@ public class VinRegistry {
 
       vinToVehicle.put(vin, new WeakReference<VehicleSimView>(vehicle));
       vinToVehicleSpec.put(vin, vehicle.getSpec());
-      // TODO: think how to resolve the problem.
+      // TODO_OG: think how to resolve the problem.
       if (vehicle.getDriver() != null) {
         vinToSpawnPoint.put(vin, vehicle.getDriver().getSpawnPoint());
         vinToDestRoad.put(vin, vehicle.getDriver().getDestination());

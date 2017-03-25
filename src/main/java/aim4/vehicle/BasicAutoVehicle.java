@@ -122,7 +122,7 @@ public class BasicAutoVehicle extends BasicVehicle
 
   /** The number of bits this Vehicle has received. */
   protected int bitsReceived;
-  // TODO: change protected to private after figuring out where should
+  // TODO_OG: change protected to private after figuring out where should
   // the proxy vehicle put.
 
   /** The number of bits this Vehicle has transmitted. */
@@ -254,7 +254,7 @@ public class BasicAutoVehicle extends BasicVehicle
   // CONSTRUCTORS
   /////////////////////////////////
 
-  // TODO: reorganize the parameter order.
+  // TODO_OG: reorganize the parameter order.
 
   /**
    * Construct a vehicle
@@ -487,7 +487,7 @@ public class BasicAutoVehicle extends BasicVehicle
    */
   @Override
   public List<I2VMessage> pollAllMessagesFromI2VInbox() {
-    // TODO: many need to make this function atomic to avoid
+    // TODO_OG: many need to make this function atomic to avoid
     // putting messages in the queue and retrieve from it at the same time.
     List<I2VMessage> msgs = new ArrayList<I2VMessage>(i2vInbox);
     i2vInbox.clear();

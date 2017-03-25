@@ -46,7 +46,7 @@ public class SpawnPoint {
   // NESTED CLASSES
   /////////////////////////////////
 
-  // TODO: make it sortable according to the time
+  // TODO_OG: make it sortable according to the time
 
   /**
    * The specification of a spawn.
@@ -295,7 +295,7 @@ public class SpawnPoint {
    * @param vehicleSpecChooser the vehicle spec chooser
    */
   public void setVehicleSpecChooser(SpawnSpecGenerator vehicleSpecChooser) {
-    // assert this.vehicleSpecChooser == null;  // TODO think whether it is okay
+    // assert this.vehicleSpecChooser == null;  // TODO_OG think whether it is okay
     this.vehicleSpecChooser = vehicleSpecChooser;
   }
 

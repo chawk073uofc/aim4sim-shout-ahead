@@ -57,6 +57,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 
+import aim4.ShoutAheadAI.LearningHarness;
 import aim4.config.Constants;
 import aim4.config.Debug;
 import aim4.config.SimConfig;
@@ -67,8 +68,10 @@ import aim4.map.lane.Lane;
 import aim4.sim.Simulator;
 import aim4.sim.UdpListener;
 import aim4.sim.AutoDriverOnlySimulator.AutoDriverOnlySimStepResult;
+import aim4.sim.ShoutAheadSimulator;
 import aim4.sim.Simulator.SimStepResult;
 import aim4.sim.setup.BasicSimSetup;
+import aim4.sim.setup.ShoutAheadSimSetup;
 import aim4.sim.setup.SimFactory;
 import aim4.sim.setup.SimSetup;
 import aim4.util.Util;
@@ -150,9 +153,23 @@ public class Viewer extends JFrame implements ActionListener, KeyListener,
   // NESTED CLASSES
   /////////////////////////////////
   //
-  // TODO: SimThread should be a SwingWorker; but it works fine now.
+  // TODO_OG: SimThread should be a SwingWorker; but it works fine now.
   // http://java.sun.com/docs/books/tutorial/uiswing/concurrency/worker.html
   //
+  public class LearningThread implements Runnable {
+	private Viewer viewer;
+	private ShoutAheadSimSetup simSetup;
+	public LearningThread(Viewer viewer, ShoutAheadSimSetup simSetup){
+		this.viewer = viewer;
+		this.simSetup = simSetup;
+	}
+	@Override
+	public void run() {
+    	LearningHarness learningHarness = new LearningHarness(simSetup, viewer);
+	}
+	  
+  }
+
   /**
    * The simulation thread that holds the simulation process.
    */
@@ -383,6 +400,7 @@ public class Viewer extends JFrame implements ActionListener, KeyListener,
   private Simulator sim;
   /** The simulation's thread */
   private SimThread simThread;
+  private LearningThread learningThread;
   /** UDP listener */
   private UdpListener udpListener;
   /** The target simulation speed */
@@ -392,7 +410,7 @@ public class Viewer extends JFrame implements ActionListener, KeyListener,
   /** The time of the next screen update in millisecond */
   private long nextFrameTime;
   // recording
-  // TODO: reset imageCounter after reset the simulator
+  // TODO_OG: reset imageCounter after reset the simulator
   /** Whether or not to save the screen during simulation */
   boolean recording;
   /** Image's direction */
@@ -758,6 +776,10 @@ public class Viewer extends JFrame implements ActionListener, KeyListener,
   public Simulator getSimulator() {
     return sim;
   }
+  
+  public void setSimulator(Simulator newSim) {
+	  sim = newSim;
+  }
 
   // ///////////////////////////////
   // GUI settings
@@ -850,7 +872,10 @@ public class Viewer extends JFrame implements ActionListener, KeyListener,
    * @param initSimSetup  the initial simulation setup
    */
   private void startButtonHandler(SimSetup initSimSetup) {
-    if (simThread == null) {
+	if(shoutAheadSelected()){
+		learningThread = new LearningThread(this, (ShoutAheadSimSetup) initSimSetup);
+		learningThread.run();
+	} else if (simThread == null) {
       startSimProcess(initSimSetup);
     } else if (!simThread.isPaused()) {
       pauseSimProcess();
@@ -875,9 +900,9 @@ public class Viewer extends JFrame implements ActionListener, KeyListener,
    *
    * @param initSimSetup the initial simulation setup.
    */
-  private void startSimProcess(SimSetup initSimSetup) {
+  public void startSimProcess(SimSetup initSimSetup) {
     assert sim == null && udpListener == null;
-
+   
     // create the simulator
     sim = SimFactory.makeSimulator(initSimSetup);
     // create the simulation thread
@@ -886,7 +911,15 @@ public class Viewer extends JFrame implements ActionListener, KeyListener,
     setSimStartGUIsetting();
     // start the thread
     nextFrameTime = System.currentTimeMillis();
+    
     simThread.start();
+  }
+  
+  public void startShoutAheadProcess() {
+	    createSimThread();
+	    setSimStartGUIsetting();
+	    nextFrameTime = System.currentTimeMillis();
+	    simThread.start();
   }
 
   /**
@@ -937,7 +970,7 @@ public class Viewer extends JFrame implements ActionListener, KeyListener,
   /**
    * Reset the simulation process.
    */
-  private void resetSimProcess() {
+  public void resetSimProcess() {
     assert simThread != null;
 
     simThread.terminate();
@@ -1271,7 +1304,7 @@ public class Viewer extends JFrame implements ActionListener, KeyListener,
    */
   @Override
   public void mouseClicked(MouseEvent e) {
-    // TODO: may be move this function to canvas.
+    // TODOOG: may be move this function to canvas.
     // right click
     if (e.getButton() == MouseEvent.BUTTON1) {
       if (sim != null) {
@@ -1306,7 +1339,7 @@ public class Viewer extends JFrame implements ActionListener, KeyListener,
             } else {
               Debug.removeTargetIMid();
             }
-            canvas.cleanUp();  // TODO: ugly code, one more reason to move this
+            canvas.cleanUp();  // TODO_OG: ugly code, one more reason to move this
             // function to canvas
             canvas.update();
             return;  // just exit
@@ -1465,5 +1498,12 @@ public class Viewer extends JFrame implements ActionListener, KeyListener,
     canvas.highlightVehicle(vin);
 
   }
+/**
+ * Check if user has selected ShoutAhead.
+ * @return True if user has selected ShoutAhead
+ */
+private boolean shoutAheadSelected() {
+	return simSetupPanel.getSimSetup() instanceof ShoutAheadSimSetup;
+}
 
 }

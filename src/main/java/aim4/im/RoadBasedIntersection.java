@@ -389,7 +389,7 @@ public class RoadBasedIntersection implements Intersection {
    * Calculate the list of edges.
    */
   private void calcEdges() {
-    // TODO: need to fix this problem.
+    // TODO_OG: need to fix this problem.
     PathIterator iter = area.getBounds2D().getPathIterator(null);
     double[] coords = new double[6];
 
@@ -578,7 +578,7 @@ public class RoadBasedIntersection implements Intersection {
    */
   @Override
   public double getEntryHeading(Lane l) {
-    // TODO: what if l is not a lane entering this intersection?
+    // TODO_OG: what if l is not a lane entering this intersection?
     return entryHeadings.get(l);
   }
 

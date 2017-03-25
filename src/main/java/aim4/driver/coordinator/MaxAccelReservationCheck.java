@@ -248,7 +248,7 @@ public class MaxAccelReservationCheck {
                                   dTotal, vTop, as);
       return as;
     } catch(ReservationCheckException e) {
-      // TODO check why there is no accel schedule
+      // TODO_OG check why there is no accel schedule
       throw e;
     }
   }

@@ -5,8 +5,10 @@ import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
 
+import aim4.ShoutAheadAI.Strategy;
 import aim4.ShoutAheadAI.predicates.Predicate;
 import aim4.config.Debug;
+import aim4.driver.AutoDriver;
 import aim4.driver.ShoutAheadDriverAgent;
 import aim4.map.BasicMap;
 import aim4.map.GridMap;
@@ -15,146 +17,117 @@ import aim4.map.SpawnPoint;
 import aim4.map.SpawnPoint.SpawnSpec;
 import aim4.map.lane.Lane;
 import aim4.sim.AutoDriverOnlySimulator.AutoDriverOnlySimStepResult;
+import aim4.sim.setup.ShoutAheadSimSetup;
 import aim4.vehicle.AutoVehicleSimView;
+import aim4.vehicle.BasicAutoVehicle;
 import aim4.vehicle.VehicleSimView;
 import aim4.vehicle.VehicleSpec;
 import aim4.vehicle.VehicleSpecDatabase;
 import aim4.vehicle.VinRegistry;
 import aim4.vehicle.BasicVehicle;
+
 /**
- * This class represents a driving simulation where every car is autonomous and operating according to the
- * rule-based system outlined by the Shout-Ahead architecture. Reinforcement learning takes place during a 
- * run of this simulation. Evolutionary learning can be carried out by running this simulation repeatedly.
- *  
- *  
- *  
+ * This class represents a driving simulation where every car is autonomous and
+ * operating according to the rule-based system outlined by the Shout-Ahead
+ * architecture. Reinforcement learning takes place during a run of this
+ * simulation. Evolutionary learning can be carried out by running this
+ * simulation repeatedly.
+ * 
+ * 
+ * 
  * @author christopher.hawk
  */
 public class ShoutAheadSimulator extends AutoDriverOnlySimulator implements Simulator {
-	
+	private int targetNumCompleteVehicles = ShoutAheadSimSetup.getNumCarsPerSim();
+	private int maxActiveVehicles = 3;// TODO
+	private Strategy strategy;
+
 	public ShoutAheadSimulator(BasicMap basicMap) {
 		super(basicMap);
-		//predicates = new Predicates(this);
-		//Predicates.HEADING_EAST.registerSim(this);//TODO: ugly
-		Predicate.sim = this;//correct?
-		
-			//Spawn Northbound car
-		   GridMap map = (GridMap) basicMap;
-		   Road verticalRoad = map.getVerticalRoads().get(0);
-		   Lane northBoundLane = verticalRoad.getLanes().get(0);
+		Predicate.sim = this;
+	}
 
-		   SpawnPoint spawnPoint = map.makeSpawnPoint(currentTime, northBoundLane);
-		   VehicleSpec vehicleSpec = VehicleSpecDatabase.getVehicleSpecByName("COUPE");
-		   SpawnSpec spawnSpec = new SpawnSpec(currentTime, vehicleSpec, verticalRoad);//hopefully destination is North
-		   AutoVehicleSimView vehicle = (AutoVehicleSimView) makeVehicle(spawnPoint, spawnSpec);
-		   ShoutAheadDriverAgent driverAgent = new ShoutAheadDriverAgent(vehicle, basicMap, this);
-		   driverAgent.setSpawnPoint(spawnPoint);
-		   driverAgent.setDestination(verticalRoad);
-		   vehicle.setDriver(driverAgent);
-		  
-           VinRegistry.registerVehicle(vehicle); // Get vehicle a VIN number
-           vinToVehicles.put(vehicle.getVIN(), vehicle);
-      
-			//Spawn East bound car
-           Road horizontalRoad = map.getHorizontalRoads().get(0);
-		   Lane eastBoundLane = horizontalRoad.getLanes().get(0);
-		   
-		   SpawnPoint spawnPointE = map.makeSpawnPoint(currentTime, eastBoundLane);
-		   SpawnSpec spawnSpecE = new SpawnSpec(currentTime, vehicleSpec, horizontalRoad);//hopefully destination is North
-		   AutoVehicleSimView vehicleE = (AutoVehicleSimView) makeVehicle(spawnPointE, spawnSpecE);
-		   ShoutAheadDriverAgent driverAgentE = new ShoutAheadDriverAgent(vehicleE, basicMap, this);
-		   driverAgentE.setSpawnPoint(spawnPointE);
-		   driverAgentE.setDestination(horizontalRoad);
-		   vehicleE.setDriver(driverAgentE);
-		  
-           VinRegistry.registerVehicle(vehicleE); // Get vehicle a VIN number
-           vinToVehicles.put(vehicleE.getVIN(), vehicleE);
+	public ShoutAheadSimulator(GridMap basicMap, Strategy strategy) {
+		super(basicMap);
+		Predicate.sim = this;
+		this.strategy = strategy;
 
+	}
 
-		   
-			//Spawn South bound car
-       //   List<Lane> lanes = verticalRoad.getLanes();
-		   Road southBoundRoad = map.getVerticalRoads().get(1);
+	// the main loop
 
-		   Lane southBoundLane = southBoundRoad.getLanes().get(0);
-		   
-		   SpawnPoint spawnPointS = map.makeSpawnPoint(currentTime, southBoundLane);
-		   SpawnSpec spawnSpecS = new SpawnSpec(currentTime, vehicleSpec, southBoundRoad);
-		   AutoVehicleSimView vehicleS = (AutoVehicleSimView) makeVehicle(spawnPointS, spawnSpecS);
-		   ShoutAheadDriverAgent driverAgentS = new ShoutAheadDriverAgent(vehicleS, basicMap, this);
-		   driverAgentS.setSpawnPoint(spawnPointS);
-		   driverAgentS.setDestination(verticalRoad);
-		   vehicleS.setDriver(driverAgentS);
-		  
-           VinRegistry.registerVehicle(vehicleS); // Get vehicle a VIN number
-           vinToVehicles.put(vehicleS.getVIN(), vehicleS);
-           
-			//Spawn West bound car
-			Road westBoundRoad = map.getHorizontalRoads().get(1);
-			Lane westBoundLane = westBoundRoad.getLanes().get(0);
-		   
-		   SpawnPoint spawnPointW = map.makeSpawnPoint(currentTime, westBoundLane);
-		   SpawnSpec spawnSpecW = new SpawnSpec(currentTime, vehicleSpec, westBoundRoad);//dest not right
-		   AutoVehicleSimView vehicleW = (AutoVehicleSimView) makeVehicle(spawnPointW, spawnSpecW);
-		   ShoutAheadDriverAgent driverAgentW = new ShoutAheadDriverAgent(vehicleW, basicMap, this);
-		   driverAgentW.setSpawnPoint(spawnPointW);
-		   driverAgentW.setDestination(westBoundRoad);//dest not right
-		   vehicleW.setDriver(driverAgentW);
-		  
-           VinRegistry.registerVehicle(vehicleW); // Get vehicle a VIN number
-           vinToVehicles.put(vehicleW.getVIN(), vehicleW);
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public synchronized AutoDriverOnlySimStepResult step(double timeStep) {
+		if (Debug.PRINT_SIMULATOR_STAGE) {
+			System.err.printf("--------------------------------------\n");
+			System.err.printf("------SIM:spawnVehicles---------------\n");
 		}
+		// limit the number of active vehicles
+		if ((getNumActiveVehicles() < maxActiveVehicles) && !isComplete())
+			spawnVehicles(timeStep);
+		if (Debug.PRINT_SIMULATOR_STAGE) {
+			System.err.printf("------SIM:letDriversAct---------------\n");
+		}
+		letDriversAct();
+		if (Debug.PRINT_SIMULATOR_STAGE) {
+			System.err.printf("------SIM:communication---------------\n");
+		}
+//		communication();// TODO: remove?
+//		if (Debug.PRINT_SIMULATOR_STAGE) {
+//			System.err.printf("------SIM:moveVehicles---------------\n");
+//		}
+		moveVehicles(timeStep);
+		if (Debug.PRINT_SIMULATOR_STAGE) {
+			System.err.printf("------SIM:cleanUpCompletedVehicles---------------\n");
+		}
+		detectCollisions();
+		List<Integer> completedVINs = cleanUpCompletedVehicles();
+		currentTime += timeStep;
 
-	  // the main loop
+		return new AutoDriverOnlySimStepResult(completedVINs);
+	}
 
-	  /**
-	   * {@inheritDoc}
-	   */
-	  @Override
-	  public synchronized AutoDriverOnlySimStepResult step(double timeStep) {
-//	    if (Debug.PRINT_SIMULATOR_STAGE) {
-//	      System.err.printf("--------------------------------------\n");
-//	      System.err.printf("------SIM:spawnVehicles---------------\n");
-//	    }
-//	    spawnVehicles(timeStep);
-//	    if (Debug.PRINT_SIMULATOR_STAGE) {
-//	      System.err.printf("------SIM:provideSensorInput---------------\n");
-//	    }
-//	    provideSensorInput();
-	    if (Debug.PRINT_SIMULATOR_STAGE) {
-	      System.err.printf("------SIM:letDriversAct---------------\n");
-	    }
-	   letDriversAct();
-//	    if (Debug.PRINT_SIMULATOR_STAGE) {
-//	      System.err.printf("------SIM:letIntersectionManagersAct--------------\n");
-//	    }
-//	    letIntersectionManagersAct(timeStep);
-	    if (Debug.PRINT_SIMULATOR_STAGE) {
-	      System.err.printf("------SIM:communication---------------\n");
-	    }
-	    communication();//TODO: remove?
-	    if (Debug.PRINT_SIMULATOR_STAGE) {
-	      System.err.printf("------SIM:moveVehicles---------------\n");
-	    }
-	    moveVehicles(timeStep);//TODO:write SAVehicalSimView.move()
-	    if (Debug.PRINT_SIMULATOR_STAGE) {
-	      System.err.printf("------SIM:cleanUpCompletedVehicles---------------\n");
-	    }
-	    List<Integer> completedVINs = cleanUpCompletedVehicles();
-	    currentTime += timeStep;
-	    // debug
-	    checkClocks();
+	private void detectCollisions() {
+		// TODO collision detection
+		
+	}
 
-	    return new AutoDriverOnlySimStepResult(completedVINs);
-	  }
-	
-	  public enum myEnum{
-		  ONE,
-		  TWO;
-		  public void someMethod(){
-			  
-		  }
-	  }
+	/**
+	 * Create a vehicle at a spawn point with a ShoutAheadDriverAgent
+	 * controlling it.
+	 *
+	 * @param spawnPoint
+	 *            the spawn point
+	 * @param spawnSpec
+	 *            the spawn specification
+	 * @return the vehicle
+	 */
+	@Override
+	protected VehicleSimView makeVehicle(SpawnPoint spawnPoint, SpawnSpec spawnSpec) {
+		VehicleSpec spec = spawnSpec.getVehicleSpec();
+		Lane lane = spawnPoint.getLane();
+		// Now just take the minimum of the max velocity of the vehicle, and
+		// the speed limit in the lane
+		double initVelocity = Math.min(spec.getMaxVelocity(), lane.getSpeedLimit());
+		// Obtain a Vehicle
+		AutoVehicleSimView vehicle = new BasicAutoVehicle(spec, spawnPoint.getPosition(), spawnPoint.getHeading(),
+				spawnPoint.getSteeringAngle(), initVelocity, // velocity
+				initVelocity, // target velocity
+				spawnPoint.getAcceleration(), spawnSpec.getSpawnTime());
+		// Set the driver
+		ShoutAheadDriverAgent driver = new ShoutAheadDriverAgent(vehicle, basicMap, this);
+		driver.setCurrentLane(lane);
+		driver.setSpawnPoint(spawnPoint);
+		driver.setDestination(spawnSpec.getDestinationRoad());
+		vehicle.setDriver(driver);
 
-	
+		return vehicle;
+	}
+
+	public boolean isComplete() {
+		return numOfCompletedVehicles >= targetNumCompleteVehicles;
+	}
 }

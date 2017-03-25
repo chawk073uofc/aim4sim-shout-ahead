@@ -253,15 +253,25 @@ public class Debug {
   public static final boolean IS_PRINT_RANDOM_SEED = true;
   
   /**
-   * Show what the LRF is sensing. 
+   * Show all predicates and truth values.
    */
-  public static final boolean SHOW_PERCEPTIONS = true;
+  public static final boolean SHOW_PERCEPTIONS = false;
+  /**
+   * Show all predicates that evaluate to true.
+   */
+  public static final boolean SHOW_TRUE_PERCEPTIONS = false;
+  /**
+   * Show learning stage. 
+   */
+  public static final boolean SHOW_LEARNING_STAGE = true;
   /**
    * Show rectangles for debugging. 
    */
   public static final boolean DRAW_DEBUG_RECTANGLES = true;
 
-  // TODO: remove the following later.
+  public static final boolean SHOW_FILE_SYS_INFO = false;
+
+  // TODO_OG: remove the following later.
   /**
    * Whether to show the vehicle according to its messaging state.
    */

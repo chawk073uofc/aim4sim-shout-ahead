@@ -143,7 +143,7 @@ public class RoadBasedTrackModel implements TrackModel {
   private Map<List<Integer>, Double> memoTraversalDistance =
     new HashMap<List<Integer>, Double>();
 
-  // TODO: remove this variable
+  // TODO_OG: remove this variable
   /**
    * A set of 4-tuples of lanes IDs such that if the tuple
    * <i>(l1, l2, l3, l4)</i> is in the set, the track from lane <i>l1</i> to
@@ -166,7 +166,7 @@ public class RoadBasedTrackModel implements TrackModel {
     this.intersection = intersection ;
     // Determine the priorities for exit lanes
     calculateLanePriorities();
-    calculateLaneConflicts(); // TODO remove this function
+    calculateLaneConflicts(); // TODO_OG remove this function
   }
 
   /////////////////////////////////
@@ -251,7 +251,7 @@ public class RoadBasedTrackModel implements TrackModel {
         // If they don't intersect, we just take both of them (being
         // conservative)
         //
-        // TODO: From Chiu: it seems it doesn't make sense to just include
+        // TODO_OG: From Chiu: it seems it doesn't make sense to just include
         // both segments, but ignore the mid-segment between the end point
         // of l1InIntersection and the start point of l2InIntersection.
         // Furthermore, there are other stricky cases to deal with.
@@ -264,7 +264,7 @@ public class RoadBasedTrackModel implements TrackModel {
   }
 
 
-  //TODO remove this function
+  //TODO_OG remove this function
   /**
    * For all pairs of trajectories (4-tuples of Lanes), find the ones
    * that conflict and add them to <code>laneConflicts</code>. Assumes
@@ -342,7 +342,7 @@ public class RoadBasedTrackModel implements TrackModel {
   }
 
 
-  // TODO: remove this function
+  // TODO_OG: remove this function
   /**
    * Determine whether two trajectories overlap.  Errs on the side of caution.
    *

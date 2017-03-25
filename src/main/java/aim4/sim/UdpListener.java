@@ -66,7 +66,7 @@ public class UdpListener implements Runnable {
   /** The default listener UDP port */
   private static final int DEFAULT_LISTENER_UDP_PORT = 46000;
 
-  // TODO: the UDP port of the vehicle should not be hard-coded.
+  // TODO_OG: the UDP port of the vehicle should not be hard-coded.
   /** The default UPD port on the vehicle */
   private static final int DEFAULT_VEHICLE_UDP_PORT = 46042;
 
@@ -213,7 +213,7 @@ public class UdpListener implements Runnable {
     }
 
     closeSocket();
-    // TODO: also remove all ProxyVehicles from the simulator as well
+    // TODO_OG: also remove all ProxyVehicles from the simulator as well
   }
 
   /////////////////////////////////

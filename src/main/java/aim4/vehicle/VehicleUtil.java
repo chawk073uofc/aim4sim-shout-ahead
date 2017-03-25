@@ -404,7 +404,7 @@ public class VehicleUtil {
   public static double timeToChangeBetween(double v0, double vf,
                                            double acc, double dec) {
     assert (dec <= 0.0) && (acc >= 0.0);
-    // TODO: remove dec parameter as it looks ugly to distinguish the
+    // TODO_OG: remove dec parameter as it looks ugly to distinguish the
     // acc and dec cases.
 
     if (Util.isDoubleEqual(v0, vf)) {
@@ -576,7 +576,7 @@ public class VehicleUtil {
   // PUBLIC METHODS
   /////////////////////////////////
 
-  // TODO: temporarily put this function here. move it later.
+  // TODO_OG: temporarily put this function here. move it later.
 
   /**
    * Calculate the distance to the Vehicle in front of this one, in meters.

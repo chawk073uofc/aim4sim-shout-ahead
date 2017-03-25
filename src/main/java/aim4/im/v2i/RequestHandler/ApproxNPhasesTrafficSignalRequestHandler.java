@@ -248,7 +248,7 @@ public class ApproxNPhasesTrafficSignalRequestHandler implements
     if (getSignal(arrivalLaneId) == TrafficSignal.GREEN) {
       return true;
     } else {
-      // TODO: should not hard code it: need to make it more general
+      // TODO_OG: should not hard code it: need to make it more general
       if (arrivalLaneId == 2 && departureLaneId == 8) {
         return true;
       } else if (arrivalLaneId == 11 && departureLaneId == 2) {

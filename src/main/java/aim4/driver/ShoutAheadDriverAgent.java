@@ -4,8 +4,8 @@ package aim4.driver;
 import java.util.ArrayList;
 import java.util.Random;
 
-import aim4.ShoutAheadAI.ShoutAheadRule;
-import aim4.ShoutAheadAI.ShoutAheadRuleSet;
+import aim4.ShoutAheadAI.Rule;
+import aim4.ShoutAheadAI.RuleSet;
 import aim4.ShoutAheadAI.predicates.Predicate;
 import aim4.config.Debug;
 import aim4.map.BasicMap;
@@ -22,15 +22,15 @@ import aim4.vehicle.VehicleDriverView;
  *
  */
 public class ShoutAheadDriverAgent extends AutoDriver implements DriverSimView {
-	private AutoVehicleDriverView vehicle;
-	private ShoutAheadRuleSet ruleSet;//includes predicates about other agents' intended actions
+	private AutoVehicleSimView vehicle;
+	private RuleSet ruleSet;//TODO
 	private ShoutAheadSimulator sim;
 	
-	 public ShoutAheadDriverAgent(AutoVehicleDriverView vehicle, BasicMap basicMap, ShoutAheadSimulator sim) {
+	 public ShoutAheadDriverAgent(AutoVehicleSimView vehicle, BasicMap basicMap, ShoutAheadSimulator sim) {
 		super(vehicle, basicMap);
 		this.vehicle = vehicle;
 		this.sim = sim;
-		ruleSet = new ShoutAheadRuleSet();
+		ruleSet = new RuleSet();
 		
 		
 	}
@@ -40,14 +40,18 @@ public class ShoutAheadDriverAgent extends AutoDriver implements DriverSimView {
 	   */
 	  @Override
 	  public void act() {
-		  ShoutAheadRule ruleToFollow = ruleSet.getRuleToFollow();
+		  Rule ruleToFollow = ruleSet.getRuleToFollow(vehicle);
 		  if(Debug.SHOW_PERCEPTIONS){
 			  System.out.println(Predicate.showAllPredicates((AutoVehicleSimView) vehicle));
+		  }
+		  if(Debug.SHOW_TRUE_PERCEPTIONS) {
+			  System.out.println(Predicate.showTruePredicates(vehicle));
 		  }
 		
 		  //debug
 		  vehicle.setTargetVelocityWithMaxAccel(.5);
 	      vehicle.goStraight();
+	      
 
 		  
 		  }

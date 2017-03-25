@@ -30,6 +30,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package aim4.sim.setup;
 
+import aim4.map.BasicMap;
 import aim4.sim.Simulator;
 
 /**
@@ -57,4 +58,6 @@ public interface SimSetup {
    * @return the simulator
    */
   Simulator getSimulator();
+
+  
 }

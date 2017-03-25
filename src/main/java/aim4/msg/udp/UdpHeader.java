@@ -61,7 +61,7 @@ public class UdpHeader {
     I2V_Confirm,       // = 1,
     I2V_Reject,        // = 2,
     I2V_Acknowledge,   // = 3,
-    I2V_EmergencyStop, // = 4,   // TODO: delete this in the future.
+    I2V_EmergencyStop, // = 4,   // TODO_OG: delete this in the future.
     V2I_Request,       // = 5,
     V2I_Cancel,        // = 6,
     V2I_Done,          // = 7
@@ -91,7 +91,7 @@ public class UdpHeader {
    * A simple checksum to validate the UDP packet. UDP makes no effort
    * to protect against corrupted packets, so we attach a simple checksum
    * to each UDP package.
-   * TODO: computing the checksums and checksum checking
+   * TODO_OG: computing the checksums and checksum checking
    */
   private int checksum;
 
@@ -191,7 +191,7 @@ public class UdpHeader {
    * @return the check sum
    */
   public static int computeChecksum(byte[] data) {
-    // TODO: implement this function later
+    // TODO_OG: implement this function later
     return 0;
   }
 

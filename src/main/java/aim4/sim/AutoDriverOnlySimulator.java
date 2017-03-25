@@ -118,6 +118,7 @@ public class AutoDriverOnlySimulator implements Simulator {
   protected double currentTime;
   /** The number of completed vehicles */
   protected int numOfCompletedVehicles;
+  
   /** The total number of bits transmitted by the completed vehicles */
   protected int totalBitsTransmittedByCompletedVehicles;
   /** The total number of bits received by the completed vehicles */
@@ -253,6 +254,10 @@ public class AutoDriverOnlySimulator implements Simulator {
   public synchronized Set<VehicleSimView> getActiveVehicles() {
     return new HashSet<VehicleSimView>(vinToVehicles.values());
   }
+  
+  public synchronized int getNumActiveVehicles() {
+	  return getActiveVehicles().size();
+  }
 
   /**
    * {@inheritDoc}
@@ -311,7 +316,7 @@ public class AutoDriverOnlySimulator implements Simulator {
    *
    * @param timeStep  the time step
    */
-  private void spawnVehicles(double timeStep) {
+  protected void spawnVehicles(double timeStep) {
     for(SpawnPoint spawnPoint : basicMap.getSpawnPoints()) {
       List<SpawnSpec> spawnSpecs = spawnPoint.act(timeStep);
       if (!spawnSpecs.isEmpty()) {
@@ -321,7 +326,7 @@ public class AutoDriverOnlySimulator implements Simulator {
             VinRegistry.registerVehicle(vehicle); // Get vehicle a VIN number
             vinToVehicles.put(vehicle.getVIN(), vehicle);
             break; // only handle the first spawn vehicle
-                   // TODO: need to fix this
+                   // TODO_OG: need to fix this
           }
         } // else ignore the spawnSpecs and do nothing
       }
@@ -336,7 +341,7 @@ public class AutoDriverOnlySimulator implements Simulator {
    * @return Whether the spawn point can spawn any vehicle
    */
   private boolean canSpawnVehicle(SpawnPoint spawnPoint) {
-    // TODO: can be made much faster.
+    // TODO_OG: can be made much faster.
     Rectangle2D noVehicleZone = spawnPoint.getNoVehicleZone();
     for(VehicleSimView vehicle : vinToVehicles.values()) {
       if (vehicle.getShape().intersects(noVehicleZone)) {
@@ -649,7 +654,7 @@ public class AutoDriverOnlySimulator implements Simulator {
     if(nextVehicle.getShape().contains(pos)) {
       return 0.0;
     } else {
-      // TODO: make it more efficient
+      // TODO_OG: make it more efficient
       double interval = Double.MAX_VALUE ;
       for(Line2D edge : nextVehicle.getEdges()) {
         double dst = edge.ptSegDist(pos);
@@ -671,7 +676,7 @@ public class AutoDriverOnlySimulator implements Simulator {
    * @param vehicle  the vehicle
    */
   private void provideTrafficLightSignal(HumanDrivenVehicleSimView vehicle) {
-    // TODO: implement it later
+    // TODO_OG: implement it later
 //    DriverSimView driver = vehicle.getDriver();
 //    Lane currentLane = driver.getCurrentLane();
 //    Point2D pos = vehicle.getPosition();
@@ -818,7 +823,7 @@ public class AutoDriverOnlySimulator implements Simulator {
 //            broadcastMessages.add(msg);
 //          } else {
 //            // Otherwise, we just deliver it! Woo!
-//            // TODO: need to check whether the vehicle is AutoVehicleSpec
+//            // TODO_OG: need to check whether the vehicle is AutoVehicleSpec
 //            AutoVehicleSimView receiver =
 //              (AutoVehicleSimView)VinRegistry.getVehicleFromVIN(
 //                msg.getDestinationID());
@@ -850,7 +855,7 @@ public class AutoDriverOnlySimulator implements Simulator {
 ////        }
 ////      }
 //      // Determine who sent this message
-//      // TODO: need to check whether the vehicle is AutoVehicleSpec
+//      // TODO_OG: need to check whether the vehicle is AutoVehicleSpec
 //      AutoVehicleSimView sender =
 //        (AutoVehicleSimView)VinRegistry.getVehicleFromVIN(
 //          msg.getSourceID());
@@ -930,10 +935,10 @@ public class AutoDriverOnlySimulator implements Simulator {
     for(int vin : vinToVehicles.keySet()) {
       VehicleSimView v = vinToVehicles.get(vin);
       // If the vehicle is no longer in the layout
-      // TODO: this should be replaced with destination zone.
+      // TODO_OG: this should be replaced with destination zone.
       if(!v.getShape().intersects(mapBoundary)) {
         // Process all the things we need to from this vehicle
-        if (v instanceof AutoVehicleSimView) {
+        if (v instanceof AutoVehicleSimView) {//TODO problem?
           AutoVehicleSimView v2 = (AutoVehicleSimView)v;
           totalBitsTransmittedByCompletedVehicles += v2.getBitsTransmitted();
           totalBitsReceivedByCompletedVehicles += v2.getBitsReceived();

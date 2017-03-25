@@ -249,30 +249,6 @@ public class AutoDriverOnlySimSetup extends BasicSimSetup implements SimSetup {
                                         isEdgeTileTimeBufferEnabled,
                                         granularity);  // granularity
 
-/* for demo */
-/*
-    ReservationGridManager.Config gridConfig =
-      new ReservationGridManager.Config(SimConfig.TIME_STEP,
-                                        SimConfig.GRID_TIME_STEP,
-                                        0.25,  // staticBufferSize
-                                        0.0,   // internalTileTimeBufferSize
-                                        0.25,   // edgeTileTimeBufferSize
-                                        true,  // edgeTileTimeBufferSize
-                                        1.0);  // granularity
-*/
-
-/*  for Marvin */
-/*
-    ReservationGridManager.Config gridConfig =
-      new ReservationGridManager.Config(SimConfig.TIME_STEP,
-                                        SimConfig.GRID_TIME_STEP,
-                                        0.9,  // staticBufferSize
-                                        1.2,   // internalTileTimeBufferSize
-                                        1.2,   // edgeTileTimeBufferSize
-                                        true,  // edgeTileTimeBufferSize
-                                        1.0);  // granularity
-*/
-
     Debug.SHOW_VEHICLE_COLOR_BY_MSG_STATE = true;
 
     if (!isBaseLineMode) {

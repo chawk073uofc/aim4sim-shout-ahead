@@ -62,7 +62,7 @@ public class Reject extends I2VMessage {
      * The intersection manager has confirmed another request and cannot
      * guest a new request.
      */
-    CONFIRMED_ANOTHER_REQUEST,  // TODO: think about whether we can remove this
+    CONFIRMED_ANOTHER_REQUEST,  // TODO_OG: think about whether we can remove this
 
     // rejection due to poor timing
 

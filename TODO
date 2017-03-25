@@ -34,5 +34,51 @@ for sensing
 -------------------------
 aim4.util.GeomMath.findLineLineIntersection(Line2D, Line2D)
 
-change fields to buildings in SAsim
+add param - individuals per generation
+add parm - stratagies per generation
+
+root records
+	params
+		params1.xml
+		params2.xml
+		
+	fullEvoLearningRun - March 13
+		paramsUsed.xml
+		gen1
+			strategy1
+				rulesBefore.xml
+				rulesAfter.xml
+				stats.xml (ave completion time, num collisons etc)
+			strategy2
+				rulesBefore.xml
+				rulesAfter.xml
+				stats.xml  (ave completion time)
+			...
+		gen2
+			...
 	
+	-----
+**turbo mode
+**viewer.resetSimProcess()
+
+	todo
+
+1)	get sim1 to end
+
+2)  write gen1 s1 rulesA
+
+bypass setup screen on all but first sim run
+	press start to begin full learning run
+
+	have start call learning harness
+
+avoid xml
+	get params from setup class and prev rules from generation
+	plaintext records
+
+for each strat in gen
+	generate rand rule set
+	--> before.txt
+	
+
+

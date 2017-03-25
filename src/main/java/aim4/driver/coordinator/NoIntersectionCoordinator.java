@@ -76,7 +76,7 @@ public class NoIntersectionCoordinator implements Coordinator {
   @Override
   public void act() {
     pilot.simpleThrottleAction();
-    // TODO:  think how to remove dontEnterIntersection()
+    // TODO_OG:  think how to remove dontEnterIntersection()
     // in simpleThrottleAction()
   }
 

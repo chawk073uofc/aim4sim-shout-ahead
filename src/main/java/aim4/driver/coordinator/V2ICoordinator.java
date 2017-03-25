@@ -92,7 +92,7 @@ public class V2ICoordinator implements Coordinator {
 
   /**
    * The precision at which the arrival velocity is considered valid.
-   * TODO: it should be part of the confirmation message
+   * TODO_OG: it should be part of the confirmation message
    */
   private static final double ARRIVAL_VELOCITY_PRECISION = 3.0;
 
@@ -645,7 +645,7 @@ public class V2ICoordinator implements Coordinator {
 
   // reservation parameter
 
-  // TODO: may merge with the Proposal class in Request and eventually Confirm
+  // TODO_OG: may merge with the Proposal class in Request and eventually Confirm
 
   /**
    * Postprocessing the reservation parameters
@@ -1166,7 +1166,7 @@ public class V2ICoordinator implements Coordinator {
       // remove the acceleration profile.
       vehicle.removeAccelSchedule();
       setState(State.V2I_PLANNING);
-      // TODO: think whether it is better to let the state controller to
+      // TODO_OG: think whether it is better to let the state controller to
       // switch state.
     }
   }
@@ -1206,7 +1206,7 @@ public class V2ICoordinator implements Coordinator {
       goBackToPlanningStateUponRejection(msg);
       break;
     case CONFIRMED_ANOTHER_REQUEST:
-      // TODO: RETHINK WHAT WE SHOULD DO
+      // TODO_OG: RETHINK WHAT WE SHOULD DO
       goBackToPlanningStateUponRejection(msg);
       break;
     case BEFORE_NEXT_ALLOWED_COMM:
@@ -1434,7 +1434,7 @@ public class V2ICoordinator implements Coordinator {
           // To avoid the numerical errors that a zero velocity
           // becomes negative, fix it to be zero when it is the case.
           if (Util.isDoubleZero(v1)) {
-            v1 = 0.0;   // TODO: think how to get rid of this adjustment
+            v1 = 0.0;   // TODO_OG: think how to get rid of this adjustment
           }
         } else { // if there is no acceleration schedule
           if (Util.isDoubleNotZero(v1)) {
@@ -1609,7 +1609,7 @@ public class V2ICoordinator implements Coordinator {
       // can stop at the intersection.
 
       // Vehicles cannot have a prior acceleration schedule
-      // TODO: change it later to make it possible to make use of
+      // TODO_OG: change it later to make it possible to make use of
       // prior acceleration schedule
       if (vehicle.getAccelSchedule() != null) {
         System.err.printf("vin %d should not have an acceleration schedule " +
@@ -1762,7 +1762,7 @@ public class V2ICoordinator implements Coordinator {
      * parameters.
      */
     private boolean checkArrivalVelocity() {
-      // TODO: if the vehicle is already inside the intersection,
+      // TODO_OG: if the vehicle is already inside the intersection,
       // the arrival velocity may be slightly different.
       // thus this procedure is not correct and need to be removed.
       double v1 = rparameter.getArrivalVelocity();
@@ -2032,7 +2032,7 @@ public class V2ICoordinator implements Coordinator {
    *         way to the intersection
    */
   private boolean isLaneClearToIntersection() {
-    // TODO: need to fix this to make it better.
+    // TODO_OG: need to fix this to make it better.
     double d1 = driver.distanceToNextIntersection();
     if (d1 >= Double.MAX_VALUE) return true;  // no intersection
     double d2 = VehicleUtil.distanceToCarInFront(vehicle);

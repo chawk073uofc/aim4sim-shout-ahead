@@ -92,7 +92,7 @@ public class Real2ProxyPVUpdate extends Real2ProxyMsg {
     targetVelocity = (double)dis.readFloat();
     acceleration = (double)dis.readFloat();
     accelProfile = null;
-    // TODO: Marvin can't generate accelProfile yet. Thus, just leave it null
+    // TODO_OG: Marvin can't generate accelProfile yet. Thus, just leave it null
   }
 
   /////////////////////////////////

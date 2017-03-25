@@ -131,9 +131,8 @@ public class AutoV2VDriver extends AutoDriver {
   /////////////////////////////////
 
   public AutoV2VDriver(AutoVehicleDriverView vehicle, BasicMap basicMap) {
-    super(vehicle, basicMap);  // TODO: temporarily make it compilable. remove it later.
+    super(vehicle, basicMap);  // TODO_OG: temporarily make it compilable. remove it later.
     this.vehicle = vehicle;
-    // TODO Auto-generated constructor stub
   }
 
   /**

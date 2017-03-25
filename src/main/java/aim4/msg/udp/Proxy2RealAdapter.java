@@ -73,7 +73,7 @@ public abstract class Proxy2RealAdapter {
     dos.writeFloat((float) msg.getArrivalVelocity());
     double accel = msg.getAccelerationProfile().peek()[0];
     // ignore other acceleration for now
-    // TODO: fix it in the future
+    // TODO_OG: fix it in the future
     dos.writeFloat((float) accel);
 //    System.out.printf("I2V_Confirm: acceleration for car to use is %.2f\n",
 //                      accel);
@@ -160,7 +160,7 @@ public abstract class Proxy2RealAdapter {
   {
     DataOutputStream dos = new DataOutputStream(baos);
     UdpHeader header = new UdpHeader((float)currentTime, type);
-    // TODO: compute and set the checksum
+    // TODO_OG: compute and set the checksum
     header.writeToDataOutputStream(dos);
     return dos;
   }

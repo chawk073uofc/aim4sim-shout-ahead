@@ -620,7 +620,7 @@ public class GridMap implements BasicMap {
       System.err.printf("Cannot open file %s\n", outFileName);
       return;
     }
-    // TODO: sort by time and LineId and VIN
+    // TODO_OG: sort by time and LineId and VIN
     outfile.printf("VIN,Time,DCLname,vType,startLaneId,destRoad\n");
     for (DataCollectionLine line : dataCollectionLines) {
       for (int vin : line.getAllVIN()) {

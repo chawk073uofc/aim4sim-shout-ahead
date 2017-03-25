@@ -367,7 +367,7 @@ public class VehicleSpec {
   // DERIVED PROPERTIES
   /////////////////////////////////
 
-  // TODO: no use, remove getMaxTurnPerCycle()
+  // TODO_OG: no use, remove getMaxTurnPerCycle()
 
   /**
    * Get the maximum turn per cycle.

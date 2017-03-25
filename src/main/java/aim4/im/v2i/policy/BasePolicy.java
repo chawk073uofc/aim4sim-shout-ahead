@@ -702,7 +702,7 @@ public final class BasePolicy implements Policy, ExtendedBasePolicyCallback {
     return statCollector;
   }
 
-  // TODO: remove this function later.
+  // TODO_OG: remove this function later.
 
   /**
    * {@inheritDoc}

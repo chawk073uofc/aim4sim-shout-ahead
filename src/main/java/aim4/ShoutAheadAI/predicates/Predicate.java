@@ -17,7 +17,7 @@ import aim4.vehicle.VehicleSimView;
 /**
  * Defines predicates which form the conditions for ShoutAheadRules.
  * 
- * @author chrishawk_MacBookAir
+ * @author Chris Hawk
  *
  */
 public enum Predicate {
@@ -205,6 +205,7 @@ public enum Predicate {
 		public static String showTruePredicates(AutoVehicleSimView vehicle){
 			String str = "";
 			str += "TRUE PREDICATES FOR VEHICLE " + vehicle.getVIN() + ":\n\n";
+			str += "**Destination =" + vehicle.getDriver().getDestination() + "\n";
 			for(Predicate pred: Predicate.values()){
 				if(pred.isTrue(vehicle))
 					str += pred.name() + "\n";

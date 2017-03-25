@@ -190,7 +190,7 @@ public class ProxyVehicle extends BasicAutoVehicle
   @Override
   public void processReal2ProxyMsg(Real2ProxyMsg msg) {
     if (lastTimeStamp <= msg.receivedTime) {
-      // TODO: maybe currentIM should be put in ProxyDriver.
+      // TODO_OG: maybe currentIM should be put in ProxyDriver.
       IntersectionManager currentIM =
         getDriver().getCurrentLane().getLaneIM()
           .nextIntersectionManager(gaugePosition());
@@ -375,7 +375,7 @@ public class ProxyVehicle extends BasicAutoVehicle
   private Request convertReal2ProxyRequestToRequest(Real2ProxyRequest msg) {
     assert msg.vin == vin;  // the VIN number must match up
 
-    // TODO: should be in ProxyDriver
+    // TODO_OG: should be in ProxyDriver
     IntersectionManager currentIM =
       getDriver().getCurrentLane().getLaneIM()
         .nextIntersectionManager(gaugePosition());
@@ -388,7 +388,7 @@ public class ProxyVehicle extends BasicAutoVehicle
 //                                  arrivalLane,
 //                                  departureLane,
 //                                  currentIM);
-    double maxTurnVelocity = 7.5; // TODO: hard-code for now, need to fix it.
+    double maxTurnVelocity = 7.5; // TODO_OG: hard-code for now, need to fix it.
 
     List<Proposal> proposals = new LinkedList<Proposal>();
     proposals.add(new Proposal(arrivalLane.getId(),

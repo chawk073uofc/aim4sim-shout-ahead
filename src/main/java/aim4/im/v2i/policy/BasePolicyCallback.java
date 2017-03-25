@@ -85,6 +85,6 @@ public interface BasePolicyCallback {
   boolean hasReservation(int vin);
 
 
-  // TODO: remove this function
+  // TODO_OG: remove this function
   TrackModel getTrackMode();
 }

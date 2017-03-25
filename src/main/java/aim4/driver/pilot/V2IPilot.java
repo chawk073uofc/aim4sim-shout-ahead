@@ -159,7 +159,7 @@ public class V2IPilot extends BasicPilot {
    * empty, just cruise. Modifies the acceleration profile to reflect the
    * portion it has consumed.
    *
-   * TODO: do not modify the acceleration profile
+   * TODO_OG: do not modify the acceleration profile
    */
   public void followAccelerationProfile(ReservationParameter rp) {
     Queue<double[]> accelProf = rp.getAccelerationProfile();
@@ -239,7 +239,7 @@ public class V2IPilot extends BasicPilot {
    *         intersection given the Lane in which it is
    */
   private double calculateIntersectionVelocity(ReservationParameter rp) {
-    // TODO: remove this function
+    // TODO_OG: remove this function
     return VehicleUtil.maxTurnVelocity(vehicle.getSpec(),
                                        rp.getArrivalLane(),
                                        rp.getDepartureLane(),
@@ -312,7 +312,7 @@ public class V2IPilot extends BasicPilot {
   private double distIfStopNextTimeStep() {
     double distIfAccel = VehicleUtil.calcDistanceIfAccel(
         vehicle.gaugeVelocity(),
-        vehicle.getSpec().getMaxAcceleration(),  // TODO: why max accel here?
+        vehicle.getSpec().getMaxAcceleration(),  // TODO_OG: why max accel here?
         DriverUtil.calculateMaxFeasibleVelocity(vehicle),
         SimConfig.TIME_STEP);
     double distToStop = VehicleUtil.calcDistanceToStop(

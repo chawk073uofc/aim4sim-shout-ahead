@@ -99,7 +99,7 @@ public interface TrackModel {
   List<Lane> getSortedDepartureLanes(Lane arrivalLane, Road departure);
 
 
-  // TODO: remove this function
+  // TODO_OG: remove this function
   /**
    * Determine whether two trajectories overlap.  Errs on the side of caution.
    *

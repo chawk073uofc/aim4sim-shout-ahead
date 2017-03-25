@@ -109,7 +109,7 @@ public class BasicSimSetup implements SimSetup {
    */
   @Override
   public Simulator getSimulator() {
-    // TODO: think how to avoid using the following assertation.
+    // TODO_OG: think how to avoid using the following assertation.
     assert false : ("Cannot instantiate BasicSimSetup");
     return null;
   }
@@ -213,7 +213,7 @@ public class BasicSimSetup implements SimSetup {
     this.speedLimit = speedLimit;
   }
 
-  // TODO: maybe move to AutoDriverOnlySimSetup
+  // TODO_OG: maybe move to AutoDriverOnlySimSetup
 
   /**
    * {@inheritDoc}

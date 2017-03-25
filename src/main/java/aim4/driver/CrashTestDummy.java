@@ -113,7 +113,7 @@ public class CrashTestDummy extends Driver {
     return vehicle;
   }
 
-  // TODO: think about merging the following code with those in AutoV2IPilot
+  // TODO_OG: think about merging the following code with those in AutoV2IPilot
   // actually we don't need this because we will eventually remove this
   // class
 

@@ -33,7 +33,7 @@ package aim4.sim.setup;
 import aim4.sim.Simulator;
 import aim4.vehicle.VinRegistry;
 
-// TODO: probably remove this class
+// TODO_OG: probably remove this class
 
 /**
  * A simulator factory.
@@ -47,7 +47,7 @@ public class SimFactory {
    * @return a simulator
    */
   public static Simulator makeSimulator(SimSetup simSetup) {
-    VinRegistry.reset();   // TODO: should make it part of the simulator
+    VinRegistry.reset();   // TODO_OG: should make it part of the simulator
     System.gc();
     return simSetup.getSimulator();
   }

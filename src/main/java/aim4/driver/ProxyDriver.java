@@ -48,7 +48,6 @@ public class ProxyDriver extends AutoDriver {
    */
   public ProxyDriver(AutoVehicleDriverView vehicle, BasicMap basicMap) {
     super(vehicle, basicMap);
-    // TODO Auto-generated constructor stub
   }
 
   /**

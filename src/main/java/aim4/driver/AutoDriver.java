@@ -106,7 +106,7 @@ public class AutoDriver extends Driver
 
     if (coordinator == null || coordinator.isTerminated()) {
       IntersectionManager im = nextIntersectionManager();
-      // TODO: need to check type of intersection
+      // TODO_OG: need to check type of intersection
       if (im != null) {
         currentIM = im;
         coordinator = new V2ICoordinator(vehicle, this, basicMap);
@@ -171,7 +171,7 @@ public class AutoDriver extends Driver
 
   // IM
 
-  // TODO: these functions should be moved to pilot.
+  // TODO_OG: these functions should be moved to pilot.
 
   /**
    * Find the next IntersectionManager that the Vehicle will need to
@@ -184,7 +184,7 @@ public class AutoDriver extends Driver
    */
   @Override
   public IntersectionManager nextIntersectionManager() {
-    // TODO: maybe we should move this to the superclass
+    // TODO_OG: maybe we should move this to the superclass
     if(memoNextIntersectionManager == null) {
       memoNextIntersectionManager = super.nextIntersectionManager();
     }
@@ -202,7 +202,7 @@ public class AutoDriver extends Driver
    */
   @Override
   public double distanceToNextIntersection() {
-    // TODO: maybe we should move this to the superclass
+    // TODO_OG: maybe we should move this to the superclass
     if(memoDistanceToNextIntersection == null) {
       memoDistanceToNextIntersection = super.distanceToNextIntersection();
     }
@@ -221,7 +221,7 @@ public class AutoDriver extends Driver
    */
   @Override
   public double distanceFromPrevIntersection() {
-    // TODO: maybe we should move this to the superclass
+    // TODO_OG: maybe we should move this to the superclass
     if(memoDistanceFromPrevIntersection == null) {
       memoDistanceFromPrevIntersection = super.distanceFromPrevIntersection();
     }
@@ -259,7 +259,7 @@ public class AutoDriver extends Driver
    * @return      whether the Vehicle is currently in the area
    */
   private static boolean intersects(AutoVehicleDriverView v, Area area) {
-    // TODO: move this function to somewhere else.
+    // TODO_OG: move this function to somewhere else.
 
     // As a quick check, see if the front or rear point is in the intersection
     // Most of the time this should work

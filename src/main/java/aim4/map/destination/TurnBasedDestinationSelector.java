@@ -38,7 +38,7 @@ import aim4.map.Road;
 import aim4.map.lane.Lane;
 
 
-//TODO: Need to fix this class to avoid hard-coding
+//TODO_OG: Need to fix this class to avoid hard-coding
 
 /**
  * The turn based destination selector.

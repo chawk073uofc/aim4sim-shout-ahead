@@ -85,7 +85,7 @@ public abstract class BasicPilot {
     Point2D aimPoint =
       getDriver().getCurrentLane().getLeadPoint(getVehicle().gaugePosition(),
                                                 leadDist);
-    // TODO: do the following only when debugging
+    // TODO_OG: do the following only when debugging
     if (Debug.isTargetVIN(getVehicle().getVIN())) {
       Debug.addShortTermDebugPoint(new DebugPoint(aimPoint, getVehicle()
         .gaugePointBetweenFrontWheels(), "shift", Color.GREEN.brighter()));
@@ -93,7 +93,7 @@ public abstract class BasicPilot {
     getVehicle().turnTowardPoint(aimPoint);
   }
 
-  // TODO: what is the difference between followCurrentLane and followNewLane
+  // TODO_OG: what is the difference between followCurrentLane and followNewLane
 
 
   /////////////////////////////////

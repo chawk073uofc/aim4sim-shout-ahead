@@ -441,7 +441,7 @@ public class BatchModeRequestHandler implements RequestHandler {
     if (requestSC!=null) requestSC.incrTotalNumOfRequest();
 
     // If the vehicle has got a reservation already, reject it.
-    // TODO: think about multiple reservation of the same vehicle.
+    // TODO_OG: think about multiple reservation of the same vehicle.
     if (basePolicy.hasReservation(vin)) {
       basePolicy.sendRejectMsg(vin,
                                msg.getRequestId(),
@@ -611,7 +611,7 @@ public class BatchModeRequestHandler implements RequestHandler {
    */
   private void removeProposalsByVIN(int vin) {
     // search for the first indexed proposal with the given vin.
-    // TODO: maybe able to make it runs faster
+    // TODO_OG: maybe able to make it runs faster
     IndexedProposal selectedIndexedProposal = null;
     for(IndexedProposal iProposal : queue) {
       if (iProposal.getRequest().getVin() == vin) {

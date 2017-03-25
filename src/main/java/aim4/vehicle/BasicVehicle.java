@@ -1013,7 +1013,7 @@ public abstract class BasicVehicle implements VehicleSimView {
     // PUBLIC METHODS
     /////////////////////////////////
 
-    // TODO: rewrite the function to make it non-recursive.
+    // TODO_OG: rewrite the function to make it non-recursive.
 
     /**
      * {@inheritDoc}
@@ -1120,7 +1120,7 @@ public abstract class BasicVehicle implements VehicleSimView {
    * A gauge holding the current time, as known to the vehicle, in seconds.
    */
   private DoubleGauge clock = new DoubleGauge();
-  // TODO: think whether we should not allow human driven vehicle to have
+  // TODO_OG: think whether we should not allow human driven vehicle to have
   // a clock.
   /**
    * A gauge holding the global x-position of the vehicle, in meters.  Larger
@@ -1282,7 +1282,7 @@ public abstract class BasicVehicle implements VehicleSimView {
     return movement.getHeading();
   }
 
-  // TODO remove this after reorganizing getSteeringAngle
+  // TODO_OG remove this after reorganizing getSteeringAngle
 
   /**
    * Get the steering angle of the vehicle
@@ -1333,7 +1333,7 @@ public abstract class BasicVehicle implements VehicleSimView {
     if (movement instanceof AccelScheduleMovement) {
       return ((AccelScheduleMovement)movement).getAccelSchedule();
     } else {
-      // TODO: it should throw new UnsupportedOperationException()
+      // TODO_OG: it should throw new UnsupportedOperationException()
       // but for now, return null
       return null;
     }

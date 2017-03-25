@@ -459,7 +459,7 @@ public class ReservationGridManager implements
   // PRIVATE FIELDS
   /////////////////////////////////
 
-  // TODO: replace config with other things
+  // TODO_OG: replace config with other things
 
   /**
    * The configuration of this reservation grid manager.
@@ -629,7 +629,7 @@ public class ReservationGridManager implements
     Driver dummy = new CrashTestDummy(testVehicle, arrivalLane, departureLane);
 
     // assign the drive to the vehicle
-    // testVehicle.setDriver(dummy);  // TODO fix this later.
+    // testVehicle.setDriver(dummy);  // TODO_OG fix this later.
 
     // Keep track of the TileTimes that will make up this reservation
     FindTileTimesBySimulationResult fResult
@@ -705,7 +705,7 @@ public class ReservationGridManager implements
         "TestVehicle",
         spec.getMaxAcceleration(),
         spec.getMaxDeceleration(),
-        maxVelocity,  // TODO: why not one in msg.getSpec().getMaxVelocity()
+        maxVelocity,  // TODO_OG: why not one in msg.getSpec().getMaxVelocity()
         spec.getMinVelocity(),
         spec.getLength(),
         spec.getWidth(),
@@ -725,7 +725,7 @@ public class ReservationGridManager implements
       arrivalVelocity, // velocity
       0.0, // target velocity
       0.0, // Acceleration
-      0.0); // the current time   // TODO: need to think about the appropriate
+      0.0); // the current time   // TODO_OG: need to think about the appropriate
                                   // current time
 
     return testVehicle;
@@ -861,7 +861,7 @@ public class ReservationGridManager implements
     // Now control the vehicle's acceleration
     if(accelerating) {
       // Accelerate at maximum rate, topping out at maximum velocity
-      testVehicle.setMaxAccelWithMaxTargetVelocity();   // TODO: use other function instead of
+      testVehicle.setMaxAccelWithMaxTargetVelocity();   // TODO_OG: use other function instead of
                                   // setMaxAccelWithMaxTargetVelocity()
     } else {
       // Maintain a constant speed
@@ -869,7 +869,7 @@ public class ReservationGridManager implements
     }
     // Now move the vehicle
     testVehicle.move(duration);
-    // TODO: testVehicle.setClock();
+    // TODO_OG: testVehicle.setClock();
   }
 
   /**

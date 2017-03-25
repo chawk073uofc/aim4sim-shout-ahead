@@ -77,8 +77,11 @@ public class SimSetupPanel extends JPanel implements ItemListener {
   /** The Shout Ahead setup panel */
   private ShoutAheadParamPanel shoutAheadSetupPanel;
   
-  /** The simulation setup panel */
+  /** The simulation setup panel */ //not a setup panel(?)
   private BasicSimSetup simSetup;
+  
+  /** Shout Ahead setup class. Contains Shout Ahead default parameters*/
+  private ShoutAheadSimSetup shoutAheadSetup;
 
   /**
    * Create a simulation setup panel
@@ -87,7 +90,7 @@ public class SimSetupPanel extends JPanel implements ItemListener {
    */
   public SimSetupPanel(BasicSimSetup initSimSetup) {
     this.simSetup = initSimSetup;
-
+    this.shoutAheadSetup = new ShoutAheadSimSetup(initSimSetup);
     // create the combo box pane
     JPanel comboBoxPane = new JPanel(); //use FlowLayout
     comboBoxPane.setBackground(Color.WHITE);
@@ -115,7 +118,7 @@ public class SimSetupPanel extends JPanel implements ItemListener {
     
     cards.add(new JPanel(), STOP_SIGN_SETUP_PANEL);//undefined
     
-    shoutAheadSetupPanel = new ShoutAheadParamPanel(simSetup);
+    shoutAheadSetupPanel = new ShoutAheadParamPanel(shoutAheadSetup);
     addParamPanel(shoutAheadSetupPanel, SHOUT_AHEAD_SETUP_PANEL);
 
     // add the combo box pane and cards pane
@@ -181,6 +184,17 @@ public class SimSetupPanel extends JPanel implements ItemListener {
         simSetup3.setNumOfColumns(shoutAheadSetupPanel.getNumOfColumns());
         simSetup3.setNumOfRows(shoutAheadSetupPanel.getNumOfRows());
         simSetup3.setLanesPerRoad(shoutAheadSetupPanel.getLanesPerRoad());
+        
+        simSetup3.setSteeringDelta(shoutAheadSetupPanel.getSteeringAngleDeltaSlider());
+        simSetup3.setSpeedDelta(shoutAheadSetupPanel.getSpeedDeltaSlider());
+        simSetup3.setNumCarsPerSim(shoutAheadSetupPanel.getNumCarsPerSimSlider());
+        simSetup3.setNumPredsPerCond(shoutAheadSetupPanel.getNumPredsPerCondSlider());
+        simSetup3.setExplorationFactor(shoutAheadSetupPanel.getExplorationFactorSlider());
+        simSetup3.setLearningFactor(shoutAheadSetupPanel.getLearningFactorSlider());
+        simSetup3.setNumRoundsPerGeneration(shoutAheadSetupPanel.getNumRoundsPerGenerationSlider());
+        simSetup3.setNumGenerations(shoutAheadSetupPanel.getNumGenerationsSlider());
+        simSetup3.setNumRulesPerRuleSet(shoutAheadSetupPanel.getNumRulesPerRuleSet());
+        
         return simSetup3;
   	}else {
       throw new RuntimeException(
