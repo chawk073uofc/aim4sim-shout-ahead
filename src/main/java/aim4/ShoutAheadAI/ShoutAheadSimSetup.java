@@ -1,7 +1,6 @@
 
-package aim4.sim.setup;
+package aim4.ShoutAheadAI;
 
-import aim4.ShoutAheadAI.Strategy;
 import aim4.config.Debug;
 import aim4.config.SimConfig;
 import aim4.driver.pilot.V2IPilot;
@@ -11,8 +10,10 @@ import aim4.map.BasicMap;
 import aim4.map.GridMap;
 import aim4.map.GridMapUtil;
 import aim4.sim.AutoDriverOnlySimulator;
-import aim4.sim.ShoutAheadSimulator;
 import aim4.sim.Simulator;
+import aim4.sim.setup.AutoDriverOnlySimSetup;
+import aim4.sim.setup.BasicSimSetup;
+import aim4.sim.setup.SimSetup;
 
 /**
  * @author christopher.hawk
@@ -23,9 +24,10 @@ public class ShoutAheadSimSetup extends AutoDriverOnlySimSetup implements SimSet
 	private static double steeringDelta = 10.0;// degrees
 	private static double speedDelta = 5.0;// m/s
 	private static int numCarsPerSim = 8;
+	private static int maxNumActiveCars = 4;
 
-	private static int numPredsPerCond = 5;
-	private static int numRulesPerRuleSet = 10;
+	private static int numPredsPerCond = 2;
+	private static int numRulesPerRuleSet = 100;
 	private static double explorationFactor = 0.5;
 	private static double learningFactor = 0.5;
 	private static int numRoundsPerGeneration = 10;
@@ -47,10 +49,10 @@ public class ShoutAheadSimSetup extends AutoDriverOnlySimSetup implements SimSet
 		return new ShoutAheadSimulator(layout);
 	}
 	
-	public ShoutAheadSimulator getSimulator(Strategy strategy) {
+	public ShoutAheadSimulator getSimulator(Strategy strategy, Object simSyncObject) {
 		GridMap layout = getMap();
 		GridMapUtil.setUniformRandomSpawnPoints(layout, trafficLevel);
-		return new ShoutAheadSimulator(layout, strategy);
+		return new ShoutAheadSimulator(layout, strategy, simSyncObject);
 	}
 
 	public GridMap getMap() {
@@ -103,6 +105,20 @@ public class ShoutAheadSimSetup extends AutoDriverOnlySimSetup implements SimSet
 	 */
 	public void setNumCarsPerSim(int numCarsPerSim) {
 		ShoutAheadSimSetup.numCarsPerSim = numCarsPerSim;
+	}
+
+	/**
+	 * @return the maxNumActiveCars
+	 */
+	public static int getMaxNumActiveCars() {
+		return maxNumActiveCars;
+	}
+
+	/**
+	 * @param maxNumActiveCars the maxNumActiveCars to set
+	 */
+	public void setMaxNumActiveCars(int maxNumActiveCars) {
+		ShoutAheadSimSetup.maxNumActiveCars = maxNumActiveCars;
 	}
 
 	/**
@@ -213,6 +229,7 @@ public class ShoutAheadSimSetup extends AutoDriverOnlySimSetup implements SimSet
 				+ "\ndistanceBetween=" + distanceBetween + "\ntrafficLevel=" + trafficLevel
 				+ "\nstopDistBeforeIntersection=" + stopDistBeforeIntersection;
 	}
+
 
 
 }

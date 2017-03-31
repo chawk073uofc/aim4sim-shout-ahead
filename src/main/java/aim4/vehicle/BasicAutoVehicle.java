@@ -235,6 +235,14 @@ public class BasicAutoVehicle extends BasicVehicle
    * target lane, the balue should be Double.MAX_VALUE.
    */
   private DoubleGauge rearVehicleSpeedSensor = new DoubleGauge();
+  /**
+   * The number of times this vehicle has collided with another vehicle. 
+   */
+  private int vehicleCollisionCount = 0;
+  /**
+   * The number of times this vehicle has collided with a building. 
+   */
+  private int buildingCollisionCount = 0; 
 
 
   /////////////////////////////////
@@ -543,7 +551,34 @@ public class BasicAutoVehicle extends BasicVehicle
     return lastV2IMessage;
   }
 
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void incrementVehicleCollisionCount() {
+	  vehicleCollisionCount++;
+  }
+  
+  /**
+ * @return the vehicleCollisionCount
+ */
+public int getVehicleCollisionCount() {
+	return vehicleCollisionCount;
+}
 
 
+/**
+   * {@inheritDoc}
+   */
+  @Override
+  public void incrementBuildingCollisionCount() {
+	  buildingCollisionCount++;
+  }
+  /**
+   * @return the vehicleCollisionCount
+   */
+  public int getBuildingCollisionCount() {
+  	return buildingCollisionCount;
+  }
 
 }

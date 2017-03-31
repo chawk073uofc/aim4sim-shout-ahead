@@ -30,6 +30,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package aim4;
 
+import aim4.config.Debug;
 import aim4.gui.Viewer;
 import aim4.sim.setup.BasicSimSetup;
 
@@ -51,7 +52,7 @@ public class Main {
    *
    */
   public static void main(String[] args) {
-
+	
     // create the basic setup
 
     BasicSimSetup simSetup
@@ -66,6 +67,7 @@ public class Main {
                           1.0 // stop distance before intersection
                           );
 
-    new Viewer(simSetup);
+    new Viewer(simSetup, Debug.SHOUT_AHEAD_FAST_DEBUG_MODE);
+  
   }
 }

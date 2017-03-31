@@ -142,12 +142,12 @@ public interface BasicMap {
   void printDataCollectionLinesData(String outFileName);
   
   /**
-   * Get the list of green fields at the corners of the screen represented as rectangles.
-   * Vehicles should not enter a field. This method is specific to the default map that has one intersection and
+   * Get the list of grey buildings at the corners of the screen represented as rectangles.
+   * Vehicles should not intersect with a building. This method is specific to the default map that has one intersection and
    * three lanes per road. 
    * 
-   * @return the list of lines representing the boundaries between roads and grass.
+   * @return the list of lines representing the buildings in this map.
    */
-  List<Rectangle2D.Double> getFields();
+  List<Rectangle2D.Double> getBuildings();
   
 }

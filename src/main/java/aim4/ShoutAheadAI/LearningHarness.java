@@ -15,9 +15,8 @@ import java.util.concurrent.locks.Lock;
 
 import aim4.Main;
 import aim4.config.Debug;
+import aim4.config.DebugPoint;
 import aim4.gui.Viewer;
-import aim4.sim.ShoutAheadSimulator;
-import aim4.sim.setup.ShoutAheadSimSetup;
 import aim4.sim.setup.SimSetup;
 import aim4.vehicle.VinRegistry;
 
@@ -38,9 +37,11 @@ public class LearningHarness {
 	private Viewer simViewer;
 	private ShoutAheadSimulator simulator;
 	private ShoutAheadSimSetup simSetup;
+	/** Allows sim to notify Learning Harness when sim is complete */
+	private Object simSyncObject = new Object();
 
 	/**
-	 * @param viewer
+	 * @param simViewer
 	 * @param simSetup
 	 * @param args
 	 * 
@@ -48,8 +49,7 @@ public class LearningHarness {
 	public LearningHarness(ShoutAheadSimSetup setup, Viewer viewer) {
 		simSetup = setup;
 		simViewer = viewer;
-		// simulator = (ShoutAheadSimulator) viewer.getSimulator();
-
+		
 		setupRecordsDirectory(simSetup);
 
 		// MAIN LEARNING LOOP:
@@ -59,57 +59,34 @@ public class LearningHarness {
 			setupGenDirectory(currentGen);
 			for (Strategy strategy : currentGen) {
 				setupStratDirectory(strategy, currentGen);
-				VinRegistry.reset();   // from sim factory
-			    System.gc();
-				simulator = (ShoutAheadSimulator) simSetup.getSimulator(strategy);
-				// simulator = new ShoutAheadSimulator(simSetup.getMap(),
-				// strategy);
-				viewer.setSimulator(simulator);
-				viewer.startShoutAheadProcess();
-				waitForSim();
-				
-				//terminate?
+				initializeSimulation(strategy);
+				simViewer.startShoutAheadProcess();
+				DebugPoint dbp= new DebugPoint("this is a test");
+				waitForSimToComplete();
 			}
-			// stop sim
-
 		}
 	}
-	// simViewer.startSimProcess(simSetup);
-	// if(simulator != null && simulator.isComplete()) {
-	// simViewer.resetSimProcess();
-	// if(Debug.SHOW_LEARNING_STAGE) System.out.println("Evaluating strategy
-	// X\n");
-	// }
 
-	// Generation generation = new Generation();
+	private void initializeSimulation(Strategy strategy) {
+		VinRegistry.reset();  
+		System.gc();
+		simulator = (ShoutAheadSimulator) simSetup.getSimulator(strategy, simSyncObject);
+		simViewer.setSimulator(simulator);
+	}
 
-	// create paramaters.xml
-	// for each gen:
-	// generate genX from genX-1
-	// make genX dir
-	// for each strategy
-	// make stratX dir
-	// write beforeRL.xml
-	// do RL run until target num cars completed
-	// write afterRL.xml
-	// make stratX dir
-	// ...
 	/**
-	 * TODO: busy waiting. should change
+	 * Wait for simulation to complete.
 	 */
-	private void waitForSim() {
-		while(true) {
-			if(simulator.isComplete())
-				break;
+	private void waitForSimToComplete() {
+		synchronized(simSyncObject) {
+		    try {
+		    	simSyncObject.wait();
+		    } catch (InterruptedException e) {
+		    	e.printStackTrace();
+		    }
 		}
-	
-//		lock.lock();
-//		try {
-//			simulator.isComplete().await(); // releases lock and waits until
-//											// doSomethingElse is called
-//		} finally {
-//			lock.unlock();
-//		}
+		simViewer.pauseSimProcess();
+		simViewer.resetSimProcess();
 	}
 
 	private ArrayList<Strategy> evolve(ArrayList<Strategy> currentGen2) {

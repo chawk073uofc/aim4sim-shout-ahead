@@ -1,4 +1,4 @@
-package aim4.gui.parampanel;
+package aim4.ShoutAheadAI;
 
 
 import javax.swing.BoxLayout;
@@ -7,7 +7,6 @@ import javax.swing.JPanel;
 import aim4.ShoutAheadAI.predicates.Predicate;
 import aim4.gui.component.LabeledSlider;
 import aim4.sim.setup.BasicSimSetup;
-import aim4.sim.setup.ShoutAheadSimSetup;
 
 public class ShoutAheadParamPanel extends JPanel{
 	 private static final long serialVersionUID = 1L;
@@ -16,6 +15,7 @@ public class ShoutAheadParamPanel extends JPanel{
 	 LabeledSlider steeringAngleDeltaSlider;
 	 LabeledSlider speedDeltaSlider;
 	 LabeledSlider numCarsPerSimSlider;
+	 LabeledSlider maxNumActiveCarsSlider;
 	 
 	 LabeledSlider numPredsPerCondSlider;
 	 LabeledSlider rulesPerRuleRuleSetSlider;
@@ -65,7 +65,13 @@ public class ShoutAheadParamPanel extends JPanel{
 	    add(numCarsPerSimSlider);
 
 	    
-	
+	    maxNumActiveCarsSlider = 
+	    		new LabeledSlider(0.0, 50.0,
+                        ShoutAheadSimSetup.getMaxNumActiveCars(),
+                        10.0, 1.0,
+                        "Maximum Number of Active Cars: %.0f ",
+                        "%.0f");
+	    add(maxNumActiveCarsSlider);
 
 	    
 	    numPredsPerCondSlider =
@@ -250,7 +256,12 @@ public class ShoutAheadParamPanel extends JPanel{
 	public int getNumCarsPerSimSlider() {
 		return (int) numCarsPerSimSlider.getValue();
 	}
-
+	/**
+	 * @return the max number of active cars
+	 */
+	public int getMaxNumOfActiveCarsSlider() {
+		return (int) maxNumActiveCarsSlider.getValue();
+	}
 	/**
 	 * @return the numPredsPerCondSlider
 	 */

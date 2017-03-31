@@ -102,7 +102,7 @@ public abstract class Driver implements DriverSimView {
   @Override
   public void act() {
     if (Debug.isTargetVIN(getVehicle().getVIN())) {
-      if (getVehicle() instanceof AutoVehicleDriverView) {  // TODO: it is ugly
+      if (getVehicle() instanceof AutoVehicleDriverView) {  // TODOOG: it is ugly
         AutoVehicleDriverView autoVehicle =
           (AutoVehicleDriverView)getVehicle();
         if (autoVehicle.getIntervalometer().read() < MAX_INTERVAL_DISPLAY_DIST){

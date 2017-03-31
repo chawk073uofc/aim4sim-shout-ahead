@@ -270,6 +270,25 @@ public class Debug {
   public static final boolean DRAW_DEBUG_RECTANGLES = true;
 
   public static final boolean SHOW_FILE_SYS_INFO = false;
+  /**
+   * Start a learning run right away. Skip parameter selection.
+   */
+  public static final boolean SHOUT_AHEAD_FAST_DEBUG_MODE = true;
+	/**
+	 * Show the rule currently being used. 
+	 */
+	public static final boolean SHOW_RULE_USED = true;
+	/**
+	 * Show the strategy (rule sets) for a given simulation. 
+	 */
+	public static final boolean SHOW_STRATEGY = false;
+
+	public static final boolean SHOW_APPLICABLE_RULES = true;
+
+	public static final boolean GIVE_HEAD_START = true;
+
+	public static final boolean SHOW_COLLISION_STATUS = true;
+
 
   // TODO_OG: remove the following later.
   /**
@@ -353,6 +372,7 @@ public class Debug {
    */
   private static Map<Integer,Color> vinToVehicleColor =
     new HashMap<Integer,Color>();
+
 
   /**
    * Get the color of a vehicle.

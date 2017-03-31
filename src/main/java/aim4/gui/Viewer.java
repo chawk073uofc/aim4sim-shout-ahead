@@ -58,6 +58,8 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 
 import aim4.ShoutAheadAI.LearningHarness;
+import aim4.ShoutAheadAI.ShoutAheadSimSetup;
+import aim4.ShoutAheadAI.ShoutAheadSimulator;
 import aim4.config.Constants;
 import aim4.config.Debug;
 import aim4.config.SimConfig;
@@ -68,10 +70,8 @@ import aim4.map.lane.Lane;
 import aim4.sim.Simulator;
 import aim4.sim.UdpListener;
 import aim4.sim.AutoDriverOnlySimulator.AutoDriverOnlySimStepResult;
-import aim4.sim.ShoutAheadSimulator;
 import aim4.sim.Simulator.SimStepResult;
 import aim4.sim.setup.BasicSimSetup;
-import aim4.sim.setup.ShoutAheadSimSetup;
 import aim4.sim.setup.SimFactory;
 import aim4.sim.setup.SimSetup;
 import aim4.util.Util;
@@ -338,7 +338,7 @@ public class Viewer extends JFrame implements ActionListener, KeyListener,
      */
     private synchronized void runTurboMode() {
       double nextFastRunningStepTime = System.currentTimeMillis() + timeDelay;
-      while (!isStopped) {
+      while (!isStopped && sim != null) {
         runSimulationStep();
         // give GUI a chance to update the screen
         if (!updateScreenForOneStepInFastRunningMode()) {
@@ -350,11 +350,11 @@ public class Viewer extends JFrame implements ActionListener, KeyListener,
         }
         // check to see whether the time is up
         if (System.currentTimeMillis() >= nextFastRunningStepTime) {
-          break;
+          break; 
         }
       }
       // give GUI a chance to update the screen
-      updateScreenInTurboMode();
+      updateScreenInTurboMode(); //map appears here
       // if in stepping mode, just stop until resume() is called
       if (isSteppingMode) {
         isStopped = true;
@@ -548,7 +548,7 @@ public class Viewer extends JFrame implements ActionListener, KeyListener,
     addKeyListener(this);
 
     if (isRunNow) {
-      startButtonHandler(initSimSetup);
+      startButtonHandler(simSetupPanel.getSimSetup());
       canvas.requestFocusInWindow();
     }
   }
@@ -872,17 +872,24 @@ public class Viewer extends JFrame implements ActionListener, KeyListener,
    * @param initSimSetup  the initial simulation setup
    */
   private void startButtonHandler(SimSetup initSimSetup) {
-	if(shoutAheadSelected()){
-		learningThread = new LearningThread(this, (ShoutAheadSimSetup) initSimSetup);
-		learningThread.run();
-	} else if (simThread == null) {
-      startSimProcess(initSimSetup);
+	if (simThread == null) {
+		if(shoutAheadSelected()){
+			startLearningRun(initSimSetup);
+		}else{
+			startSimProcess(initSimSetup);
+			}
     } else if (!simThread.isPaused()) {
       pauseSimProcess();
     } else {
       resumeSimProcess();
     }
   }
+
+private void startLearningRun(SimSetup initSimSetup) {
+	learningThread = new LearningThread(this, (ShoutAheadSimSetup) initSimSetup);
+	Thread realLearningThread = new Thread(learningThread, "Learning Harness Thread");
+	realLearningThread.start();
+}
 
   /**
    * The handler when the user pressed the step button.
@@ -919,13 +926,15 @@ public class Viewer extends JFrame implements ActionListener, KeyListener,
 	    createSimThread();
 	    setSimStartGUIsetting();
 	    nextFrameTime = System.currentTimeMillis();
+	    if(Debug.SHOUT_AHEAD_FAST_DEBUG_MODE)
+	    	pauseSimProcess();
 	    simThread.start();
   }
 
   /**
    * Pause the simulation process.
    */
-  private void pauseSimProcess() {
+  public void pauseSimProcess() {
     assert simThread != null && !simThread.isPaused();
 
     simThread.pause();
@@ -1084,7 +1093,7 @@ public class Viewer extends JFrame implements ActionListener, KeyListener,
   private void runSimulationStep() {
     Debug.clearShortTermDebugPoints();
     SimStepResult simStepResult = sim.step(SimConfig.TIME_STEP);
-
+    //todo need if instance of SASSR? need SASSR?
     if (simStepResult instanceof AutoDriverOnlySimStepResult) {
       AutoDriverOnlySimStepResult simStepResult2 =
           (AutoDriverOnlySimStepResult) simStepResult;

@@ -1,23 +1,23 @@
 
-package aim4.sim;
+package aim4.ShoutAheadAI;
 
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
 
-import aim4.ShoutAheadAI.Strategy;
 import aim4.ShoutAheadAI.predicates.Predicate;
 import aim4.config.Debug;
 import aim4.driver.AutoDriver;
-import aim4.driver.ShoutAheadDriverAgent;
 import aim4.map.BasicMap;
 import aim4.map.GridMap;
 import aim4.map.Road;
 import aim4.map.SpawnPoint;
 import aim4.map.SpawnPoint.SpawnSpec;
 import aim4.map.lane.Lane;
+import aim4.sim.AutoDriverOnlySimulator;
+import aim4.sim.Simulator;
 import aim4.sim.AutoDriverOnlySimulator.AutoDriverOnlySimStepResult;
-import aim4.sim.setup.ShoutAheadSimSetup;
 import aim4.vehicle.AutoVehicleSimView;
 import aim4.vehicle.BasicAutoVehicle;
 import aim4.vehicle.VehicleSimView;
@@ -34,24 +34,25 @@ import aim4.vehicle.BasicVehicle;
  * simulation repeatedly.
  * 
  * 
- * 
  * @author christopher.hawk
  */
 public class ShoutAheadSimulator extends AutoDriverOnlySimulator implements Simulator {
 	private int targetNumCompleteVehicles = ShoutAheadSimSetup.getNumCarsPerSim();
-	private int maxActiveVehicles = 3;// TODO
+	private int maxActiveVehicles = ShoutAheadSimSetup.getMaxNumActiveCars();
 	private Strategy strategy;
+	private boolean complete = false;
+	private Object simSyncObject;
 
 	public ShoutAheadSimulator(BasicMap basicMap) {
 		super(basicMap);
 		Predicate.sim = this;
 	}
 
-	public ShoutAheadSimulator(GridMap basicMap, Strategy strategy) {
+	public ShoutAheadSimulator(GridMap basicMap, Strategy strategy, Object simSyncObject) {
 		super(basicMap);
 		Predicate.sim = this;
 		this.strategy = strategy;
-
+		this.simSyncObject = simSyncObject;
 	}
 
 	// the main loop
@@ -61,39 +62,79 @@ public class ShoutAheadSimulator extends AutoDriverOnlySimulator implements Simu
 	 */
 	@Override
 	public synchronized AutoDriverOnlySimStepResult step(double timeStep) {
+		if(complete)
+			notifyLearningHarness();
 		if (Debug.PRINT_SIMULATOR_STAGE) {
 			System.err.printf("--------------------------------------\n");
 			System.err.printf("------SIM:spawnVehicles---------------\n");
 		}
 		// limit the number of active vehicles
-		if ((getNumActiveVehicles() < maxActiveVehicles) && !isComplete())
+		if ((getNumActiveVehicles() < maxActiveVehicles) && !complete)
 			spawnVehicles(timeStep);
 		if (Debug.PRINT_SIMULATOR_STAGE) {
 			System.err.printf("------SIM:letDriversAct---------------\n");
 		}
+		 if(Debug.SHOW_STRATEGY){
+			System.out.println(strategy);  
+		  }
 		letDriversAct();
 		if (Debug.PRINT_SIMULATOR_STAGE) {
 			System.err.printf("------SIM:communication---------------\n");
 		}
-//		communication();// TODO: remove?
+//		communication();// TODO: remove? - replace with shout ahead?
 //		if (Debug.PRINT_SIMULATOR_STAGE) {
 //			System.err.printf("------SIM:moveVehicles---------------\n");
 //		}
 		moveVehicles(timeStep);
 		if (Debug.PRINT_SIMULATOR_STAGE) {
-			System.err.printf("------SIM:cleanUpCompletedVehicles---------------\n");
+			System.err.printf("------SIM: detectCollisions---------------\n");
 		}
 		detectCollisions();
+		if (Debug.PRINT_SIMULATOR_STAGE) {
+			System.err.printf("------SIM:cleanUpCompletedVehicles---------------\n");
+		}
 		List<Integer> completedVINs = cleanUpCompletedVehicles();
 		currentTime += timeStep;
-
+		complete = isComplete();
+		if (complete && Debug.PRINT_SIMULATOR_STAGE){
+				System.err.printf("------SIM COMPLETE---------------\n");
+		}
 		return new AutoDriverOnlySimStepResult(completedVINs);
 	}
 
-	private void detectCollisions() {
-		// TODO collision detection
-		
+	private void notifyLearningHarness() {
+		synchronized(simSyncObject) {
+			simSyncObject.notify();
+		}
 	}
+
+	private void detectCollisions() {
+		if(!vinToVehicles.isEmpty()){
+			detectVehicleCollisions();
+		    detectBuildingCollisions();	
+		  }
+	}
+
+	private void detectBuildingCollisions() {
+		for(VehicleSimView vehicle: vinToVehicles.values()){
+		    for(Rectangle2D building: basicMap.getBuildings()){
+		    	if(vehicle.getShape().intersects(building)){
+		    		vehicle.incrementBuildingCollisionCount();
+		    	}
+		    }
+		}
+	}
+
+	private void detectVehicleCollisions() {
+		VehicleSimView v1 = (VehicleSimView) vinToVehicles.values().toArray()[0];
+		for(VehicleSimView v2 : vinToVehicles.values()) {
+			if(v1.getShape().intersects(v2.getShape().getBounds2D()) && v1 != v2){
+				v1.incrementVehicleCollisionCount();
+				v2.incrementVehicleCollisionCount();
+			}
+		}
+	}
+	
 
 	/**
 	 * Create a vehicle at a spawn point with a ShoutAheadDriverAgent
@@ -129,5 +170,33 @@ public class ShoutAheadSimulator extends AutoDriverOnlySimulator implements Simu
 
 	public boolean isComplete() {
 		return numOfCompletedVehicles >= targetNumCompleteVehicles;
+	}
+
+	public Strategy getStrategy() {
+		return strategy;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("ShoutAheadSimulator [targetNumCompleteVehicles=");
+		builder.append(targetNumCompleteVehicles);
+		builder.append(", maxActiveVehicles=");
+		builder.append(maxActiveVehicles);
+		builder.append(", strategy=");
+		builder.append(strategy);
+		builder.append(", complete=");
+		builder.append(complete);
+		builder.append(", vinToVehicles=");
+		builder.append(vinToVehicles);
+		builder.append(", currentTime=");
+		builder.append(currentTime);
+		builder.append(", numOfCompletedVehicles=");
+		builder.append(numOfCompletedVehicles);
+		builder.append("]");
+		return builder.toString();
 	}
 }

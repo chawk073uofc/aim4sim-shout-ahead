@@ -36,9 +36,9 @@ import java.awt.geom.Point2D;
 import java.util.List;
 import java.util.Queue;
 
+import aim4.ShoutAheadAI.ShoutAheadDriverAgent;
 import aim4.driver.AutoDriver;
 import aim4.driver.Driver;
-import aim4.driver.ShoutAheadDriverAgent;
 import aim4.msg.v2i.V2IMessage;
 
 /**
@@ -236,5 +236,13 @@ public interface VehicleSimView extends VehicleDriverView {
    * @param timeStep the size of the time step to simulate, in seconds
    */
   void move(double timeStep);
+  /**
+   * Increments the number of times a vehicle has collided with another vehicle. 
+   */
+  void incrementVehicleCollisionCount();
+  /**
+   * Increments the number of times a vehicle has collided with a building. 
+   */
+  void incrementBuildingCollisionCount();
 
 }

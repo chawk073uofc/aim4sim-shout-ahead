@@ -9,7 +9,7 @@ import java.awt.geom.Rectangle2D;
 import java.util.Random;
 import java.util.Set;
 
-import aim4.sim.ShoutAheadSimulator;
+import aim4.ShoutAheadAI.ShoutAheadSimulator;
 import aim4.util.GeomMath;
 import aim4.vehicle.AutoVehicleSimView;
 import aim4.vehicle.VehicleSimView;
@@ -47,7 +47,6 @@ public enum Predicate {
 			}
 		},
 	//POSITION PREDICATES
-		//TODO: make sure destination of driver agents is set correctly
 		DESTINATION_NORTH_OF_VEHICLE{
 			@Override
 			public boolean isTrue(AutoVehicleSimView vehicle){
@@ -248,7 +247,7 @@ public enum Predicate {
 					return true;
 			}
 			//detect nearby buildings
-			for(Rectangle2D.Double building : sim.getMap().getFields()){
+			for(Rectangle2D.Double building : sim.getMap().getBuildings()){
 				if(line.intersects(building))
 					return true;
 			}

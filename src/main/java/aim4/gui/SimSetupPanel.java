@@ -41,14 +41,15 @@ import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
+import aim4.ShoutAheadAI.ShoutAheadParamPanel;
+import aim4.ShoutAheadAI.ShoutAheadSimSetup;
+import aim4.config.Debug;
 import aim4.gui.parampanel.AutoDriverOnlyParamPanel;
-import aim4.gui.parampanel.ShoutAheadParamPanel;
 import aim4.gui.parampanel.TrafficSignalParamPanel;
 import aim4.sim.setup.ApproxStopSignSimSetup;
 import aim4.sim.setup.ApproxNPhasesTrafficSignalSimSetup;
 import aim4.sim.setup.AutoDriverOnlySimSetup;
 import aim4.sim.setup.BasicSimSetup;
-import aim4.sim.setup.ShoutAheadSimSetup;
 import aim4.sim.setup.SimSetup;
 
 /**
@@ -145,6 +146,8 @@ public class SimSetupPanel extends JPanel implements ItemListener {
    * @return the simulation setup object
    */
   public SimSetup getSimSetup() {
+	if(Debug.SHOUT_AHEAD_FAST_DEBUG_MODE)
+		comboBox.setSelectedIndex(3);
     if (comboBox.getSelectedIndex() == 0) {
       AutoDriverOnlySimSetup simSetup2 = new AutoDriverOnlySimSetup(simSetup);
       simSetup2.setTrafficLevel(autoDriverOnlySetupPanel.getTrafficRate());
@@ -188,6 +191,7 @@ public class SimSetupPanel extends JPanel implements ItemListener {
         simSetup3.setSteeringDelta(shoutAheadSetupPanel.getSteeringAngleDeltaSlider());
         simSetup3.setSpeedDelta(shoutAheadSetupPanel.getSpeedDeltaSlider());
         simSetup3.setNumCarsPerSim(shoutAheadSetupPanel.getNumCarsPerSimSlider());
+        simSetup3.setMaxNumActiveCars(shoutAheadSetupPanel.getMaxNumOfActiveCarsSlider());
         simSetup3.setNumPredsPerCond(shoutAheadSetupPanel.getNumPredsPerCondSlider());
         simSetup3.setExplorationFactor(shoutAheadSetupPanel.getExplorationFactorSlider());
         simSetup3.setLearningFactor(shoutAheadSetupPanel.getLearningFactorSlider());

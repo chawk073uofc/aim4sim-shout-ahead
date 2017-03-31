@@ -3,7 +3,6 @@ package aim4.ShoutAheadAI;
 import java.util.ArrayList;
 import java.util.Random;
 
-import aim4.sim.setup.ShoutAheadSimSetup;
 import aim4.vehicle.AutoVehicleSimView;
 
 /**
@@ -12,7 +11,7 @@ import aim4.vehicle.AutoVehicleSimView;
  *
  */
 public class RuleSet {
-	private int numRules = ShoutAheadSimSetup.getNumRulesPerRuleSet(); 	//TODO: get numRules from config file set in param panel
+	private int numRules = ShoutAheadSimSetup.getNumRulesPerRuleSet(); 
 	private ArrayList<Rule> rules = new ArrayList<Rule>();
 	private Random rand = new Random();//for probabilistic selection of rules
 	private double explorationFactor = ShoutAheadSimSetup.getExplorationFactor();
@@ -30,14 +29,14 @@ public class RuleSet {
 	}
 	
 	
-	public Rule getRuleToFollow(AutoVehicleSimView vehicle) {
+	public Rule getRuleToFollow(AutoVehicleSimView vehicle) throws NoApplicableRulesException {
 		
 		//TODO: add the higher-level decision function 
 		  Rule ruleToFollow = null;
 
 		 ArrayList<Rule> applicableRules = getApplicableRules(vehicle); //get set of rules having true conditions in this situation
 		  if(applicableRules.isEmpty()){
-			  //TODO: do nothing. no app rules exception 
+			  throw new NoApplicableRulesException(vehicle);
 		  }
 		  else {
 			  ArrayList<Rule> appRulesWithMaxWeight = getAppRulesWithMaxWeight(applicableRules);
@@ -60,7 +59,7 @@ public class RuleSet {
 	 * @param vehicle TODO
 	 * @return a set of rules having true conditions in the current situation.
 	 */
-	private ArrayList<Rule> getApplicableRules(AutoVehicleSimView vehicle) {
+	public ArrayList<Rule> getApplicableRules(AutoVehicleSimView vehicle) {
 		ArrayList<Rule> applicableRules = new ArrayList<Rule>();
 		for(Rule rule: rules){
 			if (rule.isApplicable(vehicle))
@@ -141,7 +140,7 @@ public class RuleSet {
 	
 	@Override
 	public String toString() {
-		String str = "";
+		String str = "Rule Set:\n";
 		for(Rule rule: rules)
 			str += rule + "\n";
 		return str;

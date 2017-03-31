@@ -10,4 +10,12 @@ package aim4.ShoutAheadAI;
  */
 public class ShoutAheadRuleSet extends RuleSet {
 
+	@Override
+	public String toString() {
+		String str = "Shout Ahead Rule Set:\n";
+//		for(Rule rule: rules)
+//			str += rule + "\n";
+		str += "not yet implemented\n";
+		return str;
+	}
 }

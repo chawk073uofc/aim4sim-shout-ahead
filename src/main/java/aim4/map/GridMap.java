@@ -640,26 +640,26 @@ public class GridMap implements BasicMap {
   	 * {@inheritDoc}
   	 */
 	@Override
-	public List<Rectangle2D.Double> getFields() {
-		List<Rectangle2D.Double> fields = new ArrayList<Rectangle2D.Double>();
-		//get field width
+	public List<Rectangle2D.Double> getBuildings() {
+		List<Rectangle2D.Double> buildings = new ArrayList<Rectangle2D.Double>();
+		//get building width
 		Double laneWidth = getRoads().get(0).getLanes().get(0).getWidth();
-		Double fieldWidth = (getDimensions().getWidth() / 2) - (laneWidth * 3);
-		//get field height
-		Double fieldHeight = (getDimensions().getHeight() / 2) - (laneWidth * 3);
-		//upper right field
-		Rectangle2D.Double northWestField = new Rectangle2D.Double(0, 0, fieldWidth, fieldHeight);
-		fields.add(northWestField);
-		//upper left field
-		Rectangle2D.Double northEastField = new Rectangle2D.Double(fieldWidth + laneWidth*6, 0, fieldWidth, fieldHeight);
-		fields.add(northEastField);
-		//lower left field
-		Rectangle2D.Double southWestField = new Rectangle2D.Double(0, fieldHeight+laneWidth*6, fieldWidth, fieldHeight);
-		fields.add(southWestField);
-		//lower right field
-		Rectangle2D.Double southEastField = new Rectangle2D.Double(fieldWidth + laneWidth*6, fieldHeight+laneWidth*6, fieldWidth, fieldHeight);
-		fields.add(southEastField);
-		return fields;
+		Double buildingWidth = (getDimensions().getWidth() / 2) - (laneWidth * 3);
+		//get building height
+		Double buildingHeight = (getDimensions().getHeight() / 2) - (laneWidth * 3);
+		//upper right building
+		Rectangle2D.Double northWestbuilding = new Rectangle2D.Double(0, 0, buildingWidth, buildingHeight);
+		buildings.add(northWestbuilding);
+		//upper left building
+		Rectangle2D.Double northEastbuilding = new Rectangle2D.Double(buildingWidth + laneWidth*6, 0, buildingWidth, buildingHeight);
+		buildings.add(northEastbuilding);
+		//lower left building
+		Rectangle2D.Double southWestbuilding = new Rectangle2D.Double(0, buildingHeight+laneWidth*6, buildingWidth, buildingHeight);
+		buildings.add(southWestbuilding);
+		//lower right building
+		Rectangle2D.Double southEastbuilding = new Rectangle2D.Double(buildingWidth + laneWidth*6, buildingHeight+laneWidth*6, buildingWidth, buildingHeight);
+		buildings.add(southEastbuilding);
+		return buildings;
 	}
 
   

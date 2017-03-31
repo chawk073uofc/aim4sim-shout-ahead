@@ -2,15 +2,16 @@ package aim4.ShoutAheadAI;
 
 import java.util.Random;
 
-import aim4.sim.setup.ShoutAheadSimSetup;
 import aim4.vehicle.AutoVehicleSimView;
 
 public enum Action {
+	/**
+	 * Do nothing. Maintain current target velocity and steering angle. 
+	 */
 	CRUISE {
 		@Override
 		public void execute(AutoVehicleSimView vehicle) {
-			//TODO
-			
+			//Do nothing
 		}
 	},
 	GO_STRAIGHT {

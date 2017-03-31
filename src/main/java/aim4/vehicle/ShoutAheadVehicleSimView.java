@@ -1,7 +1,7 @@
 package aim4.vehicle;
 
+import aim4.ShoutAheadAI.ShoutAheadDriverAgent;
 import aim4.driver.ProxyDriver;
-import aim4.driver.ShoutAheadDriverAgent;
 
 /**
  * The interface of a shout ahead vehicle from the viewpoint of a simulator.

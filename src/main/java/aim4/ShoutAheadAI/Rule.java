@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.TreeSet;
 import aim4.ShoutAheadAI.predicates.Predicate;
-import aim4.sim.setup.ShoutAheadSimSetup;
+import aim4.config.Debug;
 import aim4.vehicle.AutoVehicleDriverView;
 import aim4.vehicle.AutoVehicleSimView;
 
@@ -47,7 +47,9 @@ public class Rule {
 	 */
 	public boolean isApplicable(AutoVehicleSimView vehicle){
 		for(Predicate p: condition){
-			if (!p.isTrue(vehicle)) return false;
+			if (!p.isTrue(vehicle)) {
+				return false;
+			}
 		}
 		return true;
 	}
@@ -61,6 +63,8 @@ public class Rule {
 	 * Follow the rule i.e. take the action. 
 	 */
 	public void execute(AutoVehicleSimView vehicle){
+		if(Debug.SHOW_RULE_USED)
+			System.out.println("Vehicle " + vehicle.getVIN() + "Following rule \n" + this);
 		action.execute(vehicle);
 	}
 	

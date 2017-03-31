@@ -64,6 +64,7 @@ import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
+import aim4.ShoutAheadAI.ShoutAheadDriverAgent;
 import aim4.config.Debug;
 import aim4.config.DebugPoint;
 import aim4.driver.AutoDriver;
@@ -87,6 +88,7 @@ import aim4.msg.v2i.V2IMessage;
 import aim4.sim.Simulator;
 import aim4.util.Util;
 import aim4.vehicle.AutoVehicleSimView;
+import aim4.vehicle.BasicAutoVehicle;
 import aim4.vehicle.VehicleSimView;
 import java.io.InputStream;
 
@@ -149,10 +151,14 @@ public class Canvas extends JPanel
 	private static final Color VEHICLE_HAS_RESERVATION_COLOR = Color.WHITE;
 	/** The color of vehicles that are waiting for a response */
 	private static final Color VEHICLE_WAITING_FOR_RESPONSE_COLOR = Color.blue.brighter().brighter().brighter();
+	/**The color of vehicles that have collided with other vehicles*/
+	private static final Color HAS_COLLIDED_WITH_VEHICLE_COLOR = Color.RED;
+	/**The color of vehicles that have collided with buildings*/
+	private static final Color HAS_COLLIDED_WITH_BUILDING_COLOR = Color.PINK;
 	/** MARVIN's coloring */
 	private static final int MARVIN_VEHICLE_VIN = 42;
 	/** MARVIN's color */
-	private static final Color MARVIN_VEHICLE_COLOR = Color.RED;
+	private static final Color MARVIN_VEHICLE_COLOR = Color.GREEN;
 	/** The colors that emergency Vehicles cycle through. */
 	// private static final Color[] EMERGENCY_VEHICLE_COLORS =
 	// { Color.RED, Color.BLUE };
@@ -538,7 +544,7 @@ public class Canvas extends JPanel
 		drawDataCollectionLines(bgBuffer, map.getDataCollectionLines());
 
 		if (Debug.DRAW_DEBUG_RECTANGLES) {
-			for (Rectangle2D rec : map.getFields())
+			for (Rectangle2D rec : map.getBuildings())
 				drawRectangle(bgBuffer, rec);
 		}
 
@@ -812,11 +818,23 @@ public class Canvas extends JPanel
 	 *            the current simulated time
 	 */
 	private void drawVehicle(Graphics2D buffer, VehicleSimView vehicle, double currentTime) {
+		buffer.setPaint(VEHICLE_COLOR);
 		// whether the vehicle is selected
 		boolean selectedVehicle = (Debug.getTargetVIN() == vehicle.getVIN());
 		// check to see if we use another color
 		if (selectedVehicle) {
 			buffer.setPaint(VEHICLE_SELECTED_COLOR);
+		} else if (Debug.SHOW_COLLISION_STATUS && vehicle.getDriver() instanceof ShoutAheadDriverAgent) {
+			BasicAutoVehicle veh = (BasicAutoVehicle) vehicle; 
+			if(veh.getVehicleCollisionCount() > 0){
+				buffer.setPaint(HAS_COLLIDED_WITH_VEHICLE_COLOR);
+			}
+			else if(veh.getBuildingCollisionCount() > 0) {
+				buffer.setPaint(HAS_COLLIDED_WITH_BUILDING_COLOR);
+			}
+			else{
+				buffer.setPaint(VEHICLE_COLOR);
+			}
 		} else if (vehicle.getVIN() == MARVIN_VEHICLE_VIN) {
 			buffer.setPaint(MARVIN_VEHICLE_COLOR);
 		} else if (Debug.getVehicleColor(vehicle.getVIN()) != null) {
@@ -839,6 +857,7 @@ public class Canvas extends JPanel
 			} else {
 				buffer.setPaint(VEHICLE_COLOR); // the default color
 			}
+			
 		} else {
 			buffer.setPaint(VEHICLE_COLOR); // the default color
 		}

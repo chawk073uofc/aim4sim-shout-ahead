@@ -5,8 +5,6 @@ package aim4.ShoutAheadAI;
 
 import java.util.ArrayList;
 
-import aim4.sim.setup.ShoutAheadSimSetup;
-
 /**
  * A Generation is made up of a number of strategies (rule sets). 
  *  
