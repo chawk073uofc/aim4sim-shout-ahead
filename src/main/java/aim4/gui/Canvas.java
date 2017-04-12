@@ -65,6 +65,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 import aim4.ShoutAheadAI.ShoutAheadDriverAgent;
+import aim4.ShoutAheadAI.LearningRun;
 import aim4.config.Debug;
 import aim4.config.DebugPoint;
 import aim4.driver.AutoDriver;
@@ -225,6 +226,8 @@ public class Canvas extends JPanel
 	private static final Font SIMULATION_TIME_STRING_FONT = new Font("Monospaced", Font.PLAIN, 18);
 	/** Simulation time location X */
 	private static final int SIMULATION_TIME_LOCATION_X = 12;
+	/** Learning stage location X */
+	private static final int LEARNING_STAGE_LOCATION_X = 325;
 	/** Simulation time location Y */
 	private static final int SIMULATION_TIME_LOCATION_Y = 24;
 	// the highlighted vehicle
@@ -247,6 +250,8 @@ public class Canvas extends JPanel
 	private static final Color TRACK_COLOR = Color.RED;
 	/** The stroke of the track */
 	private static final Stroke TRACK_STROKE = new BasicStroke(0.3f);
+	/**If a car has just hit an obstacle, indicate this by changing its color for this many cycles*/
+	private static final int SHOW_HAS_HIT_OBSTACLE_COUNT = 100;
 	/////////////////////////////////
 	// PRIVATE FIELDS
 	/////////////////////////////////
@@ -303,6 +308,8 @@ public class Canvas extends JPanel
 	 * debugging shapes.
 	 */
 	private boolean isShowIMDebugShapes;
+	private int showHasHitCarCount = 0;
+	private int showHasHitBuildingCount = 0;
 
 	/////////////////////////////////
 	// CLASS CONSTRUCTORS
@@ -546,6 +553,10 @@ public class Canvas extends JPanel
 		if (Debug.DRAW_DEBUG_RECTANGLES) {
 			for (Rectangle2D rec : map.getBuildings())
 				drawRectangle(bgBuffer, rec);
+		}
+		
+		if(Debug.DRAW_LEARNING_STAGE){
+			drawLearningStage(bgBuffer, LearningRun.getLearningStage());
 		}
 
 		return bgImage;
@@ -826,11 +837,20 @@ public class Canvas extends JPanel
 			buffer.setPaint(VEHICLE_SELECTED_COLOR);
 		} else if (Debug.SHOW_COLLISION_STATUS && vehicle.getDriver() instanceof ShoutAheadDriverAgent) {
 			BasicAutoVehicle veh = (BasicAutoVehicle) vehicle; 
-			if(veh.getVehicleCollisionCount() > 0){
-				buffer.setPaint(HAS_COLLIDED_WITH_VEHICLE_COLOR);
+			ShoutAheadDriverAgent driver = (ShoutAheadDriverAgent) veh.getDriver();
+			if(driver.getHasJustHitCar()){
+				showHasHitCarCount = SHOW_HAS_HIT_OBSTACLE_COUNT;
 			}
-			else if(veh.getBuildingCollisionCount() > 0) {
+			else if(driver.getHasJustHitBuilding()) {
+				showHasHitBuildingCount = SHOW_HAS_HIT_OBSTACLE_COUNT;
+			}
+			if(showHasHitCarCount > 0){
+				buffer.setPaint(HAS_COLLIDED_WITH_VEHICLE_COLOR);
+				showHasHitCarCount--;
+			}
+			else if(showHasHitBuildingCount > 0){
 				buffer.setPaint(HAS_COLLIDED_WITH_BUILDING_COLOR);
+				showHasHitBuildingCount--;
 			}
 			else{
 				buffer.setPaint(VEHICLE_COLOR);
@@ -1030,6 +1050,27 @@ public class Canvas extends JPanel
 		buffer.setColor(SIMULATION_TIME_STRING_COLOR);
 		buffer.setFont(SIMULATION_TIME_STRING_FONT);
 		buffer.drawString(String.format("%.2fs", currentTime), SIMULATION_TIME_LOCATION_X, SIMULATION_TIME_LOCATION_Y);
+		// Restore the original transform.
+		buffer.setTransform(tf);
+	}
+	
+	/**
+	 * Draw the learning stage.
+	 *
+	 * @param buffer
+	 *            the display buffer
+	 * @param learningStage
+	 *            the current learning stage description
+	 */
+	private void drawLearningStage(Graphics2D buffer, String learningStage) {
+		// Save the current transform so we can restore it.
+		AffineTransform tf = buffer.getTransform();
+		// Set the identity transform
+		buffer.setTransform(IDENTITY_TRANSFORM);
+		// Draw the time
+		buffer.setColor(SIMULATION_TIME_STRING_COLOR);
+		buffer.setFont(SIMULATION_TIME_STRING_FONT);
+		buffer.drawString(learningStage, LEARNING_STAGE_LOCATION_X, SIMULATION_TIME_LOCATION_Y);
 		// Restore the original transform.
 		buffer.setTransform(tf);
 	}

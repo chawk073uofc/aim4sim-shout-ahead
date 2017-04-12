@@ -46,125 +46,118 @@ import aim4.vehicle.VinRegistry;
 /**
  * The Vehicle Information Panel
  */
-public class VehicleInfoPanel extends JPanel
-                              implements StatusPanelInterface {
+public class VehicleInfoPanel extends JPanel implements StatusPanelInterface {
 
-  private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-  // ///////////////////////////////
-  // PRIVATE FIELDS
-  // ///////////////////////////////
+	// ///////////////////////////////
+	// PRIVATE FIELDS
+	// ///////////////////////////////
 
-  /** The selected vehicle's ID number. */
-  private FormattedLabel vehicleVINLabel =
-    new FormattedLabel("VIN: ", "%6d", 6);
-  /** The type of the selected vehicle. */
-  private FormattedLabel vehicleSpecLabel =
-    new FormattedLabel("Vehicle Type: ", "%-15s", 15);
-  /** The selected vehicle's velocity. */
-  private FormattedLabel vehicleVelocityLabel =
-    new FormattedLabel("Velocity: ", "%5.2f m/s", 9);
-  /** The selected vehicle's acceleration. */
-  private FormattedLabel vehicleAccelerationLabel =
-    new FormattedLabel("Acceleration: ", "%5.2f m/s/s", 11);
-  /**
-   * The amount of information that has been transmitted by the selected
-   * vehicle.
-   */
-  private FormattedLabel vehicleTransmittedLabel =
-    new FormattedLabel("Data Transmitted: ", "%5.2f kB", 8);
-  /**
-   * The amount of information that has been received by the selected vehicle.
-   */
-  private FormattedLabel vehicleReceivedLabel =
-    new FormattedLabel("Data received: ", "%5.2f kB", 8);
+	/** The selected vehicle's ID number. */
+	private FormattedLabel vehicleVINLabel = new FormattedLabel("VIN: ", "%6d", 6);
+	/** The type of the selected vehicle. */
+	private FormattedLabel vehicleSpecLabel = new FormattedLabel("Vehicle Type: ", "%-15s", 15);
+	/** The selected vehicle's velocity. */
+	private FormattedLabel vehicleVelocityLabel = new FormattedLabel("Velocity: ", "%5.2f m/s", 9);
+	/** The selected vehicle's acceleration. */
+	private FormattedLabel vehicleAccelerationLabel = new FormattedLabel("Acceleration: ", "%5.2f m/s/s", 11);
+	/**
+	 * The amount of information that has been transmitted by the selected
+	 * vehicle.
+	 */
+	private FormattedLabel vehicleTransmittedLabel = new FormattedLabel("Data Transmitted: ", "%5.2f kB", 8);
+	/**
+	 * The amount of information that has been received by the selected vehicle.
+	 */
+	private FormattedLabel vehicleReceivedLabel = new FormattedLabel("Data received: ", "%5.2f kB", 8);
 
-  // ///////////////////////////////
-  // CONSTRUCTORS
-  // ///////////////////////////////
+	// ///////////////////////////////
+	// CONSTRUCTORS
+	// ///////////////////////////////
 
-  /**
-   * Create a vehicle information panel.
-   */
-  public VehicleInfoPanel() {
-    GridBagLayout gridbag = new GridBagLayout();
-    setLayout(gridbag);
+	/**
+	 * Create a vehicle information panel.
+	 */
+	public VehicleInfoPanel() {
+		GridBagLayout gridbag = new GridBagLayout();
+		setLayout(gridbag);
 
-    GridBagConstraints c = new GridBagConstraints();
-    c.fill = GridBagConstraints.BOTH;
-    c.weightx = 1.0;
-    c.weighty = 1.0;
+		GridBagConstraints c = new GridBagConstraints();
+		c.fill = GridBagConstraints.BOTH;
+		c.weightx = 1.0;
+		c.weighty = 1.0;
 
-    // Vehicle ID Number
-    c.gridwidth = 1; // restore default
-    gridbag.setConstraints(vehicleVINLabel, c);
-    add(vehicleVINLabel);
-    // Vehicle Type
-    c.gridwidth = GridBagConstraints.REMAINDER; // end row
-    gridbag.setConstraints(vehicleSpecLabel, c);
-    add(vehicleSpecLabel);
-    // Velocity
-    c.gridwidth = 1; // restore default
-    gridbag.setConstraints(vehicleVelocityLabel, c);
-    add(vehicleVelocityLabel);
-    // Acceleration
-    c.gridwidth = GridBagConstraints.REMAINDER; // end row
-    gridbag.setConstraints(vehicleAccelerationLabel, c);
-    add(vehicleAccelerationLabel);
-    // Data transmitted
-    c.gridwidth = 1; // default
-    gridbag.setConstraints(vehicleTransmittedLabel, c);
-    add(vehicleTransmittedLabel);
-    // Data received
-    c.gridwidth = GridBagConstraints.REMAINDER; // end row
-    gridbag.setConstraints(vehicleReceivedLabel, c);
-    add(vehicleReceivedLabel);
-  }
+		// Vehicle ID Number
+		c.gridwidth = 1; // restore default
+		gridbag.setConstraints(vehicleVINLabel, c);
+		add(vehicleVINLabel);
+		// Vehicle Type
+		c.gridwidth = GridBagConstraints.REMAINDER; // end row
+		gridbag.setConstraints(vehicleSpecLabel, c);
+		add(vehicleSpecLabel);
+		// Velocity
+		c.gridwidth = 1; // restore default
+		gridbag.setConstraints(vehicleVelocityLabel, c);
+		add(vehicleVelocityLabel);
+		// Acceleration
+		c.gridwidth = GridBagConstraints.REMAINDER; // end row
+		gridbag.setConstraints(vehicleAccelerationLabel, c);
+		add(vehicleAccelerationLabel);
+		// Data transmitted
+		c.gridwidth = 1; // default
+		gridbag.setConstraints(vehicleTransmittedLabel, c);
+		add(vehicleTransmittedLabel);
+		// Data received
+		c.gridwidth = GridBagConstraints.REMAINDER; // end row
+		gridbag.setConstraints(vehicleReceivedLabel, c);
+		add(vehicleReceivedLabel);
+	}
 
-  // ///////////////////////////////
-  // PUBLIC METHODS
-  // ///////////////////////////////
+	// ///////////////////////////////
+	// PUBLIC METHODS
+	// ///////////////////////////////
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void update() {
-    VehicleSimView v = VinRegistry.getVehicleFromVIN(Debug.getTargetVIN());
-    if (v != null) {
-      // Vehicle ID Number
-      vehicleVINLabel.update(v.getVIN());
-      // Vehicle Type
-      vehicleSpecLabel.update(v.getSpec().getName());
-      // Velocity
-      vehicleVelocityLabel.update(v.getVelocity());
-      // Acceleration
-      vehicleAccelerationLabel.update(v.getAcceleration());
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void update() {
+		VehicleSimView v = VinRegistry.getVehicleFromVIN(Debug.getTargetVIN());
+		if (v != null) {
+			// Vehicle ID Number
+			vehicleVINLabel.update(v.getVIN());
+			// Vehicle Type
+			vehicleSpecLabel.update(v.getSpec().getName());
+			// Velocity
+			vehicleVelocityLabel.update(v.getVelocity());
+			// Acceleration
+			vehicleAccelerationLabel.update(v.getAcceleration());
 
-      if (v instanceof AutoVehicleSimView) {
-        AutoVehicleSimView v2 = (AutoVehicleSimView) v;
-        // Data Transmitted
-        vehicleTransmittedLabel.update(v2.getBitsTransmitted()
-          / (double) (Constants.BITS_PER_BYTE * Constants.BYTES_PER_KB));
-        // Data Received
-        vehicleReceivedLabel.update(v2.getBitsReceived()
-          / (double) (Constants.BITS_PER_BYTE * Constants.BYTES_PER_KB));
-      }
-    } else { // No vehicle selected, clear everything
-      clear();
-    }
-  }
+			if (v instanceof AutoVehicleSimView) {
+				AutoVehicleSimView v2 = (AutoVehicleSimView) v;
+				// Data Transmitted
+				vehicleTransmittedLabel
+						.update(v2.getBitsTransmitted() / (double) (Constants.BITS_PER_BYTE * Constants.BYTES_PER_KB));
+				// Data Received
+				vehicleReceivedLabel
+						.update(v2.getBitsReceived() / (double) (Constants.BITS_PER_BYTE * Constants.BYTES_PER_KB));
+			}
+		} else { // No vehicle selected, clear everything
+			clear();
+		}
+	}
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void clear() {
-    vehicleVINLabel.clear();
-    vehicleSpecLabel.clear();
-    vehicleVelocityLabel.clear();
-    vehicleAccelerationLabel.clear();
-    vehicleTransmittedLabel.clear();
-    vehicleReceivedLabel.clear();
-  }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void clear() {
+		vehicleVINLabel.clear();
+		vehicleSpecLabel.clear();
+		vehicleVelocityLabel.clear();
+		vehicleAccelerationLabel.clear();
+		vehicleTransmittedLabel.clear();
+		vehicleReceivedLabel.clear();
+	}
 }

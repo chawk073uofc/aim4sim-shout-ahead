@@ -40,6 +40,7 @@ import aim4.ShoutAheadAI.ShoutAheadDriverAgent;
 import aim4.driver.AutoDriver;
 import aim4.driver.Driver;
 import aim4.msg.v2i.V2IMessage;
+import aim4.util.GeomUtil;
 
 /**
  * The interface of a vehicle from the viewpoint of a simulator.
@@ -158,7 +159,7 @@ public interface VehicleSimView extends VehicleDriverView {
    * @return the projected point
    */
   Point2D getPointAtMiddleFront(double delta);
-  
+  Point2D newGetPointAtMiddleFront(double delta);
   /**
    * Get the point East of the middle point of the vehicle that is
    * at the distance of delta away from the vehicle.
@@ -169,10 +170,10 @@ public interface VehicleSimView extends VehicleDriverView {
    */
   Point2D getPointAtMiddleRight(double delta);
   /**
-   * Get the point South of the middle point of the vehicle that is
+   * Get the point in front of the middle point of the vehicle that is
    * at the distance of delta away from the vehicle.
    *
-   * @param delta   the distance of the vehicle and the point
+   * @param delta the distance between the vehicle and the point
    *
    * @return the projected point
    */
@@ -244,5 +245,23 @@ public interface VehicleSimView extends VehicleDriverView {
    * Increments the number of times a vehicle has collided with a building. 
    */
   void incrementBuildingCollisionCount();
+  /** 
+   * Get distance from destination 
+   */
+  double getDistanceFromDestination(Point2D position);
+  Point2D getDestinationPoint();
+  void setDistanceFromDestination(Double distanceFromDest);
 
+  void setChangeInDistanceFromDestination(double d);
+
+  Double getChangeInDistanceFromDestination();
+  public void resetPositionAfterCrash(Point2D newPosition);
+  
+  Line2D getFrontEdge();
+  Line2D getBackEdge();
+
+Shape getShapeForCollisoinDetection();
+
+double getDistanceTravelledInLastStep();
+void setDistanceTravelledInLastStep(double distance);
 }

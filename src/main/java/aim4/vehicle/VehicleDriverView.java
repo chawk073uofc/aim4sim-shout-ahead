@@ -31,6 +31,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package aim4.vehicle;
 
 import java.awt.Shape;
+import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 
 import aim4.driver.Driver;
@@ -258,8 +259,12 @@ void speedUp(double speedDelta);
    * backward. Obeys limits on acceleration as well as disabilities.
    */
   void slowToStop();
-
-
+  
+  /**
+   * Stop the vehicle in the event of a collision. 
+   */
+  void stop();
+  
   /////////////////////////////////
   // DEBUG
   /////////////////////////////////
@@ -268,5 +273,6 @@ void speedUp(double speedDelta);
    * print the state of the driver.
    */
   void printState();
+
 
 }

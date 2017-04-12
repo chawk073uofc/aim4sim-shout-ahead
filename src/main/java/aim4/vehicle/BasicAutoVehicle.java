@@ -243,7 +243,14 @@ public class BasicAutoVehicle extends BasicVehicle
    * The number of times this vehicle has collided with a building. 
    */
   private int buildingCollisionCount = 0; 
+  private double distanceTravelledInLastStep;
 
+/** distance from destination */
+  private double distanceFromDestination;
+  /** Change in distance from destination resulting from the last movement.
+   * Positive values mean closer and negative mean farther away.
+   */
+  private double changeInDistanceFromDestination;
 
   /////////////////////////////////
   // PRIVATE FIELDS
@@ -255,6 +262,8 @@ public class BasicAutoVehicle extends BasicVehicle
    * The last V2I message
    */
   private V2IMessage lastV2IMessage;
+
+
 
 
 
@@ -573,6 +582,7 @@ public int getVehicleCollisionCount() {
   @Override
   public void incrementBuildingCollisionCount() {
 	  buildingCollisionCount++;
+	  
   }
   /**
    * @return the vehicleCollisionCount
@@ -580,5 +590,44 @@ public int getVehicleCollisionCount() {
   public int getBuildingCollisionCount() {
   	return buildingCollisionCount;
   }
+  
+  public double getDistanceFromDestination(Point2D position){
+	  return getDestinationPoint().distance(position);
+  }
+  
+  public Point2D getDestinationPoint(){
+	  return driver.getDestination().getIndexLane().getEndPoint();
+  }
+  /*
+   * (non-Javadoc)
+   * @see aim4.vehicle.VehicleSimView#setDistanceFromDestination(java.lang.Double)
+   */
+  @Override
+  public void setDistanceFromDestination(Double distanceFromDest){
+	  distanceFromDestination = distanceFromDest;
+  }
+  
+  public Double getChangeInDistanceFromDestination() {
+	  return changeInDistanceFromDestination;
+  }
+  /**
+   * 
+   */
+  @Override
+  public void setChangeInDistanceFromDestination(double distanceDelta){
+	  changeInDistanceFromDestination = distanceDelta;
+  }
+
+
+@Override
+public double getDistanceTravelledInLastStep() {
+	return distanceTravelledInLastStep;
+}
+
+
+@Override
+public void setDistanceTravelledInLastStep(double distance) {
+	distanceTravelledInLastStep = distance;	
+}
 
 }

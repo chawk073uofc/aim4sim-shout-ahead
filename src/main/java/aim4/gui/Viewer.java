@@ -48,6 +48,9 @@ import java.awt.geom.Point2D;
 import java.io.IOException;
 
 import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Group;
+import javax.swing.GroupLayout.ParallelGroup;
+import javax.swing.GroupLayout.SequentialGroup;
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFileChooser;
@@ -57,7 +60,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 
-import aim4.ShoutAheadAI.LearningHarness;
+import aim4.ShoutAheadAI.LearningRun;
 import aim4.ShoutAheadAI.ShoutAheadSimSetup;
 import aim4.ShoutAheadAI.ShoutAheadSimulator;
 import aim4.config.Constants;
@@ -111,7 +114,7 @@ public class Viewer extends JFrame implements ActionListener, KeyListener,
    * equal to <code>TURBO_SIM_SPEED</code>, the simulation will run as fast as
    * possible.
    */
-  public static final double DEFAULT_SIM_SPEED = 15.0;
+  public static final double DEFAULT_SIM_SPEED = 1.0;
   /**
    * The number of screen updates per GUI second. If it is larger than or
    * equal to SimConfig.CYCLES_PER_SECOND, the screen will be updated at
@@ -165,7 +168,7 @@ public class Viewer extends JFrame implements ActionListener, KeyListener,
 	}
 	@Override
 	public void run() {
-    	LearningHarness learningHarness = new LearningHarness(simSetup, viewer);
+    	LearningRun learningHarness = new LearningRun(simSetup, viewer);
 	}
 	  
   }
@@ -428,6 +431,8 @@ public class Viewer extends JFrame implements ActionListener, KeyListener,
   private SimSetupPanel simSetupPanel;
   /** The status pane on which to display statistics. */
   private StatusPanelContainer statusPanel;
+  /** A separate window to show the strategy being used for the current simulation */
+  private StrategyPanelContainer strategyPanelContainer;
   /** The Start/Pause/Resume Button */
   private JButton startButton;
   /** The Step Button */
@@ -501,6 +506,9 @@ public class Viewer extends JFrame implements ActionListener, KeyListener,
     this.recording = false;
     this.imageDir = null;
     this.imageCounter = 0;
+    
+    setExtendedState(JFrame.MAXIMIZED_BOTH); 
+
 
     // for debugging
     Debug.viewer = this;
@@ -679,6 +687,8 @@ public class Viewer extends JFrame implements ActionListener, KeyListener,
     canvas = new Canvas(this);
     simSetupPanel = new SimSetupPanel(initSimSetup);
     statusPanel = new StatusPanelContainer(this);
+    strategyPanelContainer = new StrategyPanelContainer(this);
+   // strategyWindow = new StrategyFrame(this);
     startButton = new JButton("Start");
     startButton.addActionListener(this);
     stepButton = new JButton("Step");
@@ -742,27 +752,64 @@ public class Viewer extends JFrame implements ActionListener, KeyListener,
     // the edge of the container and the container.
     layout.setAutoCreateContainerGaps(false);
     // layout for the horizontal axis
-    layout.setHorizontalGroup(layout.createParallelGroup(
-        GroupLayout.Alignment.LEADING).addComponent(mainPanel).addGroup(layout.createSequentialGroup().addGroup(
-        layout.createParallelGroup(GroupLayout.Alignment.LEADING).addComponent(
-        startButton,
-        DEFAULT_BUTTON_WIDTH,
-        GroupLayout.DEFAULT_SIZE,
-        DEFAULT_BUTTON_WIDTH).addComponent(
-        stepButton, DEFAULT_BUTTON_WIDTH,
-        GroupLayout.DEFAULT_SIZE,
-        DEFAULT_BUTTON_WIDTH)).addComponent(
-        statusPanel)));
-    // layout for the vertical axis
-    layout.setVerticalGroup(
-        layout.createSequentialGroup().addComponent(mainPanel).addGroup(
-        layout.createParallelGroup(GroupLayout.Alignment.CENTER).addGroup(layout.createSequentialGroup().addComponent(
-        startButton).addComponent(stepButton)).addComponent(statusPanel,
-        DEFAULT_STATUS_PANE_HEIGHT,
-        GroupLayout.DEFAULT_SIZE,
-        DEFAULT_STATUS_PANE_HEIGHT)));
-  }
+    SequentialGroup horizGroup = layout.createSequentialGroup();
+    
+    ParallelGroup originalGroup = layout.createParallelGroup(GroupLayout.Alignment.LEADING);
+    originalGroup.addComponent(mainPanel).addGroup(layout.createSequentialGroup().addGroup(
+            layout.createParallelGroup(GroupLayout.Alignment.LEADING).addComponent(
+                    startButton,
+                    DEFAULT_BUTTON_WIDTH,
+                    GroupLayout.DEFAULT_SIZE,
+                    DEFAULT_BUTTON_WIDTH).addComponent(
+                    stepButton, DEFAULT_BUTTON_WIDTH,
+                    GroupLayout.DEFAULT_SIZE,
+                    DEFAULT_BUTTON_WIDTH)).addComponent(
+                    statusPanel));
+    Group newGroup = layout.createSequentialGroup();
+    newGroup.addComponent(strategyPanelContainer);
+    // group1.addComponent(strategyPanelContainer);
 
+    
+    horizGroup.addGroup(originalGroup);
+    horizGroup.addGroup(newGroup);
+    
+    layout.setHorizontalGroup(horizGroup);
+//    layout.setHorizontalGroup(layout.createParallelGroup(
+//        GroupLayout.Alignment.LEADING).addComponent(mainPanel).addGroup(layout.createSequentialGroup().addGroup(
+//        layout.createParallelGroup(GroupLayout.Alignment.LEADING).addComponent(
+//        startButton,
+//        DEFAULT_BUTTON_WIDTH,
+//        GroupLayout.DEFAULT_SIZE,
+//        DEFAULT_BUTTON_WIDTH).addComponent(
+//        stepButton, DEFAULT_BUTTON_WIDTH,
+//        GroupLayout.DEFAULT_SIZE,
+//        DEFAULT_BUTTON_WIDTH)).addComponent(
+//        statusPanel)));
+    // layout for the vertical axis
+    ParallelGroup newVertGroup = layout.createParallelGroup(GroupLayout.Alignment.LEADING); 
+
+    SequentialGroup vertGroup = layout.createSequentialGroup();
+    vertGroup.addComponent(mainPanel).addGroup(
+            layout.createParallelGroup(GroupLayout.Alignment.CENTER).addGroup(layout.createSequentialGroup().addComponent(
+                    startButton).addComponent(stepButton)).addComponent(statusPanel,
+                    DEFAULT_STATUS_PANE_HEIGHT,
+                    GroupLayout.DEFAULT_SIZE,
+                    DEFAULT_STATUS_PANE_HEIGHT));
+    
+    newVertGroup.addComponent(strategyPanelContainer);
+    newVertGroup.addGroup(vertGroup);//original
+    
+    layout.setVerticalGroup(newVertGroup);
+    
+//    layout.setVerticalGroup(
+//        layout.createSequentialGroup().addComponent(mainPanel).addGroup(
+//        layout.createParallelGroup(GroupLayout.Alignment.CENTER).addGroup(layout.createSequentialGroup().addComponent(
+//        startButton).addComponent(stepButton)).addComponent(statusPanel,
+//        DEFAULT_STATUS_PANE_HEIGHT,
+//        GroupLayout.DEFAULT_SIZE,
+//        DEFAULT_STATUS_PANE_HEIGHT)));
+//  }
+  	}
   // ///////////////////////////////
   // PUBLIC METHODS
   // ///////////////////////////////
@@ -806,6 +853,7 @@ public class Viewer extends JFrame implements ActionListener, KeyListener,
     canvasCardLayout.show(mainPanel, "CANVAS");
     canvas.initWithGivenMap(sim.getMap());
     statusPanel.init();
+    strategyPanelContainer.init();
 
     // update the buttons
     startButton.setText("Pause");
@@ -830,6 +878,7 @@ public class Viewer extends JFrame implements ActionListener, KeyListener,
   private void setSimResetGUIsetting() {
     canvas.cleanUp();
     statusPanel.clear();
+    strategyPanelContainer.clear();
     resetButtonMenuItem();
   }
 
@@ -926,7 +975,7 @@ private void startLearningRun(SimSetup initSimSetup) {
 	    createSimThread();
 	    setSimStartGUIsetting();
 	    nextFrameTime = System.currentTimeMillis();
-	    if(Debug.SHOUT_AHEAD_FAST_DEBUG_MODE)
+	    if(Debug.START_SIM_PAUSED)
 	    	pauseSimProcess();
 	    simThread.start();
   }
@@ -1093,7 +1142,7 @@ private void startLearningRun(SimSetup initSimSetup) {
   private void runSimulationStep() {
     Debug.clearShortTermDebugPoints();
     SimStepResult simStepResult = sim.step(SimConfig.TIME_STEP);
-    //todo need if instance of SASSR? need SASSR?
+    //TODO: need if instance of SASSR? need SASSR?
     if (simStepResult instanceof AutoDriverOnlySimStepResult) {
       AutoDriverOnlySimStepResult simStepResult2 =
           (AutoDriverOnlySimStepResult) simStepResult;
@@ -1154,6 +1203,7 @@ private void startLearningRun(SimSetup initSimSetup) {
   private void updateScreen() {
     canvas.update();
     statusPanel.update();
+    strategyPanelContainer.update();
   }
 
   /**
@@ -1323,15 +1373,15 @@ private void startLearningRun(SimSetup initSimSetup) {
           if (vehicle.getShape().contains(leftClickPoint)) {
             if (Debug.getTargetVIN() != vehicle.getVIN()) {
               Debug.setTargetVIN(vehicle.getVIN());
-              if (vehicleInfoFrame == null) {
-                vehicleInfoFrame = new VehicleInfoFrame(this);
-              }
-              if (!vehicleInfoFrame.isVisible()) {
-                vehicleInfoFrame.setVisible(true);
-                this.requestFocusInWindow();
-                this.requestFocus();
-              }
-              vehicleInfoFrame.setVehicle(vehicle);
+//              if (vehicleInfoFrame == null) {
+//                vehicleInfoFrame = new VehicleInfoFrame(this);
+//              }
+//              if (!vehicleInfoFrame.isVisible()) {
+//                vehicleInfoFrame.setVisible(true);
+//                this.requestFocusInWindow();
+//                this.requestFocus();
+//              }
+//              vehicleInfoFrame.setVehicle(vehicle);
             } else {
               Debug.removeTargetVIN();
               vehicleInfoFrame.setVehicle(null);

@@ -42,74 +42,70 @@ import aim4.gui.component.FormattedLabel;
 /**
  * The Console Panel
  */
-public class ConsolePanel extends JPanel
-                          implements StatusPanelInterface {
+public class ConsolePanel extends JPanel implements StatusPanelInterface {
 
-  private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-  // ///////////////////////////////
-  // PRIVATE FIELDS
-  // ///////////////////////////////
+	// ///////////////////////////////
+	// PRIVATE FIELDS
+	// ///////////////////////////////
 
-  JTextArea textArea;
-  JScrollPane outputPane;
+	JTextArea textArea;
+	JScrollPane outputPane;
 
-  // ///////////////////////////////
-  // CONSTRUCTORS
-  // ///////////////////////////////
+	// ///////////////////////////////
+	// CONSTRUCTORS
+	// ///////////////////////////////
 
-  /**
-   * Create an console panel.
-   */
-  public ConsolePanel() {
-    textArea = new JTextArea();
-    outputPane = new JScrollPane(textArea);
-    textArea.setEditable(false);
-    textArea.setFont(FormattedLabel.FONT);
-    outputPane
-      .setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+	/**
+	 * Create an console panel.
+	 */
+	public ConsolePanel() {
+		textArea = new JTextArea();
+		outputPane = new JScrollPane(textArea);
+		textArea.setEditable(false);
+		textArea.setFont(FormattedLabel.FONT);
+		outputPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
-    // layout
-    GroupLayout layout = new GroupLayout(this);
-    setLayout(layout);
-    layout.setAutoCreateGaps(false);
-    layout.setAutoCreateContainerGaps(false);
+		// layout
+		GroupLayout layout = new GroupLayout(this);
+		setLayout(layout);
+		layout.setAutoCreateGaps(false);
+		layout.setAutoCreateContainerGaps(false);
 
-    layout.setHorizontalGroup(layout
-      .createParallelGroup(GroupLayout.Alignment.LEADING)
-      .addComponent(outputPane));
+		layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING).addComponent(outputPane));
 
-    layout.setVerticalGroup(layout.createSequentialGroup()
-      .addComponent(outputPane));
-  }
+		layout.setVerticalGroup(layout.createSequentialGroup().addComponent(outputPane));
+	}
 
-  // ///////////////////////////////
-  // PUBLIC METHODS
-  // ///////////////////////////////
+	// ///////////////////////////////
+	// PUBLIC METHODS
+	// ///////////////////////////////
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void update() {
-    // do nothing
-  }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void update() {
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void clear() {
-    textArea.setText("");
-  }
+	}
 
-  /**
-   * Append a string to the console.
-   *
-   * @param str the string
-   */
-  public void append(String str) {
-    textArea.append(str);
-    textArea.setCaretPosition(textArea.getDocument().getLength());
-  }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void clear() {
+		textArea.setText("");
+	}
+
+	/**
+	 * Append a string to the console.
+	 *
+	 * @param str
+	 *            the string
+	 */
+	public void append(String str) {
+		textArea.append(str);
+		textArea.setCaretPosition(textArea.getDocument().getLength());
+	}
 }

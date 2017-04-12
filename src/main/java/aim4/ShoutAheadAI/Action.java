@@ -18,28 +18,24 @@ public enum Action {
 		@Override
 		public void execute(AutoVehicleSimView vehicle) {
 			vehicle.goStraight();
-			
 		}
 	},
 	SLOW_DOWN {
 		@Override
 		public void execute(AutoVehicleSimView vehicle) {
 			vehicle.slowDown(ShoutAheadSimSetup.getSpeedDelta()); 
-			
 		}
 	},
 	SPEED_UP {
 		@Override
 		public void execute(AutoVehicleSimView vehicle) {
 			vehicle.speedUp(ShoutAheadSimSetup.getSpeedDelta());
-			
 		}
 	},
 	TURN_LEFT {
 		@Override
 		public void execute(AutoVehicleSimView vehicle) {
-			vehicle.turnLeft(ShoutAheadSimSetup.getSteeringDelta());
-			
+			vehicle.turnLeft(ShoutAheadSimSetup.getSteeringDelta());			
 		}
 	},
 	TRUN_RIGHT {

@@ -4,7 +4,7 @@ package aim4.ShoutAheadAI;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
-import aim4.ShoutAheadAI.predicates.Predicate;
+import aim4.ShoutAheadAI.predicates.VehiclePredicate;
 import aim4.gui.component.LabeledSlider;
 import aim4.sim.setup.BasicSimSetup;
 
@@ -75,7 +75,7 @@ public class ShoutAheadParamPanel extends JPanel{
 
 	    
 	    numPredsPerCondSlider =
-	  	      new LabeledSlider(0.0, Predicate.values().length,
+	  	      new LabeledSlider(0.0, VehiclePredicate.values().length,
 	  	    		  ShoutAheadSimSetup.getNumPredsPerCond(),
 	  	                        5, 1,
 	  	                        "Number of Predicates Per Rule: %.0f ",

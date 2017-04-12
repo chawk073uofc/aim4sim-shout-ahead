@@ -1,8 +1,17 @@
 package aim4.ShoutAheadAI;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Random;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
+import aim4.ShoutAheadAI.ShoutAheadSimSetup;
+import aim4.config.Constants;
 import aim4.vehicle.AutoVehicleSimView;
 
 /**
@@ -11,27 +20,52 @@ import aim4.vehicle.AutoVehicleSimView;
  *
  */
 public class RuleSet {
-	private int numRules = ShoutAheadSimSetup.getNumRulesPerRuleSet(); 
-	private ArrayList<Rule> rules = new ArrayList<Rule>();
-	private Random rand = new Random();//for probabilistic selection of rules
-	private double explorationFactor = ShoutAheadSimSetup.getExplorationFactor();
-
-
+	protected int numRules = ShoutAheadSimSetup.getNumRulesPerRuleSet(); 
+	private HashSet<Rule> rules = new HashSet<Rule>();// no duplicates
+	protected Random rand = new Random();//for probabilistic selection of rules
+	protected double explorationFactor = ShoutAheadSimSetup.getExplorationFactor();
+	
+	
 	/**
 	 * Create a new random set of rules. 
 	 */
 	public RuleSet(){
-
 		for(int i = 0; i < numRules; i++){
-			rules.add(new Rule());
+			rules.add(Rule.getRandomRule());
 		}
-		
 	}
 	
+	public static RuleSet getRandomRuleSet(){
+		return new RuleSet();
+	}
 	
+
+	private List<Rule> getBestRules() {
+		ArrayList<Rule> sortedRules = new ArrayList<Rule>(rules);
+		sortedRules.sort(new Comparator<Rule>() {
+		    @Override
+		    public int compare(Rule r1, Rule r2) {
+		        return (int) ((int) r1.getWeight() - r2.getWeight());
+		    }
+		});
+		return sortedRules.subList(numRules/2, numRules);
+	}
+	
+	/**
+	 * Creates a new rule set by combining the best 50% of rules from two other rule sets.
+	 * The resulting rule set may have less than numRules rules because of duplicates. 
+	 * @param parent1
+	 * @param parent2
+	 */
+	public RuleSet(RuleSet parent1,RuleSet parent2) {
+		rules.addAll(parent1.getBestRules());
+		rules.addAll(parent2.getBestRules());
+		while(rules.size() < ShoutAheadSimSetup.getNumRulesPerRuleSet())
+			rules.add(ShoutAheadRule.getRandomRule());
+	}	
+
 	public Rule getRuleToFollow(AutoVehicleSimView vehicle) throws NoApplicableRulesException {
 		
-		//TODO: add the higher-level decision function 
 		  Rule ruleToFollow = null;
 
 		 ArrayList<Rule> applicableRules = getApplicableRules(vehicle); //get set of rules having true conditions in this situation
@@ -59,7 +93,7 @@ public class RuleSet {
 	 * @param vehicle TODO
 	 * @return a set of rules having true conditions in the current situation.
 	 */
-	public ArrayList<Rule> getApplicableRules(AutoVehicleSimView vehicle) {
+	private ArrayList<Rule> getApplicableRules(AutoVehicleSimView vehicle) {
 		ArrayList<Rule> applicableRules = new ArrayList<Rule>();
 		for(Rule rule: rules){
 			if (rule.isApplicable(vehicle))
@@ -70,16 +104,17 @@ public class RuleSet {
 
 	private ArrayList<Rule> getAppRulesWithMaxWeight(ArrayList<Rule> applicableRules) {
 		ArrayList<Rule> appRulesWithMaxWeight = new ArrayList<Rule>();
-		int maxWeight = getMaxAppRuleWeight(applicableRules);
+		double maxWeight = getMaxAppRuleWeight(applicableRules);
 		for(Rule appRule: applicableRules){
-			if(appRule.getWeight() == maxWeight)
+			if(Math.abs(maxWeight-appRule.getWeight()) < Constants.DOUBLE_EQUAL_PRECISION){
 				appRulesWithMaxWeight.add(appRule);
+			}
 		}
 		return appRulesWithMaxWeight;
 	}
 	
-	private int getMaxAppRuleWeight(ArrayList<Rule> applicableRules) {
-		int maxWeight = Integer.MIN_VALUE;
+	private double getMaxAppRuleWeight(ArrayList<Rule> applicableRules) {
+		double maxWeight = Double.NEGATIVE_INFINITY;
 		for(Rule rule: applicableRules){
 			if(rule.getWeight() > maxWeight)
 				maxWeight = rule.getWeight();
@@ -93,7 +128,7 @@ public class RuleSet {
 	 * 
 	 * @return true if the agent will choose an applicable rule with non-maximal weight.
 	 */
-	private boolean shouldExplore() {
+	protected boolean shouldExplore() {
 		return (rand.nextDouble() < explorationFactor);
 	}
 	
@@ -114,35 +149,63 @@ public class RuleSet {
 	 * @return a rule in the given set
 	 */
 	private Rule getRandOtherRule(ArrayList<Rule> otherAppRules) {
-		//TODO: There must be a better way. what if total weight is non-positive?
-		int totalWeight = getTotalWeight();
-		int randInt = rand.nextInt(totalWeight);
-		int i = 0;
+		setNormalizedWeights(otherAppRules);
+		double totalNormalizedWeight = getTotalNormalizedWeight(otherAppRules);
 		for(Rule rule: otherAppRules){
-			i += rule.getWeight();
-			if(randInt < i)
+			double prob = rule.getNormalizedWeight()/totalNormalizedWeight;
+			if(returnTrueWithProb(prob))
 				return rule;
 		}
-		System.out.println("Should have returned by now");
-		return null;
+		//return the last rule in the list
+		return otherAppRules.get(otherAppRules.size()-1);
 	}
 	
+	private void setNormalizedWeights(ArrayList<Rule> ruleList) {
+		double minWeight = getMinWeight(ruleList);//TODO: sort with comparator instead for better efficiency
+		for(Rule rule: ruleList){
+			rule.setNormalizedWeight(rule.getWeight() + minWeight + 1);
+		}
+		
+	}
+
+
+	private double getMinWeight(ArrayList<Rule> ruleList) {
+		double minWeight = Double.POSITIVE_INFINITY;
+		for(Rule rule: ruleList){
+			if(rule.getWeight() < minWeight)
+				minWeight = rule.getWeight();
+		}
+		return minWeight;
+	}
+
+
 	/**
-	 * Returns the total weight of all given rules.
+	 * This function returns true with probability prob.
+	 * @param prob
 	 * @return
 	 */
-	private int getTotalWeight() {
+	protected boolean returnTrueWithProb(double prob) {
+		return rand.nextDouble() < prob;
+	}
+
+
+	/**
+	 * Returns the total weight of all given rules.
+	 * @param ruleList 
+	 * @return
+	 */
+	private int getTotalNormalizedWeight(ArrayList<Rule> ruleList) {
 		int totalWeight = 0;
-		for(Rule rule: rules)
-			totalWeight += rule.getWeight();
+		for(Rule rule: ruleList)
+			totalWeight += rule.getNormalizedWeight();
 		return totalWeight;
 	}
 	
 	@Override
 	public String toString() {
-		String str = "Rule Set:\n";
+		String str = "";
 		for(Rule rule: rules)
-			str += rule + "\n";
+			str += rule;
 		return str;
 	}
 }

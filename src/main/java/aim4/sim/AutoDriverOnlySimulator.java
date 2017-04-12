@@ -47,6 +47,7 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import aim4.ShoutAheadAI.ShoutAheadSimulator;
 import aim4.config.Debug;
 import aim4.config.DebugPoint;
 import aim4.driver.AutoDriver;
@@ -113,7 +114,7 @@ public class AutoDriverOnlySimulator implements Simulator {
   /** The map */
   protected BasicMap basicMap;
   /** All active vehicles, in form of a map from VINs to vehicle objects. */
-  protected Map<Integer,VehicleSimView> vinToVehicles;
+  protected static Map<Integer,VehicleSimView> vinToVehicles;
   /** The current time */
   protected double currentTime;
   /** The number of completed vehicles */
@@ -904,24 +905,40 @@ public class AutoDriverOnlySimulator implements Simulator {
    */
   protected void moveVehicles(double timeStep) {
     for(VehicleSimView vehicle : vinToVehicles.values()) {
-      Point2D p1 = vehicle.getPosition();
+      Point2D initialPos = vehicle.getPosition();
       vehicle.move(timeStep);
-      Point2D p2 = vehicle.getPosition();
+      Point2D finalPos = vehicle.getPosition();
+            
       for(DataCollectionLine line : basicMap.getDataCollectionLines()) {
-        line.intersect(vehicle, currentTime, p1, p2);
+        line.intersect(vehicle, currentTime, initialPos, finalPos);
       }
+      updateDistanceToDestination(vehicle, initialPos, finalPos);
+      updateTotalDistanceTravelled(vehicle, initialPos, finalPos);
+      
       if (Debug.isPrintVehicleStateOfVIN(vehicle.getVIN())) {
         vehicle.printState();
       }
     }
   }
 
+private void updateDistanceToDestination(VehicleSimView vehicle, Point2D p1, Point2D p2) {
+	Double p1DistanceFromDest = vehicle.getDistanceFromDestination(p1);
+      Double p2DistanceFromDest = vehicle.getDistanceFromDestination(p2);
+      vehicle.setDistanceFromDestination(p2DistanceFromDest);
+      vehicle.setChangeInDistanceFromDestination(p1DistanceFromDest - p2DistanceFromDest);
+}
+
 
   /////////////////////////////////
   // STEP 7
   /////////////////////////////////
 
-  /**
+  private void updateTotalDistanceTravelled(VehicleSimView vehicle, Point2D initialPos, Point2D finalPos) {
+	vehicle.setDistanceTravelledInLastStep(initialPos.distance(finalPos));
+	
+}
+
+/**
    * Remove all completed vehicles.
    *
    * @return the VINs of the completed vehicles
@@ -936,7 +953,7 @@ public class AutoDriverOnlySimulator implements Simulator {
       VehicleSimView v = vinToVehicles.get(vin);
       // If the vehicle is no longer in the layout
       // TODO_OG: this should be replaced with destination zone.
-      if(!v.getShape().intersects(mapBoundary)) {
+      if(shouldRemoveVehicle(mapBoundary, v)) {
         // Process all the things we need to from this vehicle
         if (v instanceof AutoVehicleSimView) {//TODO problem?
           AutoVehicleSimView v2 = (AutoVehicleSimView)v;
@@ -955,6 +972,10 @@ public class AutoDriverOnlySimulator implements Simulator {
 
     return completedVINs;
   }
+
+protected boolean shouldRemoveVehicle(Rectangle2D mapBoundary, VehicleSimView v) {
+	return !v.getShape().intersects(mapBoundary);
+}
 
   /////////////////////////////////
   // DEBUG

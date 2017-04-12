@@ -35,6 +35,7 @@ import java.awt.GridBagLayout;
 
 import javax.swing.JPanel;
 
+import aim4.ShoutAheadAI.ShoutAheadSimulator;
 import aim4.config.Constants;
 import aim4.gui.StatusPanelInterface;
 import aim4.gui.Viewer;
@@ -59,13 +60,30 @@ public class StatPanel extends JPanel
   /** The number of completed vehicles. */
   private FormattedLabel overallCompletedVehiclesLabel =
     new FormattedLabel("Completed Vehicles: ", "%5d", 5);
+  private FormattedLabel aveNetDistanceMovedTowardsDestLabel =
+	new FormattedLabel("Ave Net Distance Moved Towards Dest: " , "%3.3f", 7);
   /** The average amount of data transmitted. */
   private FormattedLabel overallAverageTransmittedLabel =
     new FormattedLabel("Average Data Transmitted: ", "%5.2f kB", 8);
   /** The average amount of data received. */
   private FormattedLabel overallAverageReceivedLabel =
     new FormattedLabel("Average Data Received: ", "%5.2f kB", 8);
-
+  //building collisions
+  private FormattedLabel totalBuildingCollisionLabel =
+	new FormattedLabel("Total Building Collisons", "%5d", 5);
+  //car collisions
+  private FormattedLabel totalCarCollisionLabel =
+    new FormattedLabel("Total Car Collisons", "%5d", 5);
+  
+  //ave accel - running ave
+  private FormattedLabel aveAccelerationLabel =
+	new FormattedLabel("Average Acceleration", "%3.2f m/s/s", 6);
+  //fitness
+  private FormattedLabel fitnessLabel =
+	new FormattedLabel("Total Fitness", "%7.2f", 10);
+  //sim cycles remaining
+  private FormattedLabel simTimeRemaining =
+	new FormattedLabel("Sim Time Remaining", "%9.2f s", 12);
   /** The viewer object */
   private Viewer viewer;
 
@@ -97,6 +115,9 @@ public class StatPanel extends JPanel
     c.gridwidth = GridBagConstraints.REMAINDER;
     gridbag.setConstraints(overallCompletedVehiclesLabel, c);
     add(overallCompletedVehiclesLabel);
+    c.gridwidth = GridBagConstraints.REMAINDER;
+    gridbag.setConstraints(aveNetDistanceMovedTowardsDestLabel, c);
+    add(aveNetDistanceMovedTowardsDestLabel);
     // Information Transmitted
     c.gridwidth = 1; // restore default
     gridbag.setConstraints(overallAverageTransmittedLabel, c);
@@ -105,6 +126,22 @@ public class StatPanel extends JPanel
     c.gridwidth = GridBagConstraints.REMAINDER;
     gridbag.setConstraints(overallAverageReceivedLabel, c);
     add(overallAverageReceivedLabel);
+    c.gridwidth = GridBagConstraints.REMAINDER;
+    gridbag.setConstraints(totalBuildingCollisionLabel, c);
+    add(totalBuildingCollisionLabel);
+    
+    c.gridwidth = GridBagConstraints.REMAINDER;
+    gridbag.setConstraints(totalCarCollisionLabel, c);
+    add(totalCarCollisionLabel);
+    c.gridwidth = GridBagConstraints.REMAINDER;
+    gridbag.setConstraints(aveAccelerationLabel, c);
+    add(aveAccelerationLabel);
+    c.gridwidth = GridBagConstraints.REMAINDER;
+    gridbag.setConstraints(fitnessLabel, c);
+    add(fitnessLabel);
+    c.gridwidth = GridBagConstraints.REMAINDER;
+    gridbag.setConstraints(simTimeRemaining, c);
+    add(simTimeRemaining);
   }
 
   // ///////////////////////////////
@@ -130,6 +167,16 @@ public class StatPanel extends JPanel
       overallAverageReceivedLabel.update(sim
         .getAvgBitsReceivedByCompletedVehicles()
         / Constants.BITS_PER_KB);
+      if(sim instanceof ShoutAheadSimulator){
+    	  ShoutAheadSimulator saSim = (ShoutAheadSimulator) sim;
+      totalBuildingCollisionLabel.update(saSim.getTotalBuildingCollisions());
+      totalCarCollisionLabel.update(saSim.getTotalCarCollisions());
+      aveAccelerationLabel.update(saSim.getRunningAveAccelration());
+      fitnessLabel.update(saSim.getFitness());
+      simTimeRemaining.update(saSim.getSimTimeRemaining());
+      aveNetDistanceMovedTowardsDestLabel.update(saSim.getAveNetDistanceMovedTowardsDest());
+
+      }
     } else {
       clear();
     }
@@ -142,7 +189,13 @@ public class StatPanel extends JPanel
   public void clear() {
     currentTimeLabel.clear();
     overallCompletedVehiclesLabel.clear();
+    aveNetDistanceMovedTowardsDestLabel.clear();
     overallAverageTransmittedLabel.clear();
     overallAverageReceivedLabel.clear();
+    totalBuildingCollisionLabel.clear();
+    totalCarCollisionLabel.clear();
+    aveAccelerationLabel.clear();
+    fitnessLabel.clear();
+    simTimeRemaining.clear();
   }
 }

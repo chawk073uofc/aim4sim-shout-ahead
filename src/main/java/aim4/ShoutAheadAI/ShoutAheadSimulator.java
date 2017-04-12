@@ -1,30 +1,30 @@
 
 package aim4.ShoutAheadAI;
 
+import java.awt.Graphics;
+import java.awt.Shape;
+import java.awt.Toolkit;
+import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
-import aim4.ShoutAheadAI.predicates.Predicate;
+import aim4.ShoutAheadAI.predicates.VehiclePredicate;
 import aim4.config.Debug;
-import aim4.driver.AutoDriver;
+import aim4.config.DebugPoint;
 import aim4.map.BasicMap;
 import aim4.map.GridMap;
-import aim4.map.Road;
 import aim4.map.SpawnPoint;
 import aim4.map.SpawnPoint.SpawnSpec;
 import aim4.map.lane.Lane;
 import aim4.sim.AutoDriverOnlySimulator;
-import aim4.sim.Simulator;
-import aim4.sim.AutoDriverOnlySimulator.AutoDriverOnlySimStepResult;
+import aim4.sim.ShoutAheadSimInterface;
+import aim4.util.GeomMath;
 import aim4.vehicle.AutoVehicleSimView;
 import aim4.vehicle.BasicAutoVehicle;
 import aim4.vehicle.VehicleSimView;
 import aim4.vehicle.VehicleSpec;
-import aim4.vehicle.VehicleSpecDatabase;
-import aim4.vehicle.VinRegistry;
-import aim4.vehicle.BasicVehicle;
 
 /**
  * This class represents a driving simulation where every car is autonomous and
@@ -36,21 +36,33 @@ import aim4.vehicle.BasicVehicle;
  * 
  * @author christopher.hawk
  */
-public class ShoutAheadSimulator extends AutoDriverOnlySimulator implements Simulator {
-	private int targetNumCompleteVehicles = ShoutAheadSimSetup.getNumCarsPerSim();
+public class ShoutAheadSimulator extends AutoDriverOnlySimulator implements ShoutAheadSimInterface {
+	private static final double COLLISION_BACKOFF_DISTANCE = 1;// meters
+	private static final double CLOSE_TO_DEST_DISTANCE = 20;// meter
+	private static final String COMMA = ",";
+	private static Random rand = new Random();
+
 	private int maxActiveVehicles = ShoutAheadSimSetup.getMaxNumActiveCars();
+	private double simTimeLimit = ShoutAheadSimSetup.getSimTimeLimit();
 	private Strategy strategy;
-	private boolean complete = false;
 	private Object simSyncObject;
+
+	// Strategy fitness parameters
+	private int totalBuildingCollisions = 0;
+	private int totalCarCollisions = 0;
+	private double runningAveAcceleration = 0.0;
+	// private double fitness = 0.0;
+	private double runningAveNetDistMovedTowardsDest;
+	private double totalDistanceTravelled = 0.0;
 
 	public ShoutAheadSimulator(BasicMap basicMap) {
 		super(basicMap);
-		Predicate.sim = this;
+		VehiclePredicate.sim = this;
 	}
 
 	public ShoutAheadSimulator(GridMap basicMap, Strategy strategy, Object simSyncObject) {
 		super(basicMap);
-		Predicate.sim = this;
+		VehiclePredicate.sim = this;
 		this.strategy = strategy;
 		this.simSyncObject = simSyncObject;
 	}
@@ -62,79 +74,232 @@ public class ShoutAheadSimulator extends AutoDriverOnlySimulator implements Simu
 	 */
 	@Override
 	public synchronized AutoDriverOnlySimStepResult step(double timeStep) {
-		if(complete)
+		if (timesUp()) {
+			Debug.clearShortTermDebugPoints();
+			LearningRun.log(runningAveNetDistMovedTowardsDest + COMMA + totalBuildingCollisions + COMMA
+					+ totalCarCollisions + COMMA + runningAveAcceleration + COMMA + numOfCompletedVehicles + COMMA
+					+ strategy.getFitness() + LearningRun.NEW_LINE);
 			notifyLearningHarness();
+		}
 		if (Debug.PRINT_SIMULATOR_STAGE) {
 			System.err.printf("--------------------------------------\n");
 			System.err.printf("------SIM:spawnVehicles---------------\n");
 		}
 		// limit the number of active vehicles
-		if ((getNumActiveVehicles() < maxActiveVehicles) && !complete)
+		if (getNumActiveVehicles() < maxActiveVehicles) {
 			spawnVehicles(timeStep);
+
+		}
 		if (Debug.PRINT_SIMULATOR_STAGE) {
 			System.err.printf("------SIM:letDriversAct---------------\n");
 		}
-		 if(Debug.SHOW_STRATEGY){
-			System.out.println(strategy);  
-		  }
-		letDriversAct();
-		if (Debug.PRINT_SIMULATOR_STAGE) {
-			System.err.printf("------SIM:communication---------------\n");
+		if (Debug.SHOW_STRATEGY_MAIN_CONSOLE) {
+			System.out.println(strategy);
 		}
-//		communication();// TODO: remove? - replace with shout ahead?
-//		if (Debug.PRINT_SIMULATOR_STAGE) {
-//			System.err.printf("------SIM:moveVehicles---------------\n");
-//		}
+		decideDrivingActions();
+		if (Debug.PRINT_SIMULATOR_STAGE) {
+			System.err.printf("------SIM:moveVehicles---------------\n");
+		}
 		moveVehicles(timeStep);
 		if (Debug.PRINT_SIMULATOR_STAGE) {
 			System.err.printf("------SIM: detectCollisions---------------\n");
 		}
 		detectCollisions();
 		if (Debug.PRINT_SIMULATOR_STAGE) {
+			System.err.printf("------SIM: updateRuleWeights---------------\n");
+		}
+		updateRuleWeights();
+		if (Debug.PRINT_SIMULATOR_STAGE) {
 			System.err.printf("------SIM:cleanUpCompletedVehicles---------------\n");
 		}
+		updateFitness();
 		List<Integer> completedVINs = cleanUpCompletedVehicles();
 		currentTime += timeStep;
-		complete = isComplete();
-		if (complete && Debug.PRINT_SIMULATOR_STAGE){
-				System.err.printf("------SIM COMPLETE---------------\n");
-		}
+		// complete = timesUp();
+		// if (complete && Debug.PRINT_SIMULATOR_STAGE) {
+		// System.err.printf("------SIM COMPLETE---------------\n");
+		// }
 		return new AutoDriverOnlySimStepResult(completedVINs);
 	}
 
+	protected void decideDrivingActions() {
+		for (VehicleSimView vehicle : vinToVehicles.values()) {
+			((ShoutAheadDriverAgent) vehicle.getDriver()).decideNonCommAction();
+		}
+
+		for (VehicleSimView vehicle : vinToVehicles.values()) {
+			((ShoutAheadDriverAgent) vehicle.getDriver()).decideCommAction();
+		}
+
+		for (VehicleSimView vehicle : vinToVehicles.values()) {
+			((ShoutAheadDriverAgent) vehicle.getDriver()).decideFinalAction();
+		}
+
+		for (VehicleSimView vehicle : vinToVehicles.values()) {
+			((ShoutAheadDriverAgent) vehicle.getDriver()).executeFinalAction();
+		}
+
+	}
+
+	private void updateFitness() {
+		updateRunningAveAcceleration();
+		updateRunningAveNetDistMovedTowardsDest();
+		updateTotalDistanceTravelled();
+
+		double fitness = 0;
+		fitness += runningAveNetDistMovedTowardsDest * ShoutAheadSimSetup.getTotalNetDistanceTowardsDestWeight();
+		fitness += totalDistanceTravelled * ShoutAheadSimSetup.getTotalDistanceTravelledWeight();
+		fitness += runningAveAcceleration * ShoutAheadSimSetup.getTotalAccelWeight();
+		fitness += numOfCompletedVehicles * ShoutAheadSimSetup.getTotalCompletedVehiclesWeight();
+		fitness += totalBuildingCollisions * ShoutAheadSimSetup.getTotalBuildingCollisonsWeight();
+		fitness += totalCarCollisions * ShoutAheadSimSetup.getTotalCarCollisonsWeight();
+
+		strategy.setFitness(fitness);
+	}
+
+	private void updateRunningAveAcceleration() {
+		for (VehicleSimView v : vinToVehicles.values()) {
+			runningAveAcceleration = ((runningAveAcceleration + v.getAcceleration()) / 2.0);
+		}
+
+	}
+
+	private void updateRunningAveNetDistMovedTowardsDest() {
+		for (VehicleSimView v : vinToVehicles.values()) {
+			runningAveNetDistMovedTowardsDest += v.getChangeInDistanceFromDestination();
+		}
+	}
+
+	private void updateTotalDistanceTravelled() {
+		for (VehicleSimView v : vinToVehicles.values()) {
+			totalDistanceTravelled += v.getDistanceTravelledInLastStep();
+		}
+	}
+
 	private void notifyLearningHarness() {
-		synchronized(simSyncObject) {
+		synchronized (simSyncObject) {
 			simSyncObject.notify();
 		}
 	}
 
 	private void detectCollisions() {
-		if(!vinToVehicles.isEmpty()){
+		if (!vinToVehicles.isEmpty()) {
 			detectVehicleCollisions();
-		    detectBuildingCollisions();	
-		  }
-	}
-
-	private void detectBuildingCollisions() {
-		for(VehicleSimView vehicle: vinToVehicles.values()){
-		    for(Rectangle2D building: basicMap.getBuildings()){
-		    	if(vehicle.getShape().intersects(building)){
-		    		vehicle.incrementBuildingCollisionCount();
-		    	}
-		    }
+			detectBuildingCollisions();
+			// detectMapBoundaryCollisions();TODO: does not work. Maybe remove?
 		}
 	}
 
 	private void detectVehicleCollisions() {
 		VehicleSimView v1 = (VehicleSimView) vinToVehicles.values().toArray()[0];
-		for(VehicleSimView v2 : vinToVehicles.values()) {
-			if(v1.getShape().intersects(v2.getShape().getBounds2D()) && v1 != v2){
+		ShoutAheadDriverAgent d1 = (ShoutAheadDriverAgent) v1.getDriver();
+		for (VehicleSimView v2 : vinToVehicles.values()) {
+
+			ShoutAheadDriverAgent d2 = (ShoutAheadDriverAgent) v2.getDriver();
+			if (vehicalsHaveCollided(v1, v2)) {
+				if (Debug.BEEP_ON_COLLISONS)
+					Toolkit.getDefaultToolkit().beep();
+				// blame assigned to both drivers
 				v1.incrementVehicleCollisionCount();
+				stopAndMoveAway(v1, v2.getShape());
+				d1.setHasJustHitCar(true);
 				v2.incrementVehicleCollisionCount();
+				stopAndMoveAway(v2, v1.getShape());
+				d2.setHasJustHitCar(true);
+
+				totalCarCollisions += 2;
 			}
 		}
 	}
-	
+
+	private void detectBuildingCollisions() {
+		for (VehicleSimView vehicle : vinToVehicles.values()) {
+			ShoutAheadDriverAgent driver = (ShoutAheadDriverAgent) vehicle.getDriver();
+			for (Rectangle2D building : basicMap.getBuildings()) {
+				if (vehicleHasHitBuilding(vehicle, building)) {
+					if (Debug.BEEP_ON_COLLISONS)
+						Toolkit.getDefaultToolkit().beep();
+					vehicle.incrementBuildingCollisionCount();
+					stopAndMoveAway(vehicle, building);
+					driver.setHasJustHitBuilding(true);
+					totalBuildingCollisions++;
+				}
+			}
+		}
+	}
+
+	private boolean vehicleHasHitBuilding(VehicleSimView vehicle, Rectangle2D building) {
+		return vehicle.getShape().intersects(building);
+	}
+
+	private void detectMapBoundaryCollisions() {
+		// Debug.addShortTermDebugPoint(new
+		// DebugPoint(basicMap.getNorthBoundary(), "north"));
+		// Debug.addShortTermDebugPoint(new
+		// DebugPoint(basicMap.getEastBoundary(), "east"));
+		// Debug.addShortTermDebugPoint(new
+		// DebugPoint(basicMap.getSouthBoundary(), "south"));
+		// Debug.addShortTermDebugPoint(new
+		// DebugPoint(basicMap.getWestBoundary(), "west"));
+
+		for (VehicleSimView v : vinToVehicles.values()) {
+			List<Line2D> mapBoundaries = GeomMath.polygonalShapePerimeterSegments(basicMap.getDimensions());
+			for (Line2D boundary : mapBoundaries) {
+				if (!(boundary.ptLineDist(v.getDestinationPoint()) < 1.0)) {
+					if (!((ShoutAheadDriverAgent) v.getDriver()).isGettingHeadStart()) {
+						System.out.println("vin " + v.getVIN() + " out of bounds");
+						stopAndMoveAway(v, boundary);
+					}
+				}
+			}
+		}
+
+	}
+
+	private boolean vehicalsHaveCollided(VehicleSimView v1, VehicleSimView v2) {
+		// return v1.getShape().intersects(v2.getShape().getBounds2D()) && v1 !=
+		// v2;
+		return v1.getShapeForCollisoinDetection().intersects(v2.getShapeForCollisoinDetection().getBounds2D())
+				&& v1 != v2;
+
+	}
+
+	/**
+	 * Stop and reverse after a collision.
+	 * 
+	 * @param vehicle
+	 */
+	private void stopAndMoveAway(VehicleSimView vehicle, Shape obstacle) {
+		Point2D resetPoint;
+		if (vehicle.getFrontEdge().intersects(obstacle.getBounds2D())) {
+			resetPoint = vehicle.getPointAtMiddleRear(COLLISION_BACKOFF_DISTANCE);
+			vehicle.resetPositionAfterCrash(resetPoint);
+		} else if (vehicle.getBackEdge().intersects(obstacle.getBounds2D())) {
+			resetPoint = vehicle.getPointAtMiddleFront(COLLISION_BACKOFF_DISTANCE);
+			vehicle.resetPositionAfterCrash(resetPoint);
+		} else {
+			// System.err.println("vin " + vehicle.getVIN() + " was hit");
+		}
+	}
+
+	private void updateRuleWeights() {
+
+		for (VehicleSimView vehicle : vinToVehicles.values()) {
+			ShoutAheadDriverAgent driver = (ShoutAheadDriverAgent) vehicle.getDriver();
+			try {
+				Rule lastFollowedRule = driver.getCurrentRuleToFollow();
+				if (lastFollowedRule == null)
+					throw new NoApplicableRulesException(vehicle);
+				driver.updateRewardsFromLastAction();
+				double rewardFromLastAction = driver.getRewardFromLastAction();
+				lastFollowedRule.addWeight(rewardFromLastAction);
+				driver.clearRewardsFromLastAction();
+
+			} catch (NoApplicableRulesException e) {
+				// no rule to update. Do nothing
+			}
+		}
+	}
 
 	/**
 	 * Create a vehicle at a spawn point with a ShoutAheadDriverAgent
@@ -168,28 +333,38 @@ public class ShoutAheadSimulator extends AutoDriverOnlySimulator implements Simu
 		return vehicle;
 	}
 
-	public boolean isComplete() {
-		return numOfCompletedVehicles >= targetNumCompleteVehicles;
+	public boolean timesUp() { // TODO: change to time expired
+		return getSimTimeRemaining() <= 0;
+	}
+
+	@Override
+	protected boolean shouldRemoveVehicle(Rectangle2D mapBoundary, VehicleSimView v) {
+		return vehicalHasReachedDestination(mapBoundary, v);
+	}
+
+	private boolean vehicalHasReachedDestination(Rectangle2D mapBoundary, VehicleSimView v) {
+		return (super.shouldRemoveVehicle(mapBoundary, v) // out of bounds
+				&& (v.getDistanceFromDestination(v.getPosition()) < CLOSE_TO_DEST_DISTANCE));
 	}
 
 	public Strategy getStrategy() {
 		return strategy;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("ShoutAheadSimulator [targetNumCompleteVehicles=");
-		builder.append(targetNumCompleteVehicles);
 		builder.append(", maxActiveVehicles=");
 		builder.append(maxActiveVehicles);
 		builder.append(", strategy=");
 		builder.append(strategy);
 		builder.append(", complete=");
-		builder.append(complete);
 		builder.append(", vinToVehicles=");
 		builder.append(vinToVehicles);
 		builder.append(", currentTime=");
@@ -198,5 +373,59 @@ public class ShoutAheadSimulator extends AutoDriverOnlySimulator implements Simu
 		builder.append(numOfCompletedVehicles);
 		builder.append("]");
 		return builder.toString();
+	}
+
+	/**
+	 * @return the totalBuildingCollisions
+	 */
+	@Override
+	public int getTotalBuildingCollisions() {
+		return totalBuildingCollisions;
+	}
+
+	/**
+	 * @return the totalCarCollisions
+	 */
+	@Override
+	public int getTotalCarCollisions() {
+		return totalCarCollisions;
+	}
+
+	/**
+	 * @return the totalCarsCompleted
+	 */
+	@Override
+	public int getTotalCarsCompleted() {
+		return numOfCompletedVehicles;
+	}
+
+	/**
+	 * @return the runningAveAcceleration
+	 */
+	@Override
+	public double getRunningAveAccelration() {
+		return runningAveAcceleration;
+	}
+
+	/**
+	 * @return the fitness
+	 * @deprecated Use {@link aim4.ShoutAheadAI.Strategy#getFitness()} instead
+	 */
+	@Override
+	public double getFitness() {
+		return strategy.getFitness();
+	}
+
+	@Override
+	public double getSimTimeRemaining() {
+		return simTimeLimit - currentTime;
+	}
+
+	public double getAveNetDistanceMovedTowardsDest() {
+		return runningAveNetDistMovedTowardsDest;
+	}
+
+	public static VehicleSimView getRandomVehicle() {
+		return vinToVehicles.get(rand.nextInt(vinToVehicles.size()));
 	}
 }

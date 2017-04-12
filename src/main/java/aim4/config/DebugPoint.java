@@ -31,6 +31,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package aim4.config;
 
 import java.awt.Color;
+import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 
 /**
@@ -47,7 +48,7 @@ public class DebugPoint {
   /**
    * The default color that will be used to display DebugPoints graphically.
    */
-  private static final Color DEFAULT_COLOR = Color.BLACK;
+  private static final Color DEFAULT_COLOR = Color.GREEN.brighter().brighter();
 
   /**
    * The actual point.
@@ -80,8 +81,18 @@ public class DebugPoint {
   public DebugPoint(Point2D point) {
     this(point, null, null, DEFAULT_COLOR);
   }
+  
+  public DebugPoint(Point2D point, Color color) {  
+	    this(point, null, null, color);
 
-  /**
+  }
+  /////////////////////////////////
+  // PUBLIC METHODS
+  /////////////////////////////////
+
+
+
+/**
    * Class constructor for text only.
    *
    * @param msg the text for this text-only DebugPoint
@@ -170,7 +181,17 @@ public class DebugPoint {
   // PUBLIC METHODS
   /////////////////////////////////
 
-  /**
+  public DebugPoint(Line2D leadingEdge, String msg) {
+	point = leadingEdge.getP1();
+	startPoint = leadingEdge.getP2();
+	this.msg = msg;
+  }
+
+public DebugPoint(Line2D leadingEdge) {
+	this(leadingEdge, null);
+}
+
+/**
    * Whether or not this DebugPoint has associated text.
    *
    * @return whether or not this DebugPoint has associated text

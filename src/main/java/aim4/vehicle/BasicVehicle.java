@@ -31,9 +31,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package aim4.vehicle;
 
 import java.awt.Shape;
-import java.awt.geom.AffineTransform;
 import java.awt.geom.Line2D;
-import java.awt.geom.Line2D.Double;
 import java.awt.geom.Point2D;
 import java.util.Iterator;
 import java.util.List;
@@ -62,6 +60,10 @@ public abstract class BasicVehicle implements VehicleSimView {
    * how to do L'H&ocirc;pital's rule.
    */
   private static final double MIN_STEERING_THRESHOLD = 0.00001;
+
+  private static final int FRONT_EDGE_INDEX = 3;
+
+  private static final int BACK_EDGE_INDEX = 1;
 
   /////////////////////////////////
   // NESTED CLASSES
@@ -99,6 +101,8 @@ public abstract class BasicVehicle implements VehicleSimView {
      * @param timeStep     the period of time for which the vehicle moves.
      */
     void move(double currentTime, double timeStep);
+
+	void setVelocity(double d);
   }
 
   /**
@@ -199,7 +203,13 @@ public abstract class BasicVehicle implements VehicleSimView {
     public double getVelocity() {
       return velocity;
     }
-
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setVelocity(double velocity) {
+      this.velocity = velocity;
+    }
     /////////////////////////////////
     // PROTECTED METHODS
     /////////////////////////////////
@@ -544,6 +554,13 @@ public abstract class BasicVehicle implements VehicleSimView {
     public double getVelocity() {
       return nonAccelMovement.getVelocity();
     }
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setVelocity(double velocity) {
+      this.nonAccelMovement.velocity = velocity;
+    }
 
     /**
      * {@inheritDoc}
@@ -753,7 +770,13 @@ public abstract class BasicVehicle implements VehicleSimView {
       }
       setTargetVelocityWithBound(0.0);
     }
-
+    
+//    /**
+//     * Stop vehicle after collision.
+//     */
+//    public void stop() {
+//		
+//	}
     /**
      * Set the Vehicle's acceleration to its maximum value.  Obeys limits on
      * setMaxAccelWithMaxTargetVelocity as well as disabilities.
@@ -892,6 +915,8 @@ public abstract class BasicVehicle implements VehicleSimView {
           "targetVelocity=" + Constants.TWO_DEC.format(targetVelocity);
     }
 
+	
+
   }
 
 
@@ -965,7 +990,13 @@ public abstract class BasicVehicle implements VehicleSimView {
       return baseMovement.getVelocity();
     }
 
-    /**
+    @Override
+	public void setVelocity(double velocity) {
+		baseMovement.setVelocity(velocity);
+		
+	}
+
+	/**
      * Get the acceleration.
      *
      * @return the acceleration
@@ -1237,6 +1268,22 @@ public abstract class BasicVehicle implements VehicleSimView {
   public void setVIN(int vin) {
     this.vin = vin;
   }
+  /**
+   * Moves the vehicle slightly away from the collision point and sets velocity, acceleration, and target velocity to zero.
+   * @param newPosition
+   */
+  public void resetPositionAfterCrash(Point2D newPosition){
+	  this.movement = new MoveToTargetVelocityMovement(spec,
+			  newPosition,
+              getHeading(),
+              0.0,
+              getSteeringAngle(),
+              0.0,
+              0.0);
+	  
+	// Update all the gauges and memos
+	  updateGaugesAndMemos();
+  }
 
   /**
    * {@inheritDoc}
@@ -1311,6 +1358,10 @@ public abstract class BasicVehicle implements VehicleSimView {
     return movement.getVelocity();
   }
 
+  public void setVelocity(double velocity) {
+    this.movement.setVelocity(velocity); 
+  }
+
   /**
    * {@inheritDoc}
    */
@@ -1382,7 +1433,10 @@ public abstract class BasicVehicle implements VehicleSimView {
   public Shape getShape() {
     return memoGetShape;
   }
-
+  @Override
+public Shape getShapeForCollisoinDetection(){
+	  return GeomUtil.convertPointsToShape(getCornerPointsForCollisoinDetection());
+  }
   /**
    * {@inheritDoc}
    */
@@ -1409,7 +1463,20 @@ public abstract class BasicVehicle implements VehicleSimView {
   public List<Line2D> getEdges() {
     return GeomMath.polygonalShapePerimeterSegments(getShape());
   }
-
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Line2D getFrontEdge() {
+    return getEdges().get(FRONT_EDGE_INDEX);
+  }
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Line2D getBackEdge() {
+    return getEdges().get(BACK_EDGE_INDEX);
+  }
   /**
    * {@inheritDoc}
    */
@@ -1422,15 +1489,26 @@ public abstract class BasicVehicle implements VehicleSimView {
                                + delta * Math.sin(movement.getHeading()));
     return p;
   }
+  
+  @Override
+  public Point2D newGetPointAtMiddleFront(double delta) {
+	  Point2D p =
+		        new Point2D.Double(getCenterPoint().getX()
+		                               + delta * Math.cos(movement.getHeading()),
+		                           getCenterPoint().getY()
+		                               + delta * Math.sin(movement.getHeading()));
+		    return p;
+  }
+
   /**
    * {@inheritDoc}
    */
   @Override
   public Point2D getPointAtMiddleRight(double delta) {
 	  Point2D p =
-        new Point2D.Double(movement.getPosition().getX()
+        new Point2D.Double(getCenterPoint().getX()
                                + delta * Math.cos(movement.getHeading() + Math.toRadians(90)),
-                           movement.getPosition().getY()
+                           getCenterPoint().getY()
                                + delta * Math.sin(movement.getHeading() + Math.toRadians(90)));
     return p;
   }
@@ -1440,9 +1518,9 @@ public abstract class BasicVehicle implements VehicleSimView {
   @Override
   public Point2D getPointAtMiddleRear(double delta) {
 	  Point2D p =
-        new Point2D.Double(movement.getPosition().getX()
+        new Point2D.Double(getCenterPoint().getX()
                                + delta * Math.cos(movement.getHeading() + Math.toRadians(180)),
-                           movement.getPosition().getY()
+                           getCenterPoint().getY()
                                + delta * Math.sin(movement.getHeading() + Math.toRadians(180)));
     return p;
   }
@@ -1452,9 +1530,9 @@ public abstract class BasicVehicle implements VehicleSimView {
   @Override
   public Point2D getPointAtMiddleLeft(double delta) {
 	  Point2D p =
-        new Point2D.Double(movement.getPosition().getX()
+        new Point2D.Double(getCenterPoint().getX()
                                + delta * Math.cos(movement.getHeading() + Math.toRadians(270)),
-                           movement.getPosition().getY()
+                           getCenterPoint().getY()
                                + delta * Math.sin(movement.getHeading() + Math.toRadians(270)));
     return p;
   }
@@ -1483,6 +1561,7 @@ public abstract class BasicVehicle implements VehicleSimView {
    */
   @Override
   public Point2D getCenterPoint() {
+	  
     return spec.getCenterPoint(movement.getPosition(), movement.getHeading());
   }
 
@@ -1493,6 +1572,11 @@ public abstract class BasicVehicle implements VehicleSimView {
   public Point2D[] getCornerPoints() {
     return spec.getCornerPoints(movement.getPosition(), movement.getHeading());
   }
+  
+  public Point2D[] getCornerPointsForCollisoinDetection() {
+	    return spec.getCornerPoints(getPosition(), getHeading());
+  }
+ 
 
   /**
    * Get the current global coordinates of the corners of this Vehicle,
@@ -1734,6 +1818,20 @@ public abstract class BasicVehicle implements VehicleSimView {
       System.err.printf("vin %d slowToStop()\n", vin);
     }
     switchToMoveToTargetVelocityMovement().slowToStop();
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void stop() {
+    if (Debug.isPrintVehicleHighLevelControlOfVIN(vin)) {
+      System.err.printf("vin %d stop()\n", vin);
+    }
+   //this.movement.setVelocity(0.0);
+    setVelocity(0.0);
+    
+   // switchToMoveToTargetVelocityMovement().stop();
   }
 
   /**

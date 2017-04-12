@@ -34,6 +34,7 @@ import javax.swing.GroupLayout;
 import javax.swing.JPanel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.text.View;
 
 import aim4.config.SimConfig;
 import aim4.gui.StatusPanelInterface;
@@ -73,7 +74,7 @@ public class SimControlPanel extends JPanel
     targetSimSpeedSlider =
       new LabeledSlider(
         0.0, Viewer.TURBO_SIM_SPEED,
-        Math.min(Viewer.DEFAULT_SIM_SPEED, Viewer.TURBO_SIM_SPEED),
+        /*Math.min(Viewer.DEFAULT_SIM_SPEED, Viewer.TURBO_SIM_SPEED)*/Viewer.TURBO_SIM_SPEED,
         1.0, 0.25,
         "Simulation Speed: %.1f simulation second / second",
         "%.1f", this);

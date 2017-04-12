@@ -35,6 +35,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import aim4.ShoutAheadAI.ShoutAheadDriverAgent;
 import aim4.config.Debug;
 import aim4.config.DebugPoint;
 import aim4.im.IntersectionManager;
@@ -43,6 +44,7 @@ import aim4.map.SpawnPoint;
 import aim4.map.lane.Lane;
 import aim4.util.GeomMath;
 import aim4.vehicle.AutoVehicleDriverView;
+import aim4.vehicle.BasicAutoVehicle;
 import aim4.vehicle.VehicleDriverView;
 
 /**
@@ -116,7 +118,8 @@ public abstract class Driver implements DriverSimView {
               Color.BLUE.brighter()));
         }
       }
-    }
+         }
+    
   }
 
   /////////////////////////////////

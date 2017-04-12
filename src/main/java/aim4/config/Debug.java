@@ -108,7 +108,9 @@ public class Debug {
    * Set the target vehicle's ID
    */
   public static void setTargetVIN(int vin) {
+	
     targetVIN = vin;
+    
   }
 
   /**
@@ -263,7 +265,7 @@ public class Debug {
   /**
    * Show learning stage. 
    */
-  public static final boolean SHOW_LEARNING_STAGE = true;
+  public static final boolean SHOW_LEARNING_STAGE = false;
   /**
    * Show rectangles for debugging. 
    */
@@ -277,18 +279,34 @@ public class Debug {
 	/**
 	 * Show the rule currently being used. 
 	 */
-	public static final boolean SHOW_RULE_USED = true;
+	public static final boolean SHOW_RULE_USED = false;
 	/**
-	 * Show the strategy (rule sets) for a given simulation. 
+	 * Show the strategy (rule sets) for a given simulation in eclipse. 
 	 */
-	public static final boolean SHOW_STRATEGY = false;
+	public static final boolean SHOW_STRATEGY_MAIN_CONSOLE = false;
 
-	public static final boolean SHOW_APPLICABLE_RULES = true;
+	public static final boolean SHOW_APPLICABLE_RULES = false;
 
 	public static final boolean GIVE_HEAD_START = true;
 
 	public static final boolean SHOW_COLLISION_STATUS = true;
 
+	public static final boolean DRAW_LEARNING_STAGE = true;
+
+	public static final boolean LOG_STRATEGY = false;
+
+	public static final boolean SHOW_DRIVER_INFO = true;
+
+	public static final boolean SHOW_ALL_DESTINATIONS = true;
+
+	public static final boolean DRAW_FRONT_BACK_CENTER = false;
+
+	public static final boolean START_SIM_PAUSED = false;
+
+	public static final boolean BEEP_ON_COLLISONS = false;
+
+	public static final boolean SHOW_STRATEGY_GUI = false;
+	public static final boolean MAKE_STRAT_DIRECTORIES = false;
 
   // TODO_OG: remove the following later.
   /**

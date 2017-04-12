@@ -35,6 +35,8 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import aim4.gui.statuspanel.ConsolePanel;
+import aim4.gui.statuspanel.CurrentRulePanel;
+import aim4.ShoutAheadAI.DriverAgentPanel;
 import aim4.gui.statuspanel.AdminControlPanel;
 import aim4.gui.statuspanel.SimControlPanel;
 import aim4.gui.statuspanel.StatPanel;
@@ -60,16 +62,21 @@ public class StatusPanelContainer extends JTabbedPane
   /** The system panel */
   SystemPanel systemPanel;
   /** The console panel */
-  ConsolePanel consolePanel;
+  CurrentRulePanel currentRulePanel;
   /** The vehicle information panel */
   VehicleInfoPanel vehicleInfoPanel;
   /** The administration control panel */
   AdminControlPanel adminControlPanel;
-
+  /** The ShoutAhead Driver agent panel*/
+  DriverAgentPanel driverAgentPanel;
+  /** Shows the current strategy */
+  
   // ///////////////////////////////
   // CLASS CONSTRUCTORS
   // ///////////////////////////////
-
+  public StatusPanelContainer() {
+  }
+  
   /**
    * Create a new status pane with the given preferred width.
    *
@@ -82,12 +89,14 @@ public class StatusPanelContainer extends JTabbedPane
     add("Statistics", statPanel);
     systemPanel = new SystemPanel();
     add("System", systemPanel);
-    consolePanel = new ConsolePanel();
-    add("Console", consolePanel);
+    currentRulePanel = new CurrentRulePanel();
+    add("Current Rule", currentRulePanel);
     vehicleInfoPanel = new VehicleInfoPanel();
     add("Vehicle", vehicleInfoPanel);
     adminControlPanel = new AdminControlPanel(viewer);
     add("Admin", adminControlPanel);
+    driverAgentPanel = new DriverAgentPanel();//TODO:don't add when not should ahead?
+    add("Driver Agent", driverAgentPanel);
 
     addChangeListener(this);
   }
@@ -119,8 +128,9 @@ public class StatusPanelContainer extends JTabbedPane
     controlPanel.clear();
     statPanel.clear();
     systemPanel.clear();
-    consolePanel.clear();
+    currentRulePanel.clear();
     vehicleInfoPanel.clear();
+    driverAgentPanel.clear();
   }
 
   /**
@@ -129,7 +139,7 @@ public class StatusPanelContainer extends JTabbedPane
    * @param str  the message
    */
   public void writeToConsole(String str) {
-    consolePanel.append(str);
+	  currentRulePanel.append(str);
   }
 
   /**

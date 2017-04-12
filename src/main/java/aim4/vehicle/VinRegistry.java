@@ -198,6 +198,20 @@ public class VinRegistry {
     return v;
   }
 
+  
+  public static VehicleSimView peekVehicleFromVIN(int vin) {
+	    WeakReference<VehicleSimView> wr = vinToVehicle.get(vin);
+	    if(wr == null) {
+	      return null;
+	    }
+	    // Unwrap the reference
+	    VehicleSimView v = wr.get();
+	    // If it's null, then the Vehicle no longer exists
+	    if(v == null) {
+	      vinToVehicle.get(vin);
+	    }
+	    return v;
+	  }
   /**
    * Given a VIN, get the vehicle specification with that VIN.
    *

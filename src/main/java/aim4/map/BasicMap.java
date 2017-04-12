@@ -30,6 +30,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package aim4.map;
 
+import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.Rectangle2D.Double;
 import java.util.List;
@@ -149,5 +150,13 @@ public interface BasicMap {
    * @return the list of lines representing the buildings in this map.
    */
   List<Rectangle2D.Double> getBuildings();
+
+Line2D getNorthBoundary();
+
+Line2D getEastBoundary();
+
+Line2D getSouthBoundary();
+
+Line2D getWestBoundary();
   
 }

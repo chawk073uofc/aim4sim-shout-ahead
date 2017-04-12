@@ -31,6 +31,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package aim4.map;
 
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.io.FileNotFoundException;
@@ -661,6 +662,43 @@ public class GridMap implements BasicMap {
 		buildings.add(southEastbuilding);
 		return buildings;
 	}
+
+	/**
+	 * @return the northBoundary
+	 */
+	@Override
+	public Line2D getNorthBoundary() {
+		Rectangle2D mapRec = getDimensions();
+		return new Line2D.Double(mapRec.getX(), mapRec.getY(), mapRec.getMaxX(), mapRec.getY());
+	}
+
+	/**
+	 * @return the eastBoundary
+	 */
+	@Override
+	public Line2D getEastBoundary() {
+		Rectangle2D mapRec = getDimensions();
+		return new Line2D.Double(mapRec.getMaxX(), mapRec.getMaxY(), mapRec.getMaxX(), mapRec.getY());
+	}
+
+	/**
+	 * @return the southBoundary
+	 */
+	@Override
+	public Line2D getSouthBoundary() {
+		Rectangle2D mapRec = getDimensions();
+		return new Line2D.Double(mapRec.getMaxX(), mapRec.getMaxY(), mapRec.getX(), mapRec.getMaxY());
+		}
+
+	/**
+	 * @return the westBoundary
+	 */
+	@Override
+	public Line2D getWestBoundary() {
+		Rectangle2D mapRec = getDimensions();
+		return new Line2D.Double(mapRec.getX(), mapRec.getY(), mapRec.getX(), mapRec.getMaxY());
+	}
+
 
   
 }

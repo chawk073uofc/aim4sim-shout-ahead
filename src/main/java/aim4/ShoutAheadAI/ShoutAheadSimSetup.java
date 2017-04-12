@@ -20,19 +20,43 @@ import aim4.sim.setup.SimSetup;
  *
  */
 public class ShoutAheadSimSetup extends AutoDriverOnlySimSetup implements SimSetup {
+	/**The number that will fit on one page*/
+	private static final int DEMO_NUM_RULES = 27;
+	
 	// Default parameter values
-	private static double steeringDelta = 10.0;// degrees
-	private static double speedDelta = 5.0;// m/s
-	private static int numCarsPerSim = 8;
-	private static int maxNumActiveCars = 4;
+	private static double steeringDelta = 1.0;// degrees
+	private static double speedDelta = 1.0;// m/s
+	private static int numCarsPerSim = 10;//TODO: get rid of this
+	private static double simTimeLimit = 500.0; //2 rt mins
+	private static int maxNumActiveCars = 8;
 
-	private static int numPredsPerCond = 2;
-	private static int numRulesPerRuleSet = 100;
-	private static double explorationFactor = 0.5;
+	private static int numPredsPerCond = 4;
+	private static int numRulesPerRuleSet = 1000;
+	private static double explorationFactor = 0.3;
 	private static double learningFactor = 0.5;
 	private static int numRoundsPerGeneration = 10;
-	private static int numGenerations = 10;
+	private static int numGenerations = 50;
+	
+	private static int numHeadStartActions = 30;
+	
+	//Reinforcement learning reward weights
+	private static double distanceWeight = 1;
+	private static double accelerationWeight = -0.1;
+	private static double carCollisionWeight = -3;
+	private static double buildingCollisionWeight = -5;
+	
+	//Evolutionary learning fitness weights. 
+	private static double totalNetDistanceTowardsDestWeight = 1.0;
+	private static double totalAccelWeight = -0.1;
+	private static double totalDistanceTravelledWeight = -0.1;
+	private static double totalCompletedVehiclesWeight = 50;
+	private static double totalBuildingCollisonsWeight = -10;
+	private static double totalCarCollisonsWeight = -50;
 
+	private static double fractionStratsToCarryForward = 0.3;//Carry the best 1/4 of the strategies through to the next generation
+	private static double offspringFraction = 0.3; // 1/4 of the strategies in gen n+1 are created by breeding the best strategies in gen n
+	private static double commRuleProb = 0.5; // 1/3 chance of choosing a communicating rule in the case that there are both comm and non-comm rules applicalbe to the given situation and vehicle and the weight of the comm rule is less than that of the comm rule.
+	
 	public ShoutAheadSimSetup(BasicSimSetup basicSimSetup) {
 		super(basicSimSetup);
 	}
@@ -230,6 +254,113 @@ public class ShoutAheadSimSetup extends AutoDriverOnlySimSetup implements SimSet
 				+ "\nstopDistBeforeIntersection=" + stopDistBeforeIntersection;
 	}
 
+	/**
+	 * @return the numStartAheadActions
+	 */
+	public static int getNumHeadStartActions() {
+		return numHeadStartActions;
+	}
 
+	/**
+	 * @return the distanceWeight
+	 */
+	public static double getDistanceWeight() {
+		return distanceWeight;
+	}
 
+	/**
+	 * @return the accelerationWeight
+	 */
+	public static double getAccelerationWeight() {
+		return accelerationWeight;
+	}
+
+	/**
+	 * @return the carCollisionWeight
+	 */
+	public static double getCarCollisionWeight() {
+		return carCollisionWeight;
+	}
+
+	/**
+	 * @return the buildingCollisionWeight
+	 */
+	public static double getBuildingCollisionWeight() {
+		return buildingCollisionWeight;
+	}
+
+	/**
+	 * @param numStartAheadActions the numStartAheadActions to set
+	 */
+	public void setNumStartAheadActions(int numStartAheadActions) {
+		ShoutAheadSimSetup.numHeadStartActions = numStartAheadActions;
+	}
+
+	/**
+	 * @param distanceWeight the distanceWeight to set
+	 */
+	public void setDistanceWeight(double distanceWeight) {
+		ShoutAheadSimSetup.distanceWeight = distanceWeight;
+	}
+
+	/**
+	 * @param accelerationWeight the accelerationWeight to set
+	 */
+	public void setAccelerationWeight(double accelerationWeight) {
+		ShoutAheadSimSetup.accelerationWeight = accelerationWeight;
+	}
+
+	/**
+	 * @param carCollisionWeight the carCollisionWeight to set
+	 */
+	public void setCarCollisionWeight(double carCollisionWeight) {
+		ShoutAheadSimSetup.carCollisionWeight = carCollisionWeight;
+	}
+
+	/**
+	 * @param buildingCollisionWeight the buildingCollisionWeight to set
+	 */
+	public void setBuildingCollisionWeight(double buildingCollisionWeight) {
+		ShoutAheadSimSetup.buildingCollisionWeight = buildingCollisionWeight;
+	}
+
+	public static double getSimTimeLimit() {
+		return simTimeLimit;
+	}
+
+	public static double getTotalNetDistanceTowardsDestWeight() {
+		return totalNetDistanceTowardsDestWeight;
+	}
+
+	public static double getTotalAccelWeight() {
+		return totalAccelWeight;
+	}
+
+	public static double getTotalCompletedVehiclesWeight() {
+		return totalCompletedVehiclesWeight;
+	}
+
+	public static double getTotalBuildingCollisonsWeight() {
+		return totalBuildingCollisonsWeight;
+	}
+
+	public static double getTotalCarCollisonsWeight() {
+		return totalCarCollisonsWeight;
+	}
+
+	public static double getTotalDistanceTravelledWeight() {
+		return totalDistanceTravelledWeight;
+	}
+
+	public static double getFractionStratsToCarryForward() {
+		return fractionStratsToCarryForward;
+	}
+
+	public static double getOffspringFraction() {
+		return offspringFraction;
+	}
+
+	public static double getCommRuleProb() {
+		return commRuleProb ;
+	}	
 }

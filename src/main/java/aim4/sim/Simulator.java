@@ -30,6 +30,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package aim4.sim;
 
+import java.awt.Graphics;
 import java.util.Set;
 
 import aim4.map.BasicMap;
@@ -110,4 +111,6 @@ public interface Simulator {
    * @param vehicle  the proxy vehicle
    */
   void addProxyVehicle(ProxyVehicleSimView vehicle);
+
+ 
 }
