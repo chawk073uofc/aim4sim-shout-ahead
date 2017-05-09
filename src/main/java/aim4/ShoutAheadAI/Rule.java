@@ -173,9 +173,11 @@ public class Rule /* implements Comparable<Rule> */ {
 		return action;
 	}
 
-	public void addWeight(double weightToAdd) {
-		weight += weightToAdd;
-	}
+//	public void addWeight(double weightToAdd) {
+//		weight += weightToAdd;
+//	}
+//	
+	
 
 	/**
 	 * @return the normalizedWeight
@@ -190,6 +192,10 @@ public class Rule /* implements Comparable<Rule> */ {
 	 */
 	public void setNormalizedWeight(double normalizedWeight) {
 		this.normalizedWeight = normalizedWeight;
+	}
+
+	public void setWeight(double weight) {
+		this.weight = weight;
 	}
 
 	// @Override

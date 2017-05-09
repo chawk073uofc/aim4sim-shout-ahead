@@ -105,7 +105,7 @@ public class VehicleSpec {
    * in radians.
    */
   private double maxTurnPerSecond;
-
+  
    // derived properties
 
   /**

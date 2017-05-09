@@ -164,12 +164,7 @@ public class ShoutAheadRuleSet extends RuleSet {
 	
 	private List<ShoutAheadRule> getBestRules() {
 		ArrayList<ShoutAheadRule> sortedRules = new ArrayList<ShoutAheadRule>(rules);
-		sortedRules.sort(new Comparator<ShoutAheadRule>() {
-		    @Override
-		    public int compare(ShoutAheadRule r1, ShoutAheadRule r2) {
-		        return (int) ((int) r1.getWeight() - r2.getWeight());
-		    }
-		});
+		sortedRules.sort(new RuleComparator());
 		return sortedRules.subList(numRules/2, numRules);
 	}
 }

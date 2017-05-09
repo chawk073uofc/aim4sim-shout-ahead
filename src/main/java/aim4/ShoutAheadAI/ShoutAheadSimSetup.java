@@ -27,35 +27,39 @@ public class ShoutAheadSimSetup extends AutoDriverOnlySimSetup implements SimSet
 	private static double steeringDelta = 1.0;// degrees
 	private static double speedDelta = 1.0;// m/s
 	private static int numCarsPerSim = 10;//TODO: get rid of this
-	private static double simTimeLimit = 500.0; //2 rt mins
+	private static double simTimeLimit = 50.0; //
 	private static int maxNumActiveCars = 8;
 
-	private static int numPredsPerCond = 4;
+	private static int numPredsPerCond = 3;
 	private static int numRulesPerRuleSet = 1000;
 	private static double explorationFactor = 0.3;
 	private static double learningFactor = 0.5;
 	private static int numRoundsPerGeneration = 10;
-	private static int numGenerations = 50;
+	private static int numGenerations = 100;
 	
 	private static int numHeadStartActions = 30;
-	
+	 
 	//Reinforcement learning reward weights
-	private static double distanceWeight = 1;
+	private static double distanceWeight = 10;
 	private static double accelerationWeight = -0.1;
 	private static double carCollisionWeight = -3;
 	private static double buildingCollisionWeight = -5;
 	
 	//Evolutionary learning fitness weights. 
-	private static double totalNetDistanceTowardsDestWeight = 1.0;
+	private static double totalNetDistanceTowardsDestWeight = 10.0;
 	private static double totalAccelWeight = -0.1;
 	private static double totalDistanceTravelledWeight = -0.1;
 	private static double totalCompletedVehiclesWeight = 50;
 	private static double totalBuildingCollisonsWeight = -10;
 	private static double totalCarCollisonsWeight = -50;
 
-	private static double fractionStratsToCarryForward = 0.3;//Carry the best 1/4 of the strategies through to the next generation
-	private static double offspringFraction = 0.3; // 1/4 of the strategies in gen n+1 are created by breeding the best strategies in gen n
+	private static double fractionStratsToCarryForward = 0.3;//Carry the best 1/3 of the strategies through to the next generation
+	private static double offspringFraction = 0.3; // 1/3 of the strategies in gen n+1 are created by breeding the best strategies in gen n
 	private static double commRuleProb = 0.5; // 1/3 chance of choosing a communicating rule in the case that there are both comm and non-comm rules applicalbe to the given situation and vehicle and the weight of the comm rule is less than that of the comm rule.
+
+	//sarsa params
+	private static double alpha = 0.3; // discount rate
+	private static double gamma = 0.5; // learning factor
 	
 	public ShoutAheadSimSetup(BasicSimSetup basicSimSetup) {
 		super(basicSimSetup);
@@ -237,21 +241,85 @@ public class ShoutAheadSimSetup extends AutoDriverOnlySimSetup implements SimSet
 		ShoutAheadSimSetup.numRulesPerRuleSet = numRulesPerRuleSet;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
+	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
 	public String toString() {
-		return "steeringDelta=" + steeringDelta + "\nspeedDelta=" + speedDelta + "\nnumCarsPerSim=" + numCarsPerSim
-				+ "\nnumPredsPerCond=" + numPredsPerCond + "\nnumRulesPerRuleSet=" + numRulesPerRuleSet
-				+ "\nexplorationFactor=" + explorationFactor + "\nlearningFactor=" + learningFactor
-				+ "\nnumRoundsPerGeneration=" + numRoundsPerGeneration + "\nnumGenerations=" + numGenerations
-				+ "\n\nnumOfColumns=" + numOfColumns + "\nnumOfRows=" + numOfRows + "\nlaneWidth=" + laneWidth
-				+ "\nspeedLimit=" + speedLimit + "\nlanesPerRoad=" + lanesPerRoad + "\nmedianSize=" + medianSize
-				+ "\ndistanceBetween=" + distanceBetween + "\ntrafficLevel=" + trafficLevel
-				+ "\nstopDistBeforeIntersection=" + stopDistBeforeIntersection;
+		StringBuilder builder = new StringBuilder();
+		builder.append("steeringDelta=");
+		builder.append(steeringDelta);
+		builder.append("\n speedDelta=");
+		builder.append(speedDelta);
+		builder.append("\n numCarsPerSim=");
+		builder.append(numCarsPerSim);
+		builder.append("\n simTimeLimit=");
+		builder.append(simTimeLimit);
+		builder.append("\n maxNumActiveCars=");
+		builder.append(maxNumActiveCars);
+		builder.append("\n numPredsPerCond=");
+		builder.append(numPredsPerCond);
+		builder.append("\n numRulesPerRuleSet=");
+		builder.append(numRulesPerRuleSet);
+		builder.append("\n explorationFactor=");
+		builder.append(explorationFactor);
+		builder.append("\n learningFactor=");
+		builder.append(learningFactor);
+		builder.append("\n numRoundsPerGeneration=");
+		builder.append(numRoundsPerGeneration);
+		builder.append("\n numGenerations=");
+		builder.append(numGenerations);
+		builder.append("\n numHeadStartActions=");
+		builder.append(numHeadStartActions);
+		builder.append("\n distanceWeight=");
+		builder.append(distanceWeight);
+		builder.append("\n accelerationWeight=");
+		builder.append(accelerationWeight);
+		builder.append("\n carCollisionWeight=");
+		builder.append(carCollisionWeight);
+		builder.append("\n buildingCollisionWeight=");
+		builder.append(buildingCollisionWeight);
+		builder.append("\n totalNetDistanceTowardsDestWeight=");
+		builder.append(totalNetDistanceTowardsDestWeight);
+		builder.append("\n totalAccelWeight=");
+		builder.append(totalAccelWeight);
+		builder.append("\n totalDistanceTravelledWeight=");
+		builder.append(totalDistanceTravelledWeight);
+		builder.append("\n totalCompletedVehiclesWeight=");
+		builder.append(totalCompletedVehiclesWeight);
+		builder.append("\n totalBuildingCollisonsWeight=");
+		builder.append(totalBuildingCollisonsWeight);
+		builder.append("\n totalCarCollisonsWeight=");
+		builder.append(totalCarCollisonsWeight);
+		builder.append("\n fractionStratsToCarryForward=");
+		builder.append(fractionStratsToCarryForward);
+		builder.append("\n offspringFraction=");
+		builder.append(offspringFraction);
+		builder.append("\n commRuleProb=");
+		builder.append(commRuleProb);
+		builder.append("\n alpha=");
+		builder.append(alpha);
+		builder.append("\n gamma=");
+		builder.append(gamma);
+		builder.append("\n numOfColumns=");
+		builder.append(numOfColumns);
+		builder.append("\n numOfRows=");
+		builder.append(numOfRows);
+		builder.append("\n laneWidth=");
+		builder.append(laneWidth);
+		builder.append("\n speedLimit=");
+		builder.append(speedLimit);
+		builder.append("\n lanesPerRoad=");
+		builder.append(lanesPerRoad);
+		builder.append("\n medianSize=");
+		builder.append(medianSize);
+		builder.append("\n distanceBetween=");
+		builder.append(distanceBetween);
+		builder.append("\n trafficLevel=");
+		builder.append(trafficLevel);
+		builder.append("\n stopDistBeforeIntersection=");
+		builder.append(stopDistBeforeIntersection);
+		return builder.toString();
 	}
 
 	/**
@@ -362,5 +430,13 @@ public class ShoutAheadSimSetup extends AutoDriverOnlySimSetup implements SimSet
 
 	public static double getCommRuleProb() {
 		return commRuleProb ;
+	}
+
+	public static double getAlpha() {
+		return alpha;
+	}
+
+	public static double getGamma() {
+		return gamma;
 	}	
 }

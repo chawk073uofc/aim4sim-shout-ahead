@@ -51,7 +51,6 @@ public class ShoutAheadSimulator extends AutoDriverOnlySimulator implements Shou
 	private int totalBuildingCollisions = 0;
 	private int totalCarCollisions = 0;
 	private double runningAveAcceleration = 0.0;
-	// private double fitness = 0.0;
 	private double runningAveNetDistMovedTowardsDest;
 	private double totalDistanceTravelled = 0.0;
 
@@ -75,54 +74,39 @@ public class ShoutAheadSimulator extends AutoDriverOnlySimulator implements Shou
 	@Override
 	public synchronized AutoDriverOnlySimStepResult step(double timeStep) {
 		if (timesUp()) {
-			Debug.clearShortTermDebugPoints();
-			LearningRun.log(runningAveNetDistMovedTowardsDest + COMMA + totalBuildingCollisions + COMMA
-					+ totalCarCollisions + COMMA + runningAveAcceleration + COMMA + numOfCompletedVehicles + COMMA
-					+ strategy.getFitness() + LearningRun.NEW_LINE);
-			notifyLearningHarness();
-		}
-		if (Debug.PRINT_SIMULATOR_STAGE) {
-			System.err.printf("--------------------------------------\n");
-			System.err.printf("------SIM:spawnVehicles---------------\n");
+			endSimulation();
 		}
 		// limit the number of active vehicles
 		if (getNumActiveVehicles() < maxActiveVehicles) {
 			spawnVehicles(timeStep);
-
-		}
-		if (Debug.PRINT_SIMULATOR_STAGE) {
-			System.err.printf("------SIM:letDriversAct---------------\n");
-		}
-		if (Debug.SHOW_STRATEGY_MAIN_CONSOLE) {
-			System.out.println(strategy);
 		}
 		decideDrivingActions();
-		if (Debug.PRINT_SIMULATOR_STAGE) {
-			System.err.printf("------SIM:moveVehicles---------------\n");
-		}
 		moveVehicles(timeStep);
-		if (Debug.PRINT_SIMULATOR_STAGE) {
-			System.err.printf("------SIM: detectCollisions---------------\n");
-		}
 		detectCollisions();
-		if (Debug.PRINT_SIMULATOR_STAGE) {
-			System.err.printf("------SIM: updateRuleWeights---------------\n");
-		}
 		updateRuleWeights();
-		if (Debug.PRINT_SIMULATOR_STAGE) {
-			System.err.printf("------SIM:cleanUpCompletedVehicles---------------\n");
-		}
 		updateFitness();
 		List<Integer> completedVINs = cleanUpCompletedVehicles();
 		currentTime += timeStep;
-		// complete = timesUp();
-		// if (complete && Debug.PRINT_SIMULATOR_STAGE) {
-		// System.err.printf("------SIM COMPLETE---------------\n");
-		// }
 		return new AutoDriverOnlySimStepResult(completedVINs);
 	}
 
+	private void endSimulation() {
+		Debug.clearShortTermDebugPoints();
+		logResults();
+		notifyLearningHarness();
+	}
+
+	private void logResults() {
+		LearningRun.log(runningAveNetDistMovedTowardsDest + COMMA + totalBuildingCollisions + COMMA
+				+ totalCarCollisions + COMMA + runningAveAcceleration + COMMA + numOfCompletedVehicles + COMMA
+				+ strategy.getFitness() + LearningRun.NEW_LINE);
+		LearningRun.getCurrentGen().addStats(runningAveNetDistMovedTowardsDest, totalBuildingCollisions, totalCarCollisions, runningAveAcceleration, numOfCompletedVehicles, strategy.getFitness());
+	}
+
 	protected void decideDrivingActions() {
+		if (Debug.PRINT_SIMULATOR_STAGE) {
+			System.err.printf("------SIM: Decide Driving Actions ---------------\n");
+		}
 		for (VehicleSimView vehicle : vinToVehicles.values()) {
 			((ShoutAheadDriverAgent) vehicle.getDriver()).decideNonCommAction();
 		}
@@ -142,6 +126,9 @@ public class ShoutAheadSimulator extends AutoDriverOnlySimulator implements Shou
 	}
 
 	private void updateFitness() {
+		if (Debug.PRINT_SIMULATOR_STAGE) {
+			System.err.printf("------SIM: updateFitness---------------\n");
+		}
 		updateRunningAveAcceleration();
 		updateRunningAveNetDistMovedTowardsDest();
 		updateTotalDistanceTravelled();
@@ -183,6 +170,9 @@ public class ShoutAheadSimulator extends AutoDriverOnlySimulator implements Shou
 	}
 
 	private void detectCollisions() {
+		if (Debug.PRINT_SIMULATOR_STAGE) {
+			System.err.printf("------SIM: detectCollisions---------------\n");
+		}
 		if (!vinToVehicles.isEmpty()) {
 			detectVehicleCollisions();
 			detectBuildingCollisions();
@@ -257,11 +247,8 @@ public class ShoutAheadSimulator extends AutoDriverOnlySimulator implements Shou
 	}
 
 	private boolean vehicalsHaveCollided(VehicleSimView v1, VehicleSimView v2) {
-		// return v1.getShape().intersects(v2.getShape().getBounds2D()) && v1 !=
-		// v2;
 		return v1.getShapeForCollisoinDetection().intersects(v2.getShapeForCollisoinDetection().getBounds2D())
-				&& v1 != v2;
-
+		&& v1 != v2;
 	}
 
 	/**
@@ -277,27 +264,15 @@ public class ShoutAheadSimulator extends AutoDriverOnlySimulator implements Shou
 		} else if (vehicle.getBackEdge().intersects(obstacle.getBounds2D())) {
 			resetPoint = vehicle.getPointAtMiddleFront(COLLISION_BACKOFF_DISTANCE);
 			vehicle.resetPositionAfterCrash(resetPoint);
-		} else {
-			// System.err.println("vin " + vehicle.getVIN() + " was hit");
-		}
+		} 
 	}
 
 	private void updateRuleWeights() {
-
+		if (Debug.PRINT_SIMULATOR_STAGE) {
+			System.err.printf("------SIM: updateRuleWeights---------------\n");
+		}
 		for (VehicleSimView vehicle : vinToVehicles.values()) {
-			ShoutAheadDriverAgent driver = (ShoutAheadDriverAgent) vehicle.getDriver();
-			try {
-				Rule lastFollowedRule = driver.getCurrentRuleToFollow();
-				if (lastFollowedRule == null)
-					throw new NoApplicableRulesException(vehicle);
-				driver.updateRewardsFromLastAction();
-				double rewardFromLastAction = driver.getRewardFromLastAction();
-				lastFollowedRule.addWeight(rewardFromLastAction);
-				driver.clearRewardsFromLastAction();
-
-			} catch (NoApplicableRulesException e) {
-				// no rule to update. Do nothing
-			}
+			((ShoutAheadDriverAgent) vehicle.getDriver()).updatePrevRuleWeight();
 		}
 	}
 
@@ -333,7 +308,7 @@ public class ShoutAheadSimulator extends AutoDriverOnlySimulator implements Shou
 		return vehicle;
 	}
 
-	public boolean timesUp() { // TODO: change to time expired
+	public boolean timesUp() {
 		return getSimTimeRemaining() <= 0;
 	}
 

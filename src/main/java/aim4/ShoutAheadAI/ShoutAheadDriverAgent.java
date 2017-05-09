@@ -35,10 +35,15 @@ public class ShoutAheadDriverAgent extends AutoDriver implements DriverSimView {
 	private ShoutAheadRule commRuleToFollow;
 	private Rule finalRuleToFollow;
 	
+	private Rule prevRuleFollowed; 
+	//private ArrayList<Rule> rulesFollowedList = new ArrayList<Rule>();
 	
 	private boolean hasJustHitBuilding = false;
-	private double rewardFromLastAction = 0;
 	
+	private double rewardFromAction = 0;
+	//private ArrayList<Double> rewardsList = new ArrayList<Double>();
+			
+	private double prevRewardFromAction;
 	private double distanceReward = 0;
 	private double distanceRewardWeight = ShoutAheadSimSetup.getDistanceWeight();
 	
@@ -52,7 +57,6 @@ public class ShoutAheadDriverAgent extends AutoDriver implements DriverSimView {
 	private double buildingCollisionPenalty = 0;
 	private double buildingCollisionWeight = ShoutAheadSimSetup.getBuildingCollisionWeight();
 	private Random rand = new Random();
-	
 	public ShoutAheadDriverAgent(AutoVehicleSimView vehicle, BasicMap basicMap, ShoutAheadSimulator sim) {
 		super(vehicle, basicMap);
 		this.vehicle = vehicle;
@@ -118,9 +122,12 @@ public class ShoutAheadDriverAgent extends AutoDriver implements DriverSimView {
 	public void executeFinalAction() {
 		try {
 			finalRuleToFollow.execute(vehicle);	
+			prevRuleFollowed = finalRuleToFollow;
 		} catch (NullPointerException e) {
 			Action.CRUISE.execute(vehicle);
 		}
+		prevRuleFollowed = finalRuleToFollow;
+
 	}
 
 	private void printRuleInfo() {
@@ -162,6 +169,25 @@ public class ShoutAheadDriverAgent extends AutoDriver implements DriverSimView {
 		return actionNumber < NUM_HEAD_START_ACTIONS && Debug.GIVE_HEAD_START;
 	}
 
+	public void updateRewardsFromLastAction() {
+		prevRewardFromAction = rewardFromAction;
+		clearRewardsFromLastAction();
+		
+		distanceReward = vehicle.getChangeInDistanceFromDestination() * distanceRewardWeight;
+		carCollisionPenalty = hasJustHitCar ? carCollisionWeight : 0;
+		buildingCollisionPenalty = hasJustHitBuilding ? buildingCollisionWeight : 0;
+		accelerationPenalty = Math.abs(vehicle.getAcceleration()) * accelerationPenaltyWeight;
+		
+		rewardFromAction += distanceReward;
+		rewardFromAction += carCollisionPenalty;
+		rewardFromAction += buildingCollisionPenalty;
+		rewardFromAction += accelerationPenalty;
+		
+		if(Debug.SHOW_DRIVER_INFO && Debug.isTargetVIN(vehicle.getVIN())){
+			System.out.println("After Updating:\n"+ this);
+		}
+	}
+
 	public void clearRewardsFromLastAction() {
 		distanceReward = 0;
 		accelerationPenalty = 0;
@@ -169,22 +195,7 @@ public class ShoutAheadDriverAgent extends AutoDriver implements DriverSimView {
 		hasJustHitCar = false;
 		buildingCollisionPenalty = 0;
 		hasJustHitBuilding = false;	
-		rewardFromLastAction = 0;
-	}
-
-	public void updateRewardsFromLastAction() {
-		distanceReward = vehicle.getChangeInDistanceFromDestination() * distanceRewardWeight;
-		carCollisionPenalty = hasJustHitCar ? carCollisionWeight : 0;
-		buildingCollisionPenalty = hasJustHitBuilding ? buildingCollisionWeight : 0;
-		accelerationPenalty = Math.abs(vehicle.getAcceleration()) * accelerationPenaltyWeight;
-		
-		rewardFromLastAction += distanceReward;
-		rewardFromLastAction += carCollisionPenalty;
-		rewardFromLastAction += buildingCollisionPenalty;
-		rewardFromLastAction += accelerationPenalty;
-		if(Debug.SHOW_DRIVER_INFO && Debug.isTargetVIN(vehicle.getVIN())){
-			System.out.println("After Updating:\n"+ this);
-		}
+		rewardFromAction = 0;
 	}
 
 	private void headStart() {
@@ -229,7 +240,7 @@ public class ShoutAheadDriverAgent extends AutoDriver implements DriverSimView {
 		builder.append(", currentRuleToFollow=");
 		builder.append(nonCommRuleToFollow);
 		builder.append("\nrewardFromLastAction=");
-		builder.append(rewardFromLastAction);
+		builder.append(rewardFromAction);
 		builder.append("\ndistanceReward=");
 		builder.append(distanceReward);
 		builder.append(", distanceRewardWeight=");
@@ -254,10 +265,10 @@ public class ShoutAheadDriverAgent extends AutoDriver implements DriverSimView {
 	}
 
 	/**
-	 * @return the rewardFromLastAction
+	 * @return the rewardFromAction
 	 */
-	public double getRewardFromLastAction() {
-		return rewardFromLastAction;
+	public double getRewardFromAction() {
+		return rewardFromAction;
 	}
 
 	public boolean getHasJustHitBuilding() {
@@ -279,5 +290,56 @@ public class ShoutAheadDriverAgent extends AutoDriver implements DriverSimView {
 	 */
 	protected boolean returnTrueWithProb(double prob) {
 		return rand.nextDouble() < prob;
+	}
+	/*
+	 * rl_n_weight = rule_n_weight + \alpha[rule_n_rewart + \gamma*rule_n+1_weight - currentRlWeight]
+	 */
+	public void updatePrevRuleWeight() {
+		updateRewardsFromLastAction();
+		
+		try{
+			double prevRuleWeight = getPrevRuleWeight() + ShoutAheadSimSetup.getAlpha()
+							  * (
+									    getPrevReward() 
+									  + ShoutAheadSimSetup.getGamma()*getCurrentRuleWeight()
+									  - getPrevRuleWeight()
+								);
+			prevRuleFollowed.setWeight(prevRuleWeight);
+		} catch (NoApplicableRulesException e){
+			//do nothing. no rule to update
+		}
+//		try {
+//			Rule lastFollowedRule = driver.getCurrentRuleToFollow();
+//			if (lastFollowedRule == null)
+//				throw new NoApplicableRulesException(vehicle);
+//			driver.updateRewardsFromLastAction();
+//			double rewardFromLastAction = driver.getRewardFromCurrentAction();
+//			//lastFollowedRule.addWeight(rewardFromAction);
+//			driver.clearRewardsFromLastAction();
+//
+//		} catch (NoApplicableRulesException e) {
+//			driver.clearRewardsFromLastAction();
+//		}		
+	}
+
+	private double getCurrentRuleWeight() {
+		if (finalRuleToFollow != null)
+			return finalRuleToFollow.getWeight();
+		else
+			return 0;
+	}
+
+	private double getPrevReward() throws NoApplicableRulesException {
+		if(prevRuleFollowed != null)
+			return prevRewardFromAction;
+		else
+			throw new NoApplicableRulesException(vehicle);
+	}
+
+	private double getPrevRuleWeight() throws NoApplicableRulesException {
+		if( prevRuleFollowed != null)
+			return prevRuleFollowed.getWeight();
+		else  
+			throw new NoApplicableRulesException(vehicle);
 	}
 }

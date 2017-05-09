@@ -42,12 +42,7 @@ public class RuleSet {
 
 	private List<Rule> getBestRules() {
 		ArrayList<Rule> sortedRules = new ArrayList<Rule>(rules);
-		sortedRules.sort(new Comparator<Rule>() {
-		    @Override
-		    public int compare(Rule r1, Rule r2) {
-		        return (int) ((int) r1.getWeight() - r2.getWeight());
-		    }
-		});
+		sortedRules.sort(new RuleComparator());
 		return sortedRules.subList(numRules/2, numRules);
 	}
 	

@@ -318,6 +318,10 @@ public class AutoDriverOnlySimulator implements Simulator {
    * @param timeStep  the time step
    */
   protected void spawnVehicles(double timeStep) {
+	  if (Debug.PRINT_SIMULATOR_STAGE) {
+			System.err.printf("------SIM: Spawn Vehicles---------------\n");
+		}
+	
     for(SpawnPoint spawnPoint : basicMap.getSpawnPoints()) {
       List<SpawnSpec> spawnSpecs = spawnPoint.act(timeStep);
       if (!spawnSpecs.isEmpty()) {
@@ -904,6 +908,9 @@ public class AutoDriverOnlySimulator implements Simulator {
    * @param timeStep  the time step
    */
   protected void moveVehicles(double timeStep) {
+	  if (Debug.PRINT_SIMULATOR_STAGE) {
+			System.err.printf("------SIM:moveVehicles---------------\n");
+		}
     for(VehicleSimView vehicle : vinToVehicles.values()) {
       Point2D initialPos = vehicle.getPosition();
       vehicle.move(timeStep);
@@ -944,6 +951,10 @@ private void updateDistanceToDestination(VehicleSimView vehicle, Point2D p1, Poi
    * @return the VINs of the completed vehicles
    */
   protected List<Integer> cleanUpCompletedVehicles() {
+	if (Debug.PRINT_SIMULATOR_STAGE) {
+			System.err.printf("------SIM:cleanUpCompletedVehicles---------------\n");
+	}
+	
     List<Integer> completedVINs = new LinkedList<Integer>();
 
     Rectangle2D mapBoundary = basicMap.getDimensions();
@@ -955,7 +966,7 @@ private void updateDistanceToDestination(VehicleSimView vehicle, Point2D p1, Poi
       // TODO_OG: this should be replaced with destination zone.
       if(shouldRemoveVehicle(mapBoundary, v)) {
         // Process all the things we need to from this vehicle
-        if (v instanceof AutoVehicleSimView) {//TODO problem?
+        if (v instanceof AutoVehicleSimView) {
           AutoVehicleSimView v2 = (AutoVehicleSimView)v;
           totalBitsTransmittedByCompletedVehicles += v2.getBitsTransmitted();
           totalBitsReceivedByCompletedVehicles += v2.getBitsReceived();

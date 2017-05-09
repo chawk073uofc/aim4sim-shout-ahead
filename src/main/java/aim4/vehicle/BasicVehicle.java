@@ -1701,7 +1701,8 @@ public Shape getShapeForCollisoinDetection(){
     if (Debug.isPrintVehicleHighLevelControlOfVIN(vin)) {
       System.err.printf("vin %d turning left. Setting stering angle to - %f radians.\n", vin, angleDelta);
     }
-    double newSteeringAngle = - angleDelta;
+    
+   double newSteeringAngle = - angleDelta;
 
     Movement m2 = movement;
     if (m2 instanceof AccelScheduleMovement) {

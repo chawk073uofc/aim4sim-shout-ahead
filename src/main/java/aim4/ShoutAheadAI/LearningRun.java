@@ -34,6 +34,7 @@ public class LearningRun {
 	private static final String LEARNING_RECORDS_PATH_UOFC = "todo";// TODO
 	private static final String PARAM_FILE_NAME = "paramaters";
 	private static final String LOG_COL_HEADINGS = "Generation,Strategy,Net Dist. Moved Towards Goal,Building Collisions,Car Collisions,Ave. Acceleration,Completed Vehicles,Total Fitness";
+	private static final String LOG_SUMMARY_COL_HEADINGS = "Generation, Ave Net Dist. Moved Towards Goal,Ave Building Collisions,Ave Car Collisions,Ave. Ave. Acceleration,Ave. Completed Vehicles,Ave. Total Fitness";
 	static final String NEW_LINE = "\n";
 	private static String learningRunRootPath;
 	private static int numGenerations = ShoutAheadSimSetup.getNumGenerations();
@@ -53,6 +54,7 @@ public class LearningRun {
 	/** Allows sim to notify Learning Harness when sim is complete */
 	private Object simSyncObject = new Object();
 	private Random rand = new Random();
+	private File learningSummary;
 
 	/**
 	 * @param simViewer
@@ -85,6 +87,23 @@ public class LearningRun {
 			}
 			
 		}
+		writeLearningRunSummary();
+	}
+
+	private void writeLearningRunSummary() {
+		learningSummary = new File(learningRunRootPath + "learningRunSummary");
+		try {
+			learningSummary.createNewFile();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		logSummary(LOG_SUMMARY_COL_HEADINGS);
+		for(Generation gen: genList){
+			logSummary(gen.getGenSummaryCSV());
+			logSummary(NEW_LINE);
+		}
+		
 	}
 
 	private void initializeSimulation() {
@@ -208,6 +227,29 @@ public class LearningRun {
 		}
 	}
 	
+	public void logSummary(String content) {
+		BufferedWriter bw = null;
+		FileWriter fw = null;
+		
+		try {
+			fw = new FileWriter(learningSummary, true);
+			bw = new BufferedWriter(fw);
+			bw.write(content);
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (bw != null)
+					bw.close();
+				if (fw != null)
+					fw.close();
+			} catch (IOException ex) {
+				ex.printStackTrace();
+			}
+
+		}
+	}
+	
 	
 	public static void writeToNewFile(String filePath, String content) {
 		if (Debug.SHOW_FILE_SYS_INFO)
@@ -303,5 +345,9 @@ public class LearningRun {
 	
 	public static Strategy getCurrentStrategy() {
 		return currentStrategy;
+	}
+
+	public static Generation getCurrentGen() {
+		return currentGen;
 	}
 }

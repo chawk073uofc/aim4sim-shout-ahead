@@ -70,7 +70,9 @@ public class Strategy implements Comparable<Strategy> {
 
 	@Override
 	public int compareTo(Strategy strat) {
-		return (int) Math.rint(this.fitness - strat.fitness);
+		if(fitness > strat.fitness) return 1;
+		if(fitness < strat.fitness) return -1;
+		return 0;
 	}
 
 	public void setFitness(double fitness) {
