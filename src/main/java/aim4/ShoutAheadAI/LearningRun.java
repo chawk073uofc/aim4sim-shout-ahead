@@ -30,7 +30,7 @@ import aim4.vehicle.VinRegistry;
 public class LearningRun {
 	public static Lock lock;
 	public static final String DESKTOP_PATH = "/Users/chrishawk_MacBookAir/Desktop/";
-	public static final String LEARNING_RECORDS_PATH_MAC = "/Users/chrishawk_MacBookAir/Google Drive/UofC/F16/502/Simulation2/AIM3-Shout-Ahead/LearningRecords/";
+	public static final String LEARNING_RECORDS_PATH = "/Users/chrishawk_MacBookAir/Google Drive/UofC/F16/502/Simulation2/AIM3-Shout-Ahead/LearningRecords/";
 	private static final String PARAM_FILE_NAME = "paramaters";
 	private static final String LOG_COL_HEADINGS = "Generation,Strategy,Net Dist. Moved Towards Goal,Building Collisions,Car Collisions,Ave. Acceleration,Completed Vehicles,Total Fitness";
 	private static final String LOG_SUMMARY_COL_HEADINGS = "Generation, Ave Net Dist. Moved Towards Goal,Ave Building Collisions,Ave Car Collisions,Ave. Ave. Acceleration,Ave. Completed Vehicles,Ave. Total Fitness";
@@ -288,7 +288,7 @@ public class LearningRun {
 	}
 
 	private void setupRecordsDirectory(SimSetup simSetup) {
-		learningRunRootPath = LEARNING_RECORDS_PATH_MAC + getTimeStamp() + "/";
+		learningRunRootPath = LEARNING_RECORDS_PATH + getTimeStamp() + "/";
 		// TODO: write hardware info file
 		makeDirectory("");// make root directory for this run
 		writeToNewFile(PARAM_FILE_NAME, simSetup.toString());

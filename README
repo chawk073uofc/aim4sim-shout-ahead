@@ -1,27 +1,35 @@
-This README is for a version of the AIM4 traffic simulator that was modified in order to carry out a research project in machine learning. For the README for the
-original traffic simulator, see AIM4_README.txt.
+This README is for a version of the AIM4 traffic simulator that was modified in order to carry out a research project in machine learning. For the README for the original traffic simulator, see AIM4_README.txt.
 
-Downloading and Running the Program Using Eclipse:
+Downloading and Running the Program:
 
 	1)	Clone this repository.
-	2)	
-
+	2)	Run aim4.Main
+	
+	Using Eclipse:
+		
+		1)	Open Eclipse
+		2) 	Select "Checkout Projects form Git" from the Welcome Screen
+		3)	Select "Clone URI" and click "next"
+		4)  Enter https://github.com/chawk073uofc/aim4sim-shout-ahead.git as the URI. No user name or password is required. Click "next".
+		5)	Select a destination for your local Git repository and click "next"
+		6)	Select "import existing Eclipse projects" and click "next"
+		7)	Click "Finish"
+		8)	Select aim4.Main in the project explorer
+		9) 	Click run (green arrow)
+		 
 Using the Simulator:
 
-	This traffic simulation program includes 4 modes that can be used to evaluate 4 different ways of routing traffic through an intersection. 
-	These include the three that were included by the authors of the original simulator 
+	This traffic simulation program includes 4 modes that can be used to evaluate 4 different ways of routing traffic through an intersection. These include the three that were included by the authors of the original simulator 
 		
 		1)	Traffic Lights
 		2)	Stop Signs
-		3)  Autonomous Intersection Management (AIM) protocol
+		3)  Autonomous Intersection Management (AIM) Protocol
 		
-	and one that was added to facilitate machine learning of necessary driving behaveiours through a learning method that is a hybrid of reenforcement and evolutionary learning
+	and one that was added to facilitate machine learning of necessary driving behaviours through a learning method that is a hybrid of reenforcement and evolutionary learning
 	
-		4) Shout Ahead
+		4) Shout Ahead.
 		
-	To be able to access all simulation modes set aim4.config.Debug.SHOUT_AHEAD_FAST_DEBUG_MODE to FALSE, run the program, select one of the four simulation modes, choose simulation parameters, and click "run".
-	To start full machine learning run, where all simulation and learning parameters are taken from aim4.ShoutAheadAI.ShoutAheadSimSetup, set the same flag to TRUE and run the program. Multiple simulations are
-	automatically run one after the other until the last simulation of the last generation is reached. 
+	To be able to access all simulation modes set aim4.config.Debug.SHOUT_AHEAD_FAST_DEBUG_MODE to FALSE, run the program, select one of the four simulation modes, choose simulation parameters, and click "run". To start full machine learning run, where all simulation and learning parameters are taken from aim4.ShoutAheadAI.ShoutAheadSimSetup, set the same flag to TRUE and run the program. Multiple simulations are automatically run one after the other until the last simulation of the last generation is complete. 
 
 Understanding the code:
 
@@ -35,3 +43,10 @@ Understanding the code:
 
 Collecting experimental results:
 
+	Set aim4.ShoutAheadAI.LearningRun.LEARNING_RECORDS_PATH to the directory in which you would like to store the results of learning runs that you run. This will create a directory for each learning run (having a name indicating the time and date it was performed). In this directory you will find two files:
+	
+		1)	learningLog		a csv containing key metrics for each simulation that can be easily imported into an Excel spreadsheet
+		2)	parameters		a text file containing the simulation and learning parameters that were used for this learning run
+		
+
+	
