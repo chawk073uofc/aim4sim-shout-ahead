@@ -38,7 +38,7 @@ import aim4.vehicle.VehicleSpec;
  */
 public class ShoutAheadSimulator extends AutoDriverOnlySimulator implements ShoutAheadSimInterface {
 	private static final double COLLISION_BACKOFF_DISTANCE = 1;// meters
-	private static final double CLOSE_TO_DEST_DISTANCE = 20;// meter
+	private static final double CLOSE_TO_DEST_DISTANCE = 20;// meters
 	private static final String COMMA = ",";
 	private static Random rand = new Random();
 

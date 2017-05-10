@@ -190,7 +190,7 @@ public class SimSetupPanel extends JPanel implements ItemListener {
         
         simSetup3.setSteeringDelta(shoutAheadSetupPanel.getSteeringAngleDeltaSlider());
         simSetup3.setSpeedDelta(shoutAheadSetupPanel.getSpeedDeltaSlider());
-        simSetup3.setNumCarsPerSim(shoutAheadSetupPanel.getNumCarsPerSimSlider());
+        //simSetup3.setNumCarsPerSim(shoutAheadSetupPanel.getNumCarsPerSimSlider());
         simSetup3.setMaxNumActiveCars(shoutAheadSetupPanel.getMaxNumOfActiveCarsSlider());
         simSetup3.setNumPredsPerCond(shoutAheadSetupPanel.getNumPredsPerCondSlider());
         simSetup3.setExplorationFactor(shoutAheadSetupPanel.getExplorationFactorSlider());

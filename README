@@ -1,0 +1,35 @@
+This README is for a version of the AIM4 traffic simulator that was modified in order to carry out a research project in machine learning. For the README for the
+original traffic simulator, see AIM4_README.txt.
+
+Downloading and Running the Program Using Eclipse:
+
+	1)	Clone this repository.
+	2)	
+
+Using the Simulator:
+
+	This traffic simulation program includes 4 modes that can be used to evaluate 4 different ways of routing traffic through an intersection. 
+	These include the three that were included by the authors of the original simulator 
+		
+		1)	Traffic Lights
+		2)	Stop Signs
+		3)  Autonomous Intersection Management (AIM) protocol
+		
+	and one that was added to facilitate machine learning of necessary driving behaveiours through a learning method that is a hybrid of reenforcement and evolutionary learning
+	
+		4) Shout Ahead
+		
+	To be able to access all simulation modes set aim4.config.Debug.SHOUT_AHEAD_FAST_DEBUG_MODE to FALSE, run the program, select one of the four simulation modes, choose simulation parameters, and click "run".
+	To start full machine learning run, where all simulation and learning parameters are taken from aim4.ShoutAheadAI.ShoutAheadSimSetup, set the same flag to TRUE and run the program. Multiple simulations are
+	automatically run one after the other until the last simulation of the last generation is reached. 
+
+Understanding the code:
+
+	To see how the learning works see 
+	
+	aim4.ShoutAheadAI.LearningRun 
+	
+	and to see how an individual simulation works see 
+	
+	aim4.ShoutAheadAI.ShoutAheadSimulator.step(double). 
+

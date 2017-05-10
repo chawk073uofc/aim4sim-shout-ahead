@@ -31,7 +31,6 @@ public class LearningRun {
 	public static Lock lock;
 	public static final String DESKTOP_PATH = "/Users/chrishawk_MacBookAir/Desktop/";
 	public static final String LEARNING_RECORDS_PATH_MAC = "/Users/chrishawk_MacBookAir/Google Drive/UofC/F16/502/Simulation2/AIM3-Shout-Ahead/LearningRecords/";
-	private static final String LEARNING_RECORDS_PATH_UOFC = "todo";// TODO
 	private static final String PARAM_FILE_NAME = "paramaters";
 	private static final String LOG_COL_HEADINGS = "Generation,Strategy,Net Dist. Moved Towards Goal,Building Collisions,Car Collisions,Ave. Acceleration,Completed Vehicles,Total Fitness";
 	private static final String LOG_SUMMARY_COL_HEADINGS = "Generation, Ave Net Dist. Moved Towards Goal,Ave Building Collisions,Ave Car Collisions,Ave. Ave. Acceleration,Ave. Completed Vehicles,Ave. Total Fitness";
@@ -45,7 +44,6 @@ public class LearningRun {
 	
 	private static ArrayList<Generation> genList = new ArrayList<Generation>();
 	private static Generation currentGen;
-//	private Generation nextGen = new Generation();
 	private static int currentGenerationIndex = 0;
 	private static Strategy currentStrategy;
 	private static int currentStrategyIndex = 0;
@@ -95,7 +93,6 @@ public class LearningRun {
 		try {
 			learningSummary.createNewFile();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		logSummary(LOG_SUMMARY_COL_HEADINGS);
@@ -197,7 +194,6 @@ public class LearningRun {
 		try {
 			learningLog.createNewFile();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

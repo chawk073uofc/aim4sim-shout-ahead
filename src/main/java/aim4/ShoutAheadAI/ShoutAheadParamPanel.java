@@ -53,17 +53,6 @@ public class ShoutAheadParamPanel extends JPanel{
 	                        "Speed Delta: %.0f meters/second",
 	                        "%.0f");
 	    add(speedDeltaSlider);
-
-	    
-	    
-	    numCarsPerSimSlider =
-	      new LabeledSlider(0.0, 50.0,
-	                        ShoutAheadSimSetup.getNumCarsPerSim(),
-	                        10.0, 1.0,
-	                        "Number of Cars Per Simulation: %.0f ",
-	                        "%.0f");
-	    add(numCarsPerSimSlider);
-
 	    
 	    maxNumActiveCarsSlider = 
 	    		new LabeledSlider(0.0, 50.0,

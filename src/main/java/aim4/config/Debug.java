@@ -305,7 +305,7 @@ public class Debug {
 
 	public static final boolean BEEP_ON_COLLISONS = false;
 
-	public static final boolean SHOW_STRATEGY_GUI = false;
+	public static final boolean SHOW_STRATEGY_GUI = true;
 	
 	public static final boolean MAKE_STRAT_DIRECTORIES = false;
 

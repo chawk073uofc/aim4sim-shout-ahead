@@ -26,12 +26,11 @@ public class ShoutAheadSimSetup extends AutoDriverOnlySimSetup implements SimSet
 	// Default parameter values
 	private static double steeringDelta = 1.0;// degrees
 	private static double speedDelta = 1.0;// m/s
-	private static int numCarsPerSim = 10;//TODO: get rid of this
-	private static double simTimeLimit = 50.0; //
+	private static double simTimeLimit = 50.0;
 	private static int maxNumActiveCars = 8;
 
 	private static int numPredsPerCond = 3;
-	private static int numRulesPerRuleSet = 1000;
+	private static int numRulesPerRuleSet = DEMO_NUM_RULES;
 	private static double explorationFactor = 0.3;
 	private static double learningFactor = 0.5;
 	private static int numRoundsPerGeneration = 10;
@@ -120,20 +119,20 @@ public class ShoutAheadSimSetup extends AutoDriverOnlySimSetup implements SimSet
 		ShoutAheadSimSetup.speedDelta = speedDelta;
 	}
 
-	/**
-	 * @return the numCarsPerSim
-	 */
-	public static int getNumCarsPerSim() {
-		return numCarsPerSim;
-	}
+//	/**
+//	 * @return the numCarsPerSim
+//	 */
+//	public static int getNumCarsPerSim() {
+//		return numCarsPerSim;
+//	}
 
 	/**
-	 * @param numCarsPerSim
-	 *            the numCarsPerSim to set
-	 */
-	public void setNumCarsPerSim(int numCarsPerSim) {
-		ShoutAheadSimSetup.numCarsPerSim = numCarsPerSim;
-	}
+//	 * @param numCarsPerSim
+//	 *            the numCarsPerSim to set
+//	 */
+//	public void setNumCarsPerSim(int numCarsPerSim) {
+//		ShoutAheadSimSetup.numCarsPerSim = numCarsPerSim;
+//	}
 
 	/**
 	 * @return the maxNumActiveCars
@@ -252,7 +251,6 @@ public class ShoutAheadSimSetup extends AutoDriverOnlySimSetup implements SimSet
 		builder.append("\n speedDelta=");
 		builder.append(speedDelta);
 		builder.append("\n numCarsPerSim=");
-		builder.append(numCarsPerSim);
 		builder.append("\n simTimeLimit=");
 		builder.append(simTimeLimit);
 		builder.append("\n maxNumActiveCars=");
